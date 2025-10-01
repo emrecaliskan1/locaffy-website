@@ -1,0 +1,193 @@
+.hero {
+  background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+  color: white;
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  max-width: 48rem;
+  margin: 0 auto 2rem;
+  opacity: 0.9;
+}
+
+.hero .btn {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+}
+
+.hero .btn:hover {
+  background: white;
+  color: #f97316;
+}
+
+.features {
+  padding: 4rem 0;
+  background: white;
+  margin: 1.5rem;
+  border-radius: 10px;
+  height: max-content;
+}
+
+.features h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.features-subtitle {
+  text-align: center;
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: #f9fafb;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  background: #fef3e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: #f97316;
+  font-size: 2rem;
+}
+
+.feature-card h3 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.feature-card p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.app-features {
+  padding: 4rem 0;
+  background: #f9fafb;
+}
+
+.app-features h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.app-features .features-subtitle {
+  text-align: center;
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.app-feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.app-feature-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.app-feature-image {
+  width: 100%;
+  height: 160px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #f97316, #dc2626);
+}
+
+.app-feature-card h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.app-feature-card p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.cta {
+  padding: 4rem 0;
+  background: white;
+  text-align: center;
+}
+
+.cta h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.cta p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.cta .btn {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+@media (min-width: 768px) {
+  .hero h1 {
+    font-size: 4rem;
+  }
+}
