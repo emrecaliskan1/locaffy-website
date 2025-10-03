@@ -2,9 +2,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Home from '../pages/Home';
 import About from '../pages/About';
-import Features from '../pages/Features';
 import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
+import JoinUs from '../pages/JoinUs';
 
 export const router = createBrowserRouter([
   {
@@ -21,12 +21,12 @@ export const router = createBrowserRouter([
         element: <About />
       },
       {
-        path: 'features',
-        element: <Features />
-      },
-      {
         path: 'contact',
         element: <Contact />
+      },
+      {
+        path: 'joinus',
+        element: <JoinUs />
       }
     ]
   }

@@ -1,30 +1,30 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box } from '@mui/material';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
-import Features from './pages/Features';
+import JoinUs from './pages/JoinUs';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import './App.css';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen">
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <main>
+        <Box component="main" sx={{ flex: 1, pt: '80px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/contact" element={<Contact/>} />
+            <Route path="/joinus" element={<JoinUs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </main>
+        </Box>
         <Footer />
-      </div>
+      </Box>
     </Router>
   );
 }

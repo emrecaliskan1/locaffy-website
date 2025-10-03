@@ -1,13 +1,13 @@
 export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
-  FEATURES: '/features',
-  CONTACT: '/contact'
+  CONTACT: '/contact',
+  JOIN_US: '/joinus'
 };
 
 export const ROUTE_NAMES = {
   HOME: 'Ana Sayfa',
   ABOUT: 'Hakkımızda',
-  FEATURES: 'Özellikler',
-  CONTACT: 'İletişim'
+  CONTACT: 'İletişim',
+  JOIN_US: 'Bize Katıl'
 };
