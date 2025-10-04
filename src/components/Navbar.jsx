@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -27,12 +27,35 @@ const HideOnScroll = ({ children }) => {
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const scrollToSection = (sectionId) => {
+    if (location.pathname !== '/') {
+      window.location.href = `/#${sectionId}`;
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  };
+
+  const handleNavigation = (item) => {
+    if (item.path === '/login' || item.path === '/register') {
+      navigate(item.path);
+    } else {
+      scrollToSection(item.sectionId);
+    }
+  };
 
   const navItems = [
-    { path: '/', name: 'Ana Sayfa' },
-    { path: '/about', name: 'Hakkımızda' },
-    { path: '/contact', name: 'İletişim' },
-    { path: '/joinus', name: 'Bize Katıl' }
+    { path: '/', sectionId: 'home', name: 'Ana Sayfa' },
+    { path: '/about', sectionId: 'about', name: 'Hakkımızda' },
+    { path: '/contact', sectionId: 'contact', name: 'İletişim' },
+    { path: '/joinus', sectionId: 'joinus', name: 'Bize Katıl' }
   ];
 
   return (
@@ -43,14 +66,13 @@ const Navbar = () => {
           backgroundColor: 'white',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid rgba(229, 231, 235, 0.8)',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
         }}
       >
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
             <ButtonBase
-              component={RouterLink}
-              to="/"
+              onClick={() => scrollToSection('home')}
               sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
             >
               <LogoIcon>L</LogoIcon>
@@ -69,10 +91,9 @@ const Navbar = () => {
             <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
               {navItems.map((item) => (
                 <NavLink
-                  key={item.path}
-                  component={RouterLink}
-                  to={item.path}
-                  active={location.pathname === item.path ? 1 : 0}
+                  key={item.sectionId}
+                  onClick={() => handleNavigation(item)}
+                  sx={{ cursor: 'pointer' }}
                 >
                   {item.name}
                 </NavLink>
@@ -80,10 +101,18 @@ const Navbar = () => {
             </Box>
 
             <Stack direction="row" spacing={1.5}>
-              <GradientButton variant="secondary">
+              <GradientButton 
+                variant="secondary"
+                onClick={() => navigate('/login')}
+                sx={{ cursor: 'pointer' }}
+              >
                 Giriş Yap
               </GradientButton>
-              <GradientButton variant="primary">
+              <GradientButton 
+                variant="primary"
+                onClick={() => navigate('/register')}
+                sx={{ cursor: 'pointer' }}
+              >
                 Kaydol
               </GradientButton>
             </Stack>

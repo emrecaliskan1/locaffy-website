@@ -13,10 +13,13 @@ export const StyledButton = styled(Button)(({ theme, variant = 'primary' }) => {
     primary: {
       padding: theme.spacing(1.5, 4),
       fontSize: '1rem',
-      background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+      background: `linear-gradient(135deg, #ff8a50 0%, #ff6b35 50%, ${theme.palette.primary.main} 100%)`,
       color: 'white',
+      boxShadow: '0 4px 15px rgba(255, 138, 80, 0.3)',
       '&:hover': {
-        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.error.main} 100%)`,
+        background: `linear-gradient(135deg, #ff7043 0%, #ff5722 50%, ${theme.palette.secondary.main} 100%)`,
+        boxShadow: '0 6px 20px rgba(255, 112, 67, 0.4)',
+        transform: 'translateY(-2px)',
       },
     },
     hero: {

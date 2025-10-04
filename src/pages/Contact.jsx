@@ -136,7 +136,7 @@ const Contact = () => {
                   <Box sx={{ textAlign: 'center', mt: 3 }}>
                     <SubmitButton
                       type="submit"
-                      variant="contained"
+                      variant="primary"
                       size="large"
                     >
                       Mesaj Gönder

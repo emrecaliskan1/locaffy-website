@@ -68,7 +68,6 @@ export const StyledCard = styled(Card)(({ theme, variant = 'feature' }) => {
   };
 });
 
-// Variant-based components
 export const FeatureCard = (props) => <StyledCard variant="feature" {...props} />;
 export const AppFeatureCard = (props) => <StyledCard variant="app" {...props} />;
 export const AboutCard = (props) => <StyledCard variant="about" {...props} />;

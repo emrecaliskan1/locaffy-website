@@ -32,12 +32,12 @@ function JoinUs() {
               lineHeight: 1.6
             }}
           >
-            <h2 className="text-2xl font-bold text-amber-600 mb-3">
+            <h2>
               Kafenizi, restoranınızı veya pub’ınızı dijital dünyaya taşıyın!</h2>
-            <p className="text-slate-700 leading-relaxed">
+            <p>
               Müşterileriniz artık telefonlarından kolayca rezervasyon yapabilir, 
               QR kod ile sipariş verebilir ve işletmenizin doluluk oranını anında görüntüleyebilir.</p>
-            <p className="mt-3 text-slate-600 italic">
+            <p>
               Siz sadece işinize odaklanın; biz rezervasyon ve müşteri yönetimini sizin için kolaylaştıralım.</p>
           </Typography>
           <JoinUsButton size="large">

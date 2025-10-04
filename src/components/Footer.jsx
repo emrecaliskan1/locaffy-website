@@ -8,20 +8,25 @@ import {
   Stack
 } from '@mui/material';
 
-import { FooterContainer, FooterLink, SocialIcon } from './ui/FooterStyledComponents';
+import { 
+  GradientFooterContainer, 
+  PrimaryFooterLink, 
+  SecondaryFooterLink,
+  RoundedSocialIcon 
+} from './ui/FooterStyledComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
   return (
-    <FooterContainer component="footer">
+    <GradientFooterContainer component="footer">
       <Container maxWidth="xl" sx={{ px: { xs: 2, md: 4 } }}>
         <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
           <Grid item xs={12} md={2.5}>
             <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 1.5 }}>
               Locaffy
             </Typography>
-            <Typography variant="body2" sx={{ color: '#d1d5db', lineHeight: 1.6, fontSize: '0.875rem' }}>
+            <Typography variant="body2" sx={{ color: '#e5e7eb', lineHeight: 1.6, fontSize: '0.875rem' }}>
               Sosyal bağlantıları güçlendiren, insanları bir araya getiren 
               ve anlamlı deneyimler yaratmayı hedefleyen bir platformuz.
             </Typography>
@@ -32,15 +37,15 @@ const Footer = () => {
               Hızlı Linkler
             </Typography>
             <Stack spacing={0.5}>
-              <FooterLink component={RouterLink} to="/about">
+              <PrimaryFooterLink component={RouterLink} to="/about">
                 Hakkımızda
-              </FooterLink>
-              <FooterLink component={RouterLink} to="/features">
+              </PrimaryFooterLink>
+              <PrimaryFooterLink component={RouterLink} to="/features">
                 Fiyatlandırma
-              </FooterLink>
-              <FooterLink component={RouterLink} to="/contact">
+              </PrimaryFooterLink>
+              <PrimaryFooterLink component={RouterLink} to="/contact">
                 İletişim
-              </FooterLink>
+              </PrimaryFooterLink>
             </Stack>
           </Grid>
           
@@ -49,15 +54,15 @@ const Footer = () => {
               Yasal
             </Typography>
             <Stack spacing={0.5}>
-              <FooterLink href="#">
+              <SecondaryFooterLink href="#">
                 Gizlilik Politikası
-              </FooterLink>
-              <FooterLink href="#">
+              </SecondaryFooterLink>
+              <SecondaryFooterLink href="#">
                 Kullanım Koşulları
-              </FooterLink>
-              <FooterLink href="#">
+              </SecondaryFooterLink>
+              <SecondaryFooterLink href="#">
                 Çerez Politikası
-              </FooterLink>
+              </SecondaryFooterLink>
             </Stack>
           </Grid>
           
@@ -65,21 +70,21 @@ const Footer = () => {
             <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold',mx:3,mb:2}}>
               Bizi Takip Edin
             </Typography>
-            <Box sx={{ display: 'flex', mx:3 }}>
-              <SocialIcon href="#" aria-label="Twitter"><FontAwesomeIcon icon={faXTwitter} /></SocialIcon>
-              <SocialIcon href="#" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></SocialIcon>
-              <SocialIcon href="#" aria-label="Facebook"><FontAwesomeIcon icon={faFacebook} /></SocialIcon>
+            <Box sx={{ display: 'flex', mx:3, gap: 1 }}>
+              <RoundedSocialIcon href="#" aria-label="Twitter"><FontAwesomeIcon icon={faXTwitter} /></RoundedSocialIcon>
+              <RoundedSocialIcon href="#" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></RoundedSocialIcon>
+              <RoundedSocialIcon href="#" aria-label="Facebook"><FontAwesomeIcon icon={faFacebook} /></RoundedSocialIcon>
             </Box>
           </Grid>
         </Grid>
         
-        <Divider sx={{ my: 3, backgroundColor: '#374151' }} />
+        <Divider sx={{ my: 3, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
         
-        <Typography variant="body2" sx={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
+        <Typography variant="body2" sx={{ textAlign: 'center', color: '#d1d5db', fontSize: '0.875rem' }}>
           © 2025 Locaffy. Tüm hakları saklıdır.
         </Typography>
       </Container>
-    </FooterContainer>
+    </GradientFooterContainer>
   );
 };
 
