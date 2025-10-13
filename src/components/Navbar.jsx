@@ -44,7 +44,7 @@ const Navbar = () => {
   };
 
   const handleNavigation = (item) => {
-    if (item.path === '/login' || item.path === '/register') {
+    if (item.path === '/login' || item.path === '/register' || item.path === '/business-application' || item.path === '/joinus') {
       navigate(item.path);
     } else {
       scrollToSection(item.sectionId);
@@ -55,6 +55,7 @@ const Navbar = () => {
     { path: '/', sectionId: 'home', name: 'Ana Sayfa' },
     { path: '/about', sectionId: 'about', name: 'Hakkımızda' },
     { path: '/contact', sectionId: 'contact', name: 'İletişim' },
+    { path: '/business-application', sectionId: 'business-application', name: 'İşletme Başvurusu' },
     { path: '/joinus', sectionId: 'joinus', name: 'Bize Katıl' }
   ];
 

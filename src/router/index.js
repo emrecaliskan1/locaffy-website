@@ -5,6 +5,7 @@ import About from '../pages/About';
 import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
 import JoinUs from '../pages/JoinUs';
+import BusinessApplication from '../pages/BusinessApplication';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
       {
         path: 'joinus',
         element: <JoinUs />
+      },
+      {
+        path: 'business-application',
+        element: <BusinessApplication />
       },
       {
       path: 'login',

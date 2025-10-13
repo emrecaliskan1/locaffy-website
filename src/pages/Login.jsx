@@ -10,8 +10,8 @@ import {
   IconButton,
   Alert
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff, Email, Lock, Restaurant } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { StyledCard, PrimaryButton } from '../components/ui';
 
@@ -22,6 +22,8 @@ function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,11 +35,19 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      setError('Lütfen tüm alanları doldurun');
-      return;
+    setLoading(true);
+    setError('');
+
+    // İşletme girişi için mock authentication
+    if (formData.email === 'isletme@locaffy.com' && formData.password === 'isletme123') {
+      // Store business auth token
+      localStorage.setItem('businessAuth', 'true');
+      navigate('/admin/dashboard');
+    } else {
+      setError('Geçersiz email veya şifre');
     }
-    console.log('Login form submitted:', formData);
+    
+    setLoading(false);
   };
 
   const togglePasswordVisibility = () => {
@@ -120,7 +130,7 @@ function Login() {
                     fontWeight: 'bold'
                   }}
                 >
-                  L
+                  <Restaurant sx={{ fontSize: 40 }} />
                 </Box>
               </motion.div>
               
@@ -133,7 +143,7 @@ function Login() {
                   color: 'grey.800'
                 }}
               >
-                Locaffy'e Hoş Geldin
+                İşletme Yöneticisi Girişi
               </Typography>
               <Typography
                 variant="body1"
@@ -142,7 +152,7 @@ function Login() {
                   mb: 3
                 }}
               >
-                Hesabınıza giriş yapın ve sosyal deneyiminizi keşfedin
+                İşletmenizin yönetim paneline giriş yapın
               </Typography>
             </Box>
 
@@ -251,6 +261,7 @@ function Login() {
                     fullWidth
                     variant="primary"
                     size="large"
+                    disabled={loading}
                     sx={{
                       py: 1.8,
                       fontSize: '1.1rem',
@@ -259,7 +270,7 @@ function Login() {
                       fontWeight: 'bold'
                     }}
                   >
-                    Giriş Yap
+                    {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
                   </PrimaryButton>
                 </motion.div>
               </Stack>
@@ -283,22 +294,26 @@ function Login() {
                   color: 'grey.600'
                 }}
               >
-                Henüz hesabınız yok mu?{' '}
-                <Box
-                  component={RouterLink}
-                  to="/register"
-                  sx={{
-                    color: '#ff6b35',
-                    textDecoration: 'none',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      textDecoration: 'underline',
-                      color: '#ff8a50'
-                    }
-                  }}
-                >
-                  Hemen Kaydol
-                </Box>
+                Demo Giriş Bilgileri:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  textAlign: 'center',
+                  color: 'grey.500',
+                  mt: 1
+                }}
+              >
+                Email: isletme@locaffy.com
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  textAlign: 'center',
+                  color: 'grey.500'
+                }}
+              >
+                Şifre: isletme123
               </Typography>
             </motion.div>
           </StyledCard>

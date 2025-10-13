@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -7,6 +8,12 @@ import {
 import { JoinUsHeroSection, JoinUsButton } from '../components/ui';
 
 function JoinUs() {
+  const navigate = useNavigate();
+
+  const handleJoinClick = () => {
+    navigate('/business-application');
+  };
+
   return (
     <Box component="main">
       <JoinUsHeroSection variant="fullHeight">
@@ -33,14 +40,14 @@ function JoinUs() {
             }}
           >
             <h2>
-              Kafenizi, restoranınızı veya pub’ınızı dijital dünyaya taşıyın!</h2>
+              Kafenizi, restoranınızı veya pub'ınızı dijital dünyaya taşıyın!</h2>
             <p>
               Müşterileriniz artık telefonlarından kolayca rezervasyon yapabilir, 
               QR kod ile sipariş verebilir ve işletmenizin doluluk oranını anında görüntüleyebilir.</p>
             <p>
               Siz sadece işinize odaklanın; biz rezervasyon ve müşteri yönetimini sizin için kolaylaştıralım.</p>
           </Typography>
-          <JoinUsButton size="large">
+          <JoinUsButton size="large" onClick={handleJoinClick}>
             Hemen Katıl
           </JoinUsButton>
         </Container>

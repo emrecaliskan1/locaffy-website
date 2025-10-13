@@ -85,14 +85,13 @@ export const StyledSocialIcon = styled(Link)(({ theme, variant = 'default' }) =>
   const baseStyles = {
     fontSize: '1.5rem',
     textDecoration: 'none',
-    display: 'inline-block',
+    display: 'flex',
     marginRight: theme.spacing(2),
     transition: 'all 0.3s ease',
     cursor: 'pointer',
     borderRadius: '50%',
     width: '40px',
     height: '40px',
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   };
