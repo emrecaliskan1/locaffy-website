@@ -27,6 +27,7 @@ import {
   Restaurant as RestaurantIcon,
   Send as SendIcon,
 } from '@mui/icons-material';
+import { LocationPicker } from '../components/ui';
 
 const businessTypes = [
   'Restoran',
@@ -58,6 +59,7 @@ const initialFormData = {
   city: '',
   district: '',
   address: '',
+  location: null, // {lat: number, lng: number, address: string, name: string}
   description: '',
   capacity: '',
   openingHours: '',
@@ -99,8 +101,19 @@ function BusinessApplication() {
     setSubmitError('');
 
     try {
+      // Backend'e gönderilecek data - koordinatları dahil et
+      const submitData = {
+        ...formData,
+        coordinates: formData.location ? {
+          latitude: formData.location.lat,
+          longitude: formData.location.lng,
+          address: formData.location.address,
+          locationName: formData.location.name
+        } : null
+      };
+      
       // TODO: API call to submit application
-      console.log('Business application submitted:', formData);
+      console.log('Business application submitted:', submitData);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -122,7 +135,8 @@ function BusinessApplication() {
            formData.email && 
            formData.phone && 
            formData.city && 
-           formData.address;
+           formData.address &&
+           formData.location; // Konum seçimi zorunlu
   };
 
   if (submitSuccess) {
@@ -354,6 +368,17 @@ function BusinessApplication() {
                       }}
                       variant="outlined"
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <LocationPicker
+                      value={formData.location}
+                      onChange={(location) => handleInputChange('location', location)}
+                      label="İşletme Konumu *"
+                      required
+                    />
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                      Harita üzerinde işletmenizin tam konumunu seçin. Bu bilgi müşterilerin sizi bulmasına yardımcı olacak.
+                    </Typography>
                   </Grid>
                 </Grid>
               </Box>

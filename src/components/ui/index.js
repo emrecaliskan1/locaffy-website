@@ -9,3 +9,4 @@ export * from './Card';
 export * from './ContactForm';
 export * from './Section';
 export * from './FooterStyledComponents';
+export { default as LocationPicker } from './LocationPicker';
