@@ -27,18 +27,16 @@ import {
   Restaurant as RestaurantIcon,
   Send as SendIcon,
 } from '@mui/icons-material';
-import { LocationPicker } from '../components/ui';
+import { LocationPicker, HeroSection } from '../components/ui';
 
 const businessTypes = [
-  'Restoran',
   'Kafe',
-  'Bar',
-  'Pub',
   'Pastane',
   'Fast Food',
-  'Pizzeria',
-  'Dönerci',
-  'Kebapçı',
+  'Asya Mutfağı',
+  'Bar',
+  'Pub',
+  'Steakhouse',
   'Diğer'
 ];
 
@@ -59,7 +57,7 @@ const initialFormData = {
   city: '',
   district: '',
   address: '',
-  location: null, // {lat: number, lng: number, address: string, name: string}
+  location: null, 
   description: '',
   capacity: '',
   openingHours: '',
@@ -111,8 +109,7 @@ function BusinessApplication() {
           locationName: formData.location.name
         } : null
       };
-      
-      // TODO: API call to submit application
+  
       console.log('Business application submitted:', submitData);
       
       // Simulate API call
@@ -170,46 +167,52 @@ function BusinessApplication() {
   }
 
   return (
-    <Box sx={{ py: 10, background: '#f9fafb' }}>
-      <Container maxWidth="lg">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeInUp}
-        >
-          <Typography
-            variant="h3"
-            component="h2"
-            sx={{
-              fontWeight: 'bold',
-              textAlign: 'center',
-              mb: 2,
-              color: 'grey.800'
-            }}
+    <>
+      <HeroSection variant="compact">
+        <Container maxWidth="lg">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={fadeInUp}
           >
-            İşletmenizi Locaffy'ye Katın
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              textAlign: 'center',
-              color: 'grey.600',
-              mb: 6,
-              maxWidth: '48rem',
-              mx: 'auto'
-            }}
-          >
-            Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın. 
-            Müşterileriniz kolayca rezervasyon yapabilsin, QR kod ile sipariş versin.
-          </Typography>
-        </motion.div>
+            <Typography
+              variant="h3"
+              component="h2"
+              sx={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+                mb: 2,
+                color: 'white'
+              }}
+            >
+              İşletmenizi Locaffy'ye Katın
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                textAlign: 'center',
+                color: 'rgba(255, 255, 255, 0.9)',
+                mb: 2,
+                maxWidth: '48rem',
+                mx: 'auto'
+              }}
+            >
+              Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın. 
+              Müşterileriniz kolayca rezervasyon yapabilsin, QR kod ile sipariş versin.
+            </Typography>
+          </motion.div>
+        </Container>
+      </HeroSection>
 
-        <Card sx={{ maxWidth: 1000, mx: 'auto' }}>
+      <Box sx={{ py: 6, background: '#f9fafb' }}>
+        <Container maxWidth="lg">
+
+        <Card sx={{ maxWidth: 700, mx: 'auto' }}>
           <CardContent sx={{ p: 4 }}>
             <form onSubmit={handleSubmit}>
               {/* Temel Bilgiler */}
-              <Box sx={{ mb: 4 }}>
+              <Box sx={{ mb: 6 }}>
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
                   <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
                   Temel Bilgiler
@@ -217,8 +220,9 @@ function BusinessApplication() {
                 <Divider sx={{ mb: 3 }} />
                 
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={10} xy={10}>
                     <TextField
+                      sx={{width:300}}
                       fullWidth
                       label="İşletme Adı"
                       placeholder="Örn: Lezzet Durağı Restoran"
@@ -231,26 +235,10 @@ function BusinessApplication() {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+
+                   <Grid item xs={12}>
                     <TextField
-                      fullWidth
-                      select
-                      label="İşletme Türü"
-                      value={formData.businessType}
-                      onChange={(e) => handleInputChange('businessType', e.target.value)}
-                      required
-                      variant="outlined"
-                      sx={{ minWidth: 200 }}
-                    >
-                      {businessTypes.map((type) => (
-                        <MenuItem key={type} value={type}>
-                          {type}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
+                      sx = {{width:250}}
                       fullWidth
                       label="İşletme Sahibi Adı"
                       value={formData.ownerName}
@@ -259,8 +247,29 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+
+                  <Grid item xs={12}>
                     <TextField
+                      sx = {{width:250}}
+                      fullWidth
+                      select
+                      label="İşletme Türü"
+                      value={formData.businessType}
+                      onChange={(e) => handleInputChange('businessType', e.target.value)}
+                      required
+                      variant="outlined"
+                    >
+                      {businessTypes.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                 
+                  <Grid item xs={12}>
+                    <TextField
+                      sx={{width:250, marginLeft:6.25}}
                       fullWidth
                       label="Vergi Numarası"
                       placeholder="1234567890"
@@ -271,8 +280,9 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:150}}
                       fullWidth
                       label="Kapasite"
                       placeholder="50"
@@ -298,8 +308,9 @@ function BusinessApplication() {
                 <Divider sx={{ mb: 3 }} />
                 
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:300}}
                       fullWidth
                       label="Email"
                       placeholder="info@lezzetduragi.com"
@@ -313,8 +324,9 @@ function BusinessApplication() {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:300}}
                       fullWidth
                       label="Telefon"
                       placeholder="+90 212 555 0123"
@@ -327,8 +339,9 @@ function BusinessApplication() {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:200}}
                       fullWidth
                       select
                       label="Şehir"
@@ -336,7 +349,6 @@ function BusinessApplication() {
                       onChange={(e) => handleInputChange('city', e.target.value)}
                       required
                       variant="outlined"
-                      sx={{ minWidth: 200 }}
                     >
                       {cities.map((city) => (
                         <MenuItem key={city} value={city}>
@@ -345,8 +357,10 @@ function BusinessApplication() {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:200,marginLeft:12.25}}
                       fullWidth
                       label="İlçe"
                       placeholder="Kadıköy"
@@ -355,28 +369,33 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
+
                   <Grid item xs={12}>
                     <TextField
+                      sx={{width:625}}
                       fullWidth
                       label="Adres"
                       placeholder="Moda Caddesi No:123 Kadıköy/İstanbul"
                       value={formData.address}
                       onChange={(e) => handleInputChange('address', e.target.value)}
                       required
+                      multiline
+                      rows={1}
                       InputProps={{
                         startAdornment: <InputAdornment position="start"><LocationIcon /></InputAdornment>,
                       }}
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item sx={{width:300}}>
                     <LocationPicker
+                      sx={{width:500}}
                       value={formData.location}
                       onChange={(location) => handleInputChange('location', location)}
                       label="İşletme Konumu *"
                       required
                     />
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', width:625 }}>
                       Harita üzerinde işletmenizin tam konumunu seçin. Bu bilgi müşterilerin sizi bulmasına yardımcı olacak.
                     </Typography>
                   </Grid>
@@ -392,8 +411,9 @@ function BusinessApplication() {
                 <Divider sx={{ mb: 3 }} />
                 
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:175}}
                       fullWidth
                       label="Açılış Saatleri"
                       placeholder="09:00 - 23:00"
@@ -405,8 +425,9 @@ function BusinessApplication() {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:200}}
                       fullWidth
                       label="Website"
                       placeholder="https://www.lezzetduragi.com"
@@ -415,8 +436,9 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <TextField
+                      sx={{width:200}}
                       fullWidth
                       label="Instagram"
                       placeholder="@lezzetduragi"
@@ -425,25 +447,17 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Facebook"
-                      placeholder="lezzetduragi"
-                      value={formData.facebook}
-                      onChange={(e) => handleInputChange('facebook', e.target.value)}
-                      variant="outlined"
-                    />
-                  </Grid>
+
                   <Grid item xs={12}>
                     <TextField
+                      sx={{width:625}}
                       fullWidth
                       label="İşletme Açıklaması"
                       placeholder="İşletmeniz hakkında kısa bir açıklama yazın..."
                       value={formData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
                       multiline
-                      rows={4}
+                      rows={2}
                       variant="outlined"
                     />
                   </Grid>
@@ -566,8 +580,9 @@ function BusinessApplication() {
             </form>
           </CardContent>
         </Card>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </>
   );
 }
 
