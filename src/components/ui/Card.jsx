@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Card } from '@mui/material';
+import { Margin } from '@mui/icons-material';
 
 
 export const StyledCard = styled(Card)(({ theme, variant = 'feature' }) => {
@@ -29,12 +30,14 @@ export const StyledCard = styled(Card)(({ theme, variant = 'feature' }) => {
     app: {
       background: 'white',
       padding: theme.spacing(2.5),
-      borderRadius: theme.spacing(2),
+      borderRadius: theme.spacing(4),
+      spacing: theme.spacing(10),
       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      minHeight: '300px',
-      minWidth : '350px',
+      minHeight: '380px',
+      maxWidth: '500px',
       '&:hover': {
         boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+        transform: 'translateY(-2px)',
       },
     },
     about: {

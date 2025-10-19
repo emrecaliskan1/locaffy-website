@@ -54,7 +54,7 @@ const selectedLocationIcon = new L.Icon({
 
 const turkeyLocations = [
   { id: 1, name: 'Edirne Merkez', lat: 41.6818, lng: 26.5623, address: 'Merkez, Edirne', city: 'Edirne', priority: 1 },
-  { id: 2, name: 'Selimiye Camii Çevresi', lat: 41.6777, lng: 26.5681, address: 'Selimiye, Edirne', city: 'Edirne', priority: 1 },
+  { id: 2, name: 'Edirne Aykekadın Yerleşkesi', lat: 41.6676, lng: 26.5758, address: 'Selimiye, Edirne', city: 'Edirne', priority: 1 },
   
   { id: 3, name: 'Kadıköy Merkez', lat: 40.9904, lng: 29.0267, address: 'Kadıköy, İstanbul', city: 'İstanbul', priority: 2 },
   { id: 4, name: 'Beşiktaş Çarşı', lat: 41.0422, lng: 29.0067, address: 'Beşiktaş, İstanbul', city: 'İstanbul', priority: 2 },

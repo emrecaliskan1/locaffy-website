@@ -215,24 +215,48 @@ const Home = () => {
             >
               <Grid 
                 container 
-                spacing={4}
+                spacing={3}
                 sx={{
                   justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  mx: -5,
+                  alignItems: 'stretch',
                   flexWrap: 'nowrap',
-                  '@media (max-width: 1200px)': {
+                  '@media (max-width: 768px)': {
                     flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    gap: 3
+                    spacing: 2
                   }
                 }}
               >
                 {appFeatures.map((feature, index) => (
-                  <Grid item key={index} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <motion.div variants={scaleIn}>
+                  <Grid 
+                    item 
+                    key={index} 
+                    sx={{ 
+                      flex: '1 1 0',
+                      minWidth: 0,
+                      maxWidth: { xs: '100%', sm: '380px' },
+                      display: 'flex',
+                      justifyContent: 'center',
+                      mx: 3
+                    }}
+                  >
+                    <motion.div variants={scaleIn} style={{ width: '100%' }}>
                       <AppFeatureCard>
-                        <AppFeatureImage gradient={feature.gradient} />
+                        {feature.image ? (
+                          <Box
+                            sx={{
+                              width: '100%',
+                              height: 300,
+                              borderRadius: 3,
+                              marginBottom: 2,
+                              backgroundImage: `url(${feature.image})`,
+                              backgroundSize: 'cover',
+                              backgroundPosition: 'center',
+                              backgroundRepeat: 'no-repeat'
+                            }}
+                          />
+                        ) : (
+                          <AppFeatureImage gradient={feature.gradient} />
+                        )}
                         <Typography variant="h6" component="h3" sx={{ fontWeight: 600, mb: 2, color: 'grey.800' }}>
                           {feature.title}
                         </Typography>

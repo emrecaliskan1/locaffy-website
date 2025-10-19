@@ -1,22 +1,26 @@
- export const appFeatures = [
+import konumtabanli from '../../assets/konumtabanli.png';
+import hizlibaglanti from '../../assets/hizlibaglanti.png';
+import rezervasyon from '../../assets/rezervasyon.png';
+
+export const appFeatures = [
     {
       title: 'Etkinlik Yönetimi',
       description: 'Rezervasyonlarınızı kolayca yönetin, değiştirin veya iptal edin.',
-      gradient: 'linear-gradient(45deg, #f97316, #dc2626)'
+      image: rezervasyon
     },
     {
       title: 'Hızlı Bağlantı',
       description: 'Anında konumunuza göre etrafınızdaki mekanları inceleyin.',
-      gradient: 'linear-gradient(45deg, #3b82f6, #8b5cf6)'
+      image: hizlibaglanti,
     },
     {
       title: 'Konum Tabanlı Arama',
       description: 'Yakınınızdaki mekanları harita üzerinden keşfedin.',
-      gradient: 'linear-gradient(45deg, #10b981, #3b82f6)'
+      image: konumtabanli,
     },
-    {
-      title: 'Anlık Sipariş',
-      description: 'Rezervasyon yaptığınız mekanlarda kolayca sipariş verin.',
-      gradient: 'linear-gradient(45deg, #8b5cf6, #ec4899)'
-    }
+    // {
+    //   title: 'Anlık Sipariş',
+    //   description: 'Rezervasyon yaptığınız mekanlarda kolayca sipariş verin.',
+    //   image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    // }
   ];
