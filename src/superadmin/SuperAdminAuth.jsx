@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { AdminPanelSettings as AdminPanelIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 
 function SuperAdminAuth() {
   const [credentials, setCredentials] = useState({
@@ -35,16 +36,61 @@ function SuperAdminAuth() {
     setLoading(true);
     setError('');
 
-    // Super admin authentication
-    if (credentials.email === 'admin@locaffy.com' && credentials.password === 'admin123') {
-      // Store super admin auth token
-      localStorage.setItem('superAdminAuth', 'true');
+    try {
+      const response = await authService.login({
+        email: credentials.email,
+        password: credentials.password
+      });
+
+      console.log('Login response:', response);
+
+      // Kullanıcının Super Admin (ROLE_ADMIN) olup olmadığını kontrol et
+      const user = authService.getCurrentUser();
+      console.log('Current user:', user);
+      
+      // Eğer user'da role yoksa, token'dan decode et
+      let userRole = user?.role;
+      if (!userRole) {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const decoded = JSON.parse(jsonPayload);
+            console.log('Decoded token:', decoded);
+            userRole = decoded.role || decoded.authorities?.[0] || decoded.authority;
+            console.log('User role from token:', userRole);
+          } catch (e) {
+            console.error('Token decode hatası:', e);
+          }
+        }
+      }
+      
+      console.log('Final userRole:', userRole);
+      console.log('Is ROLE_ADMIN?', userRole === 'ROLE_ADMIN');
+      console.log('Is ADMIN?', userRole === 'ADMIN');
+      
+      if (!user || (userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN')) {
+        console.log('Access denied - not Super Admin');
+        // Super Admin değilse logout yap ve hata göster
+        await authService.logout();
+        setError(`Bu sayfaya erişim için Super Admin yetkisi gereklidir. Mevcut rol: ${userRole || 'bulunamadı'}`);
+        setLoading(false);
+        return;
+      }
+
+      // Super Admin ise dashboard'a yönlendir
+      console.log('Access granted - redirecting to dashboard');
       navigate('/admin/super-dashboard');
-    } else {
-      setError('Geçersiz email veya şifre');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.message || 'Giriş işlemi başarısız oldu');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -139,13 +185,7 @@ function SuperAdminAuth() {
 
           <Box sx={{ mt: 3, textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              Demo Giriş Bilgileri:
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Email: admin@locaffy.com
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Şifre: admin123
+              Super Admin hesabınızla giriş yapın
             </Typography>
           </Box>
         </Paper>

@@ -20,6 +20,7 @@
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
+    "axios": "^1.13.2",
     "framer-motion": "^12.23.22",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

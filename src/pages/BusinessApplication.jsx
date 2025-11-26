@@ -26,7 +26,9 @@ import {
   People as PeopleIcon,
   Restaurant as RestaurantIcon,
   Send as SendIcon,
+  Lock,
 } from '@mui/icons-material';
+import { businessService } from '../services/businessService';
 
 const businessTypes = [
   'Restoran',
@@ -40,6 +42,19 @@ const businessTypes = [
   'Kebapçı',
   'Diğer'
 ];
+
+const businessTypeMapping = {
+  'Restoran': 'RESTAURANT',
+  'Kafe': 'CAFE',
+  'Bar': 'BAR',
+  'Pub': 'BAR',
+  'Pastane': 'CAFE',
+  'Fast Food': 'RESTAURANT',
+  'Pizzeria': 'RESTAURANT',
+  'Dönerci': 'RESTAURANT',
+  'Kebapçı': 'RESTAURANT',
+  'Diğer': 'RESTAURANT'
+};
 
 const cities = [
   'İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep',
@@ -71,6 +86,8 @@ const initialFormData = {
   website: '',
   instagram: '',
   facebook: '',
+  password: '',
+  passwordConfirm: ''
 };
 
 function BusinessApplication() {
@@ -78,6 +95,7 @@ function BusinessApplication() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [submitResponse, setSubmitResponse] = useState(null);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -99,30 +117,49 @@ function BusinessApplication() {
     setSubmitError('');
 
     try {
-      // TODO: API call to submit application
-      console.log('Business application submitted:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      const backendData = {
+        businessName: formData.businessName,
+        ownerName: formData.ownerName,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        address: formData.address,
+        description: formData.description || null,
+        taxNumber: formData.taxNumber,
+        businessType: businessTypeMapping[formData.businessType] || 'RESTAURANT',
+        password: formData.password,
+        passwordConfirm: formData.passwordConfirm,
+      };
+
+      const response = await businessService.submitApplication(backendData);
+      setSubmitResponse(response);
       setSubmitSuccess(true);
       setFormData(initialFormData);
+
+      console.log('Başvuru başarıyla gönderildi:', response);
+
     } catch (error) {
-      setSubmitError('Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      setSubmitError(error.message || 'Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }
+
+    const response = await businessService.submitApplication(backendData);
+    setSubmitResponse(response);
+    setSubmitSuccess(true);
   };
 
   const isFormValid = () => {
-    return formData.businessName && 
-           formData.businessType && 
-           formData.ownerName && 
-           formData.taxNumber &&
-           formData.email && 
-           formData.phone && 
-           formData.city && 
-           formData.address;
+    return formData.businessName &&
+      formData.businessType &&
+      formData.ownerName &&
+      formData.taxNumber &&
+      formData.email &&
+      formData.phone &&
+      formData.address &&
+      formData.password &&
+      formData.passwordConfirm &&
+      formData.password === formData.passwordConfirm &&
+      formData.password.length >= 6;
   };
 
   if (submitSuccess) {
@@ -139,12 +176,18 @@ function BusinessApplication() {
                 İşletme başvurunuz alınmıştır. En kısa sürede sizinle iletişime geçeceğiz.
               </Typography>
               <Typography variant="body1" sx={{ mb: 4 }}>
-                Başvuru numaranız: <strong>#BAV-{Date.now().toString().slice(-6)}</strong>
+                Başvuru ID'niz: <strong>#{submitResponse?.id || 'Yükleniyor...'}</strong>
               </Typography>
-              <Button 
-                variant="contained" 
+              <Typography variant="body2" sx={{ mb: 4, color: 'text.secondary' }}>
+                Durum: <strong>PENDING</strong> (İnceleniyor)
+              </Typography>
+              <Button
+                variant="contained"
                 size="large"
-                onClick={() => setSubmitSuccess(false)}
+                onClick={() => {
+                  setSubmitSuccess(false);
+                  setFormData(initialFormData);
+                }}
               >
                 Yeni Başvuru Yap
               </Button>
@@ -186,7 +229,7 @@ function BusinessApplication() {
               mx: 'auto'
             }}
           >
-            Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın. 
+            Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın.
             Müşterileriniz kolayca rezervasyon yapabilsin, QR kod ile sipariş versin.
           </Typography>
         </motion.div>
@@ -201,7 +244,7 @@ function BusinessApplication() {
                   Temel Bilgiler
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
-                
+
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -282,7 +325,7 @@ function BusinessApplication() {
                   İletişim Bilgileri
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
-                
+
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -358,6 +401,41 @@ function BusinessApplication() {
                 </Grid>
               </Box>
 
+
+              {/* Şifre Bilgileri */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                  <Lock sx={{ mr: 1, color: 'primary.main' }} />
+                  Şifre Bilgileri
+                </Typography>
+                <Divider sx={{ mb: 3 }} />
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Şifre"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      required
+                      variant="outlined"
+                      helperText="En az 6 karakter olmalıdır"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Şifre Tekrar"
+                      type="password"
+                      value={formData.passwordConfirm}
+                      onChange={(e) => handleInputChange('passwordConfirm', e.target.value)}
+                      required
+                      variant="outlined"
+                      helperText="Şifre ile eşleşmeli"
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
               {/* İşletme Özellikleri */}
               <Box sx={{ mb: 4 }}>
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
@@ -365,7 +443,7 @@ function BusinessApplication() {
                   İşletme Özellikleri
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
-                
+
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -431,7 +509,7 @@ function BusinessApplication() {
                   Sunulan Hizmetler
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
-                
+
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6} md={4}>
                     <FormControlLabel
@@ -548,8 +626,8 @@ function BusinessApplication() {
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, ease: "easeOut" }
   }

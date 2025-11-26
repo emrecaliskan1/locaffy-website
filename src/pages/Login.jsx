@@ -14,6 +14,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff, Email, Lock, Restaurant } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { StyledCard, PrimaryButton } from '../components/ui';
+import { authService } from '../services/authService';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -33,21 +34,23 @@ function Login() {
     if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // İşletme girişi için mock authentication
-    if (formData.email === 'isletme@locaffy.com' && formData.password === 'isletme123') {
-      // Store business auth token
-      localStorage.setItem('businessAuth', 'true');
-      navigate('/admin/dashboard');
-    } else {
-      setError('Geçersiz email veya şifre');
+    try {
+      const response = await authService.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      navigate('/');
+    } catch (error) {
+      setError(error.message || 'Giriş işlemi başarısız oldu');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const togglePasswordVisibility = () => {

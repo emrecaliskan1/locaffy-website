@@ -21,8 +21,7 @@ import {
   DialogActions,
   TextField,
   Alert,
-  Divider,
-  Avatar,
+  CircularProgress,
 } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,
@@ -34,77 +33,19 @@ import {
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
 } from '@mui/icons-material';
-
-// Mock data - gerçek uygulamada API'den gelecek
-const mockApplications = [
-  {
-    id: 1,
-    businessName: 'Lezzet Durağı',
-    ownerName: 'Ahmet Yılmaz',
-    taxNumber: '1234567890',
-    email: 'ahmet@lezzetduragi.com',
-    phone: '+90 212 555 0123',
-    address: 'Kadıköy, İstanbul',
-    businessType: 'Restoran',
-    capacity: 50,
-    applicationDate: '2024-01-15',
-    status: 'Beklemede',
-    documents: ['Kimlik Fotokopisi', 'İşletme Belgesi', 'Vergi Levhası'],
-    description: 'Geleneksel Türk mutfağı sunan aile işletmesi',
-  },
-  {
-    id: 2,
-    businessName: 'Gurme Restoran',
-    ownerName: 'Fatma Demir',
-    taxNumber: '0987654321',
-    email: 'fatma@gurmerestoran.com',
-    phone: '+90 312 555 0456',
-    address: 'Çankaya, Ankara',
-    businessType: 'Restoran',
-    capacity: 80,
-    applicationDate: '2024-02-20',
-    status: 'Beklemede',
-    documents: ['Kimlik Fotokopisi', 'İşletme Belgesi'],
-    description: 'Modern mutfak ve özel menüler',
-  },
-  {
-    id: 3,
-    businessName: 'Tatlı Köşe',
-    ownerName: 'Mehmet Kaya',
-    taxNumber: '1122334455',
-    email: 'mehmet@tatlikose.com',
-    phone: '+90 232 555 0789',
-    address: 'Konak, İzmir',
-    businessType: 'Cafe',
-    capacity: 30,
-    applicationDate: '2024-01-08',
-    status: 'Onaylandı',
-    documents: ['Kimlik Fotokopisi', 'İşletme Belgesi', 'Vergi Levhası'],
-    description: 'Ev yapımı tatlılar ve kahve',
-  },
-  {
-    id: 4,
-    businessName: 'Kahve Evi',
-    ownerName: 'Ayşe Özkan',
-    taxNumber: '5566778899',
-    email: 'ayse@kahveevi.com',
-    phone: '+90 224 555 0321',
-    address: 'Osmangazi, Bursa',
-    businessType: 'Cafe',
-    capacity: 25,
-    applicationDate: '2024-03-10',
-    status: 'Reddedildi',
-    documents: ['Kimlik Fotokopisi'],
-    description: 'Özel kahve çeşitleri ve atıştırmalıklar',
-  },
-];
+import { businessService } from '../services/businessService';
+import { authService } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const getStatusColor = (status) => {
   switch (status) {
+    case 'PENDING':
     case 'Beklemede':
       return 'warning';
+    case 'APPROVED':
     case 'Onaylandı':
       return 'success';
+    case 'REJECTED':
     case 'Reddedildi':
       return 'error';
     default:
@@ -112,14 +53,70 @@ const getStatusColor = (status) => {
   }
 };
 
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return 'Beklemede';
+    case 'APPROVED':
+      return 'Onaylandı';
+    case 'REJECTED':
+      return 'Reddedildi';
+    default:
+      return status;
+  }
+};
+
 function ApplicationManagementView() {
-  const [applications, setApplications] = useState(mockApplications);
+  const navigate = useNavigate();
+  const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
+  const [page, setPage] = useState(0);
+  const [size] = useState(10);
+  const [statusFilter, setStatusFilter] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  // Role kontrolü
+  React.useEffect(() => {
+    const user = authService.getCurrentUser();
+    
+    // Eğer user'da role yoksa, token'dan decode et
+    let userRole = user?.role;
+    if (!userRole) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        try {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          const decoded = JSON.parse(jsonPayload);
+          userRole = decoded.role || decoded.authorities?.[0];
+        } catch (e) {
+          console.error('Token decode hatası:', e);
+        }
+      }
+    }
+    
+    if (!user || (userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN')) {
+      setErrorMessage('Bu sayfaya erişim için Super Admin yetkisi gereklidir.');
+      setIsAuthorized(false);
+      // 3 saniye sonra ana sayfaya yönlendir
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [navigate]);
 
   const handleViewDetails = (application) => {
     setSelectedApplication(application);
@@ -136,45 +133,161 @@ function ApplicationManagementView() {
     setRejectionDialogOpen(true);
   };
 
-  const confirmApproval = () => {
-    if (selectedApplication) {
-      setApplications(prev => prev.map(app => 
-        app.id === selectedApplication.id 
-          ? { ...app, status: 'Onaylandı' }
+  const confirmApproval = async () => {
+    if (!selectedApplication || !isAuthorized) return;
+
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      const response = await businessService.approveApplication(selectedApplication.id);
+
+      setApplications(prev => prev.map(app =>
+        app.id === selectedApplication.id
+          ? { ...app, status: 'APPROVED', updatedAt: response.updatedAt }
           : app
       ));
+
       setApprovalDialogOpen(false);
       setSelectedApplication(null);
       setSuccessMessage('Başvuru başarıyla onaylandı! İşletme hesabı oluşturuldu.');
       setTimeout(() => setSuccessMessage(''), 3000);
+
+      loadStats();
+      // Başvuru listesini yeniden yükle (loading state'i karıştırmamak için await kullanmıyoruz)
+      setTimeout(() => {
+        loadApplications();
+      }, 500);
+    } catch (error) {
+      // 409 Conflict - Başvuru zaten işleme alınmış
+      if (error.message?.includes('zaten işleme alınmış') || error.message?.includes('Sadece bekleyen')) {
+        setErrorMessage(error.message);
+        // Başvuru listesini yeniden yükle
+        setTimeout(() => {
+          loadApplications();
+        }, 500);
+      } else if (error.response?.status === 500) {
+        setErrorMessage('Bu işlem için Super Admin yetkisi gereklidir. Lütfen Super Admin olarak giriş yapın.');
+      } else {
+        setErrorMessage(error.message || 'Başvuru onaylanırken bir hata oluştu');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const confirmRejection = () => {
-    if (selectedApplication) {
-      setApplications(prev => prev.map(app => 
-        app.id === selectedApplication.id 
-          ? { ...app, status: 'Reddedildi', rejectionReason }
+  const confirmRejection = async () => {
+    if (!selectedApplication || !rejectionReason.trim() || !isAuthorized) return;
+
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      const response = await businessService.rejectApplication(
+        selectedApplication.id,
+        rejectionReason
+      );
+
+      setApplications(prev => prev.map(app =>
+        app.id === selectedApplication.id
+          ? {
+            ...app,
+            status: 'REJECTED',
+            rejectionReason: response.rejectionReason,
+            updatedAt: response.updatedAt,
+          }
           : app
       ));
+
       setRejectionDialogOpen(false);
       setSelectedApplication(null);
       setRejectionReason('');
-      setSuccessMessage('Başvuru reddedildi.');
+      setSuccessMessage('Başvuru reddedildi!');
       setTimeout(() => setSuccessMessage(''), 3000);
+
+      loadStats();
+      // Başvuru listesini yeniden yükle (loading state'i karıştırmamak için await kullanmıyoruz)
+      setTimeout(() => {
+        loadApplications();
+      }, 500);
+    } catch (error) {
+      // 409 Conflict - Başvuru zaten işleme alınmış
+      if (error.message?.includes('zaten işleme alınmış') || error.message?.includes('Sadece bekleyen')) {
+        setErrorMessage(error.message);
+        // Başvuru listesini yeniden yükle
+        setTimeout(() => {
+          loadApplications();
+        }, 500);
+      } else if (error.response?.status === 500) {
+        setErrorMessage('Bu işlem için Super Admin yetkisi gereklidir. Lütfen Super Admin olarak giriş yapın.');
+      } else {
+        setErrorMessage(error.message || 'Başvuru reddedilirken bir hata oluştu');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getApplicationStats = () => {
-    const total = applications.length;
-    const pending = applications.filter(app => app.status === 'Beklemede').length;
-    const approved = applications.filter(app => app.status === 'Onaylandı').length;
-    const rejected = applications.filter(app => app.status === 'Reddedildi').length;
+  React.useEffect(() => {
+    if (isAuthorized) {
+      loadApplications();
+      loadStats();
+    }
+  }, [page, statusFilter, isAuthorized]);
+
+  const loadApplications = async () => {
+    if (!isAuthorized) return;
     
-    return { total, pending, approved, rejected };
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      const response = await businessService.getAllApplications(statusFilter, page, size);
+
+      const mappedApplications = (response.content || []).map(app => ({
+        ...app,
+        phone: app.phoneNumber,
+        applicationDate: app.createdAt ? new Date(app.createdAt).toLocaleDateString('tr-TR') : app.createdAt,
+      }));
+      setApplications(mappedApplications);
+    } catch (error) {
+      // 500 hatası için özel mesaj
+      if (error.response?.status === 500) {
+        setErrorMessage('Bu işlem için Super Admin yetkisi gereklidir. Lütfen Super Admin olarak giriş yapın.');
+      } else {
+        setErrorMessage(error.message || 'Başvurular yüklenirken bir hata oluştu');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const stats = getApplicationStats();
+  const loadStats = async () => {
+    if (!isAuthorized) return;
+    
+    try {
+      const statsData = await businessService.getApplicationStats();
+      setStats(statsData);
+    } catch (error) {
+      // 500 hatası için özel mesaj
+      if (error.response?.status === 500) {
+        console.error('İstatistikler yüklenirken hata: Super Admin yetkisi gereklidir');
+      } else {
+        console.error('İstatistikler yüklenirken hata:', error);
+      }
+    }
+  };
+
+  // Yetkisiz kullanıcı için uyarı mesajı
+  if (!isAuthorized) {
+    return (
+      <Box>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Bu sayfaya erişim için Super Admin yetkisi gereklidir. Ana sayfaya yönlendiriliyorsunuz...
+        </Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -185,6 +298,12 @@ function ApplicationManagementView() {
       {successMessage && (
         <Alert severity="success" sx={{ mb: 3 }}>
           {successMessage}
+        </Alert>
+      )}
+
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {errorMessage}
         </Alert>
       )}
 
@@ -247,66 +366,78 @@ function ApplicationManagementView() {
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
             İşletme Başvuruları
           </Typography>
-          <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>İşletme Adı</TableCell>
-                  <TableCell>İşletme Sahibi</TableCell>
-                  <TableCell>İşletme Türü</TableCell>
-                  <TableCell>Kapasite</TableCell>
-                  <TableCell>Başvuru Tarihi</TableCell>
-                  <TableCell>Durum</TableCell>
-                  <TableCell>İşlemler</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {applications.map((application) => (
-                  <TableRow key={application.id}>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{application.businessName}</TableCell>
-                    <TableCell>{application.ownerName}</TableCell>
-                    <TableCell>{application.businessType}</TableCell>
-                    <TableCell>{application.capacity} kişi</TableCell>
-                    <TableCell>{application.applicationDate}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={application.status}
-                        color={getStatusColor(application.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton 
-                        size="small" 
-                        color="primary"
-                        onClick={() => handleViewDetails(application)}
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                      {application.status === 'Beklemede' && (
-                        <>
-                          <IconButton 
-                            size="small" 
-                            color="success"
-                            onClick={() => handleApprove(application)}
-                          >
-                            <CheckCircleIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton 
-                            size="small" 
-                            color="error"
-                            onClick={() => handleReject(application)}
-                          >
-                            <CancelIcon fontSize="small" />
-                          </IconButton>
-                        </>
-                      )}
-                    </TableCell>
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {!loading && applications.length === 0 && !errorMessage && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              Henüz başvuru bulunmamaktadır.
+            </Alert>
+          )}
+
+          {!loading && (
+            <TableContainer component={Paper} variant="outlined">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>İşletme Adı</TableCell>
+                    <TableCell>İşletme Sahibi</TableCell>
+                    <TableCell>İşletme Türü</TableCell>
+                    <TableCell>Başvuru Tarihi</TableCell>
+                    <TableCell>Durum</TableCell>
+                    <TableCell>İşlemler</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {applications.map((application) => (
+                    <TableRow key={application.id}>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{application.businessName}</TableCell>
+                      <TableCell>{application.ownerName}</TableCell>
+                      <TableCell>{application.businessType}</TableCell>
+                      <TableCell>{application.applicationDate}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={getStatusLabel(application.status)}
+                          color={getStatusColor(application.status)}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => handleViewDetails(application)}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                        {application.status === 'PENDING' && (
+                          <>
+                            <IconButton
+                              size="small"
+                              color="success"
+                              onClick={() => handleApprove(application)}
+                            >
+                              <CheckCircleIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleReject(application)}
+                            >
+                              <CancelIcon fontSize="small" />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </CardContent>
       </Card>
 
@@ -358,18 +489,20 @@ function ApplicationManagementView() {
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       <strong>İşletme Türü:</strong> {selectedApplication.businessType}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Kapasite:</strong> {selectedApplication.capacity} kişi
-                    </Typography>
+                    {selectedApplication.capacity && (
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <strong>Kapasite:</strong> {selectedApplication.capacity} kişi
+                      </Typography>
+                    )}
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       <strong>Başvuru Tarihi:</strong> {selectedApplication.applicationDate}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Durum:</strong> 
-                      <Chip 
-                        label={selectedApplication.status} 
-                        color={getStatusColor(selectedApplication.status)} 
-                        size="small" 
+                      <strong>Durum:</strong>
+                      <Chip
+                        label={getStatusLabel(selectedApplication.status)}
+                        color={getStatusColor(selectedApplication.status)}
+                        size="small"
                         sx={{ ml: 1 }}
                       />
                     </Typography>
@@ -390,14 +523,20 @@ function ApplicationManagementView() {
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                       Yüklenen Belgeler
                     </Typography>
-                    {selectedApplication.documents.map((doc, index) => (
-                      <Chip 
-                        key={index}
-                        label={doc} 
-                        variant="outlined" 
-                        sx={{ mr: 1, mb: 1 }}
-                      />
-                    ))}
+                    {selectedApplication.documents && selectedApplication.documents.length > 0 ? (
+                      selectedApplication.documents.map((doc, index) => (
+                        <Chip
+                          key={index}
+                          label={doc}
+                          variant="outlined"
+                          sx={{ mr: 1, mb: 1 }}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        Belge bulunmamaktadır.
+                      </Typography>
+                    )}
                   </Card>
                 </Grid>
               </Grid>
@@ -406,19 +545,19 @@ function ApplicationManagementView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDetailDialogOpen(false)}>Kapat</Button>
-          {selectedApplication?.status === 'Beklemede' && (
+          {selectedApplication?.status === 'PENDING' && (
             <>
-              <Button 
-                onClick={() => handleApprove(selectedApplication)} 
-                variant="contained" 
+              <Button
+                onClick={() => handleApprove(selectedApplication)}
+                variant="contained"
                 color="success"
                 startIcon={<CheckCircleIcon />}
               >
                 Onayla
               </Button>
-              <Button 
-                onClick={() => handleReject(selectedApplication)} 
-                variant="contained" 
+              <Button
+                onClick={() => handleReject(selectedApplication)}
+                variant="contained"
                 color="error"
                 startIcon={<CancelIcon />}
               >
@@ -469,9 +608,9 @@ function ApplicationManagementView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRejectionDialogOpen(false)}>İptal</Button>
-          <Button 
-            onClick={confirmRejection} 
-            variant="contained" 
+          <Button
+            onClick={confirmRejection}
+            variant="contained"
             color="error"
             disabled={!rejectionReason.trim()}
           >
