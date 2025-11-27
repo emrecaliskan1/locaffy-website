@@ -81,6 +81,24 @@ export const reservationService = {
         return reservationService.updateReservationStatus(reservationId, {
             status: ReservationStatus.CANCELLED
         });
-    }
+    },
 
+    createReservation: async (reservationData) => {
+        try {
+            const response = await api.post('/reservations', reservationData);
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantısını kontrol edin');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                'Rezervasyon oluşturulurken bir hata oluştu';
+
+            throw new Error(errorMessage);
+        }
+    }
 }
