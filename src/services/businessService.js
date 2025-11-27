@@ -136,11 +136,19 @@ export const businessService = {
                 throw new Error('İnternet bağlantınızı kontrol edin');
             }
 
+            // HTTP status koduna göre özel mesajlar
+            if (error.response?.status === 403) {
+                throw new Error('Bu işlem için Super Admin yetkisi gereklidir.');
+            } else if (error.response?.status === 404) {
+                throw new Error('İstatistik endpoint\'i bulunamadı. Backend\'i kontrol edin.');
+            } else if (error.response?.status === 500) {
+                throw new Error('Sunucu hatası. Lütfen daha sonra tekrar deneyin.');
+            }
+
             const errorMessage =
                 error.response?.data?.message ||
                 error.response?.data?.error ||
-                error.message ||
-                'İstatistikler yüklenirken bir hata oluştu';
+                `İstatistikler yüklenirken bir hata oluştu (Status: ${error.response?.status})`;
 
             throw new Error(errorMessage);
         }

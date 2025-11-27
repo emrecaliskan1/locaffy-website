@@ -269,11 +269,23 @@ function ApplicationManagementView() {
       const statsData = await businessService.getApplicationStats();
       setStats(statsData);
     } catch (error) {
-      // 500 hatası için özel mesaj
-      if (error.response?.status === 500) {
-        console.error('İstatistikler yüklenirken hata: Super Admin yetkisi gereklidir');
+      // Hata mesajını console'a yazdır
+      console.error('İstatistikler yüklenirken hata:', error);
+      
+      // Eğer kritik bir hata değilse (403, 404 gibi), sessizce geç
+      // Sadece 500 gibi sunucu hatalarında kullanıcıya bilgi ver
+      if (error.message?.includes('Super Admin yetkisi')) {
+        // Yetki hatası - zaten yetki kontrolü yapılıyor
+        console.warn('İstatistikler için yetki yetersiz');
+      } else if (error.message?.includes('404') || error.message?.includes('bulunamadı')) {
+        // Endpoint bulunamadı - backend'de endpoint olmayabilir
+        console.warn('İstatistik endpoint\'i bulunamadı. Backend\'i kontrol edin.');
+        // Varsayılan değerlerle devam et
+        setStats({ total: 0, pending: 0, approved: 0, rejected: 0 });
       } else {
-        console.error('İstatistikler yüklenirken hata:', error);
+        // Diğer hatalar için varsayılan değerlerle devam et
+        console.warn('İstatistikler yüklenemedi, varsayılan değerler kullanılıyor');
+        setStats({ total: 0, pending: 0, approved: 0, rejected: 0 });
       }
     }
   };
