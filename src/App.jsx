@@ -11,6 +11,7 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import QRMenu from './pages/QRMenu';
 import AdminAuth from './admin/AdminAuth';
 import SuperAdminAuth from './superadmin/SuperAdminAuth';
 import AdminLayout from './admin/AdminLayout';
@@ -80,28 +81,32 @@ function AppContent() {
     );
   }
 
+  const isQRMenuPage = location.pathname.startsWith('/menu/');
+  const shouldShowNavbar = !isQRMenuPage;
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Navbar />
-      <Box 
-        component="main" 
-        sx={{ 
-          flex: 1, 
-          pt: isFullScreenPage ? 0 : '80px' 
+      {shouldShowNavbar && <Navbar />}
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          pt: (isFullScreenPage || isQRMenuPage) ? 0 : '80px'
         }}
       >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact/>} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/joinus" element={<JoinUs />} />
           <Route path="/business-application" element={<BusinessApplication />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/menu/:businessId" element={<QRMenu />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>
-      <Footer />
+      {shouldShowNavbar && <Footer />}
     </Box>
   );
 }

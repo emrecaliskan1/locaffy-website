@@ -25,7 +25,9 @@ import {
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
   MonetizationOn as MonetizationOnIcon,
+  QrCode as QrCodeIcon,
 } from '@mui/icons-material';
+import QRCode from 'react-qr-code';
 
 // Mock data - gerçek uygulamada API'den gelecek
 const mockStats = {
@@ -182,6 +184,36 @@ function DashboardView() {
           />
         </Grid>
       </Grid>
+
+      {/* QR Menü Kartı */}
+      <Card sx={{ mb: 4, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              Dijital QR Menünüz
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2, opacity: 0.9 }}>
+              Müşterilerinizin menünüze hızlıca ulaşması için bu QR kodu masalarınıza yerleştirin.
+            </Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<QrCodeIcon />}
+              onClick={() => window.open(`${window.location.origin}/menu/1`, '_blank')}
+              sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
+            >
+              Menüyü Görüntüle
+            </Button>
+          </Box>
+          <Box sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}>
+            <QRCode
+              value={`${window.location.origin}/menu/1`}
+              size={120}
+              level="H"
+            />
+          </Box>
+        </CardContent>
+      </Card>
 
       {/* Hızlı Eylemler */}
       <Card sx={{ mb: 4 }}>

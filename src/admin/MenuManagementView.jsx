@@ -32,7 +32,10 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Restaurant as RestaurantIcon,
+  QrCode as QrCodeIcon,
+  ContentCopy as CopyIcon,
 } from '@mui/icons-material';
+import QRCode from 'react-qr-code';
 
 // Mock data - gerçek uygulamada API'den gelecek
 const mockMenuItems = [
@@ -101,7 +104,7 @@ function MenuManagementView() {
       ...newItem,
       price: parseFloat(newItem.price),
     };
-    
+
     setMenuItems(prev => [...prev, itemToAdd]);
     setAddDialogOpen(false);
     setNewItem({ name: '', category: '', price: '', description: '', isActive: true });
@@ -123,8 +126,8 @@ function MenuManagementView() {
 
   const handleUpdateItem = () => {
     if (selectedItem) {
-      setMenuItems(prev => prev.map(item => 
-        item.id === selectedItem.id 
+      setMenuItems(prev => prev.map(item =>
+        item.id === selectedItem.id
           ? { ...item, ...newItem, price: parseFloat(newItem.price) }
           : item
       ));
@@ -143,8 +146,8 @@ function MenuManagementView() {
   };
 
   const handleToggleActive = (item) => {
-    setMenuItems(prev => prev.map(menuItem => 
-      menuItem.id === item.id 
+    setMenuItems(prev => prev.map(menuItem =>
+      menuItem.id === item.id
         ? { ...menuItem, isActive: !menuItem.isActive }
         : menuItem
     ));
@@ -177,6 +180,44 @@ function MenuManagementView() {
           Ürün Ekle
         </Button>
       </Box>
+
+      {/* QR Menü Linki */}
+      <Card sx={{ mb: 4, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
+        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ p: 1, bgcolor: 'white', borderRadius: 1, mr: 2 }}>
+              <QRCode
+                value={`${window.location.origin}/menu/1`}
+                size={64}
+              />
+            </Box>
+            <Box>
+              <Typography variant="h6" fontWeight="bold">
+                Dijital QR Menünüz Hazır!
+              </Typography>
+              <Typography variant="body2">
+                Müşterileriniz bu link üzerinden menünüze ulaşabilir.
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'background.paper', p: 1, borderRadius: 1 }}>
+            <Typography variant="body2" color="text.primary" sx={{ mr: 2, fontFamily: 'monospace' }}>
+              {window.location.origin}/menu/my-cafe
+            </Typography>
+            <Button
+              size="small"
+              startIcon={<CopyIcon />}
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/menu/my-cafe`);
+                setSuccessMessage('Link kopyalandı!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+              }}
+            >
+              Kopyala
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
 
       {successMessage && (
         <Alert severity="success" sx={{ mb: 3 }}>
@@ -248,9 +289,9 @@ function MenuManagementView() {
               <Grid item xs={12} sm={6} md={4} key={category}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1 }}>
                   <Typography variant="body1">{category}</Typography>
-                  <Chip 
-                    label={categoryStats[category]} 
-                    color="primary" 
+                  <Chip
+                    label={categoryStats[category]}
+                    color="primary"
                     size="small"
                   />
                 </Box>
@@ -298,15 +339,15 @@ function MenuManagementView() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <IconButton 
-                        size="small" 
+                      <IconButton
+                        size="small"
                         color="primary"
                         onClick={() => handleEditItem(item)}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
-                      <IconButton 
-                        size="small" 
+                      <IconButton
+                        size="small"
                         color="error"
                         onClick={() => handleDeleteItem(item)}
                       >
@@ -369,8 +410,8 @@ function MenuManagementView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAddDialogOpen(false)}>İptal</Button>
-          <Button 
-            onClick={handleAddItem} 
+          <Button
+            onClick={handleAddItem}
             variant="contained"
             disabled={!newItem.name || !newItem.category || !newItem.price}
           >
@@ -427,8 +468,8 @@ function MenuManagementView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)}>İptal</Button>
-          <Button 
-            onClick={handleUpdateItem} 
+          <Button
+            onClick={handleUpdateItem}
             variant="contained"
             disabled={!newItem.name || !newItem.category || !newItem.price}
           >
