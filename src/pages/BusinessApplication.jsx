@@ -11,8 +11,6 @@ import {
   MenuItem,
   Alert,
   Divider,
-  FormControlLabel,
-  Switch,
   InputAdornment,
 } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -22,8 +20,6 @@ import {
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
   Description as DescriptionIcon,
-  Schedule as ScheduleIcon,
-  People as PeopleIcon,
   Restaurant as RestaurantIcon,
   Send as SendIcon,
   Lock,
@@ -33,34 +29,17 @@ import { businessService } from '../services/businessService';
 
 const businessTypes = [
   'Kafe',
-  'Pastane',
-  'Fast Food',
-  'Asya Mutfağı',
+  'Restoran', 
   'Bar',
-  'Pub',
-  'Steakhouse',
-  'Diğer'
+  'Bistro'
 ];
 
 const businessTypeMapping = {
-  'Restoran': 'RESTAURANT',
   'Kafe': 'CAFE',
+  'Restoran': 'RESTAURANT',
   'Bar': 'BAR',
-  'Pub': 'BAR',
-  'Pastane': 'CAFE',
-  'Fast Food': 'RESTAURANT',
-  'Pizzeria': 'RESTAURANT',
-  'Dönerci': 'RESTAURANT',
-  'Kebapçı': 'RESTAURANT',
-  'Diğer': 'RESTAURANT'
+  'Bistro': 'BISTRO'
 };
-
-const cities = [
-  'İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep',
-  'Mersin', 'Diyarbakır', 'Kayseri', 'Eskişehir', 'Urfa', 'Malatya', 'Erzurum',
-  'Van', 'Batman', 'Elazığ', 'Isparta', 'Trabzon', 'Ordu', 'Samsun', 'Zonguldak',
-  'Balıkesir', 'Kahramanmaraş', 'Manisa', 'Sivas', 'Aydın', 'Tekirdağ', 'Denizli'
-];
 
 const initialFormData = {
   businessName: '',
@@ -69,23 +48,9 @@ const initialFormData = {
   taxNumber: '',
   email: '',
   phone: '',
-  city: '',
-  district: '',
   address: '',
-  location: null, 
+  location: null,
   description: '',
-  capacity: '',
-  openingHours: '',
-  hasDelivery: false,
-  hasTakeaway: false,
-  hasOutdoorSeating: false,
-  hasParking: false,
-  hasWifi: false,
-  hasLiveMusic: false,
-  hasPrivateRooms: false,
-  website: '',
-  instagram: '',
-  facebook: '',
   password: '',
   passwordConfirm: ''
 };
@@ -101,13 +66,6 @@ function BusinessApplication() {
     setFormData(prev => ({
       ...prev,
       [field]: value,
-    }));
-  };
-
-  const handleSwitchChange = (field, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: checked,
     }));
   };
 
@@ -128,6 +86,8 @@ function BusinessApplication() {
         businessType: businessTypeMapping[formData.businessType] || 'RESTAURANT',
         password: formData.password,
         passwordConfirm: formData.passwordConfirm,
+        latitude: formData.location?.lat || 41.0082,
+        longitude: formData.location?.lng || 28.9784,
       };
 
       const response = await businessService.submitApplication(backendData);
@@ -142,10 +102,6 @@ function BusinessApplication() {
     } finally {
       setIsSubmitting(false);
     }
-
-    const response = await businessService.submitApplication(backendData);
-    setSubmitResponse(response);
-    setSubmitSuccess(true);
   };
 
   const isFormValid = () => {
@@ -156,7 +112,14 @@ function BusinessApplication() {
       formData.email &&
       formData.phone &&
       formData.address &&
+      formData.location &&
       formData.password &&
+      formData.passwordConfirm &&
+      formData.password === formData.passwordConfirm &&
+      formData.password.length >= 6;
+  };
+
+  if (submitSuccess) {
       formData.passwordConfirm &&
       formData.password === formData.passwordConfirm &&
       formData.password.length >= 6;
@@ -312,22 +275,6 @@ function BusinessApplication() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={{width:150}}
-                      fullWidth
-                      label="Kapasite"
-                      placeholder="50"
-                      type="number"
-                      value={formData.capacity}
-                      onChange={(e) => handleInputChange('capacity', e.target.value)}
-                      variant="outlined"
-                      InputProps={{
-                        endAdornment: <InputAdornment position="end">kişi</InputAdornment>,
-                        startAdornment: <InputAdornment position="start"><PeopleIcon /></InputAdornment>,
-                      }}
-                    />
-                  </Grid>
                 </Grid>
               </Box>
 
@@ -369,36 +316,6 @@ function BusinessApplication() {
                       InputProps={{
                         startAdornment: <InputAdornment position="start"><PhoneIcon /></InputAdornment>,
                       }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={{width:200}}
-                      fullWidth
-                      select
-                      label="Şehir"
-                      value={formData.city}
-                      onChange={(e) => handleInputChange('city', e.target.value)}
-                      required
-                      variant="outlined"
-                    >
-                      {cities.map((city) => (
-                        <MenuItem key={city} value={city}>
-                          {city}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={{width:200,marginLeft:12.25}}
-                      fullWidth
-                      label="İlçe"
-                      placeholder="Kadıköy"
-                      value={formData.district}
-                      onChange={(e) => handleInputChange('district', e.target.value)}
-                      variant="outlined"
                     />
                   </Grid>
 
@@ -469,158 +386,26 @@ function BusinessApplication() {
                   </Grid>
                 </Grid>
               </Box>
-              {/* İşletme Özellikleri */}
+              {/* İşletme Açıklaması */}
               <Box sx={{ mb: 4 }}>
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
                   <DescriptionIcon sx={{ mr: 1, color: 'primary.main' }} />
-                  İşletme Özellikleri
+                  İşletme Açıklaması
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
 
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <TextField
-                      sx={{width:175}}
-                      fullWidth
-                      label="Açılış Saatleri"
-                      placeholder="09:00 - 23:00"
-                      value={formData.openingHours}
-                      onChange={(e) => handleInputChange('openingHours', e.target.value)}
-                      variant="outlined"
-                      InputProps={{
-                        startAdornment: <InputAdornment position="start"><ScheduleIcon /></InputAdornment>,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={{width:200}}
-                      fullWidth
-                      label="Website"
-                      placeholder="https://www.lezzetduragi.com"
-                      value={formData.website}
-                      onChange={(e) => handleInputChange('website', e.target.value)}
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={{width:200}}
-                      fullWidth
-                      label="Instagram"
-                      placeholder="@lezzetduragi"
-                      value={formData.instagram}
-                      onChange={(e) => handleInputChange('instagram', e.target.value)}
-                      variant="outlined"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
                       sx={{width:625}}
                       fullWidth
                       label="İşletme Açıklaması"
-                      placeholder="İşletmeniz hakkında kısa bir açıklama yazın..."
+                      placeholder="İşletmeniz hakkında kısa bir açıklama yazın... (Opsiyonel)"
                       value={formData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
                       multiline
-                      rows={2}
+                      rows={3}
                       variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-
-              {/* Hizmetler */}
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Sunulan Hizmetler
-                </Typography>
-                <Divider sx={{ mb: 3 }} />
-
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasDelivery}
-                          onChange={(e) => handleSwitchChange('hasDelivery', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Teslimat"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasTakeaway}
-                          onChange={(e) => handleSwitchChange('hasTakeaway', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Paket Servis"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasOutdoorSeating}
-                          onChange={(e) => handleSwitchChange('hasOutdoorSeating', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Açık Hava Oturma"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasParking}
-                          onChange={(e) => handleSwitchChange('hasParking', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Otopark"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasWifi}
-                          onChange={(e) => handleSwitchChange('hasWifi', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Ücretsiz WiFi"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasLiveMusic}
-                          onChange={(e) => handleSwitchChange('hasLiveMusic', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Canlı Müzik"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.hasPrivateRooms}
-                          onChange={(e) => handleSwitchChange('hasPrivateRooms', e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Özel Salon"
                     />
                   </Grid>
                 </Grid>
