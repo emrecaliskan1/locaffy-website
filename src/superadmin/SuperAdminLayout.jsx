@@ -15,6 +15,8 @@ import {
   CssBaseline,
   useTheme,
   useMediaQuery,
+  Container,
+  ButtonBase,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -28,7 +30,29 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
+
+// Logo component 
+const LogoIcon = ({ children, ...props }) => (
+  <Box
+    {...props}
+    sx={{
+      width: 40,
+      height: 40,
+      borderRadius: '12px',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '18px',
+      ...props.sx,
+    }}
+  >
+    {children || 'L'}
+  </Box>
+);
 
 const menuItems = [
   { text: 'Kontrol Paneli', icon: <DashboardIcon />, path: '/admin/super-dashboard' },
@@ -58,9 +82,10 @@ function SuperAdminLayout({ children }) {
 
   const drawer = (
     <div>
-      <Toolbar>
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2 }}>
+        <LogoIcon>L</LogoIcon>
         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
-          Locaffy Super Admin
+          Locaffy
         </Typography>
       </Toolbar>
       <Divider />
@@ -72,13 +97,26 @@ function SuperAdminLayout({ children }) {
               onClick={() => navigate(item.path)}
               sx={{
                 '&.Mui-selected': {
-                  backgroundColor: theme.palette.primary.main,
+                  backgroundColor: '#667eea',
                   color: 'white',
-                  '&:hover': {
-                    backgroundColor: theme.palette.primary.dark,
-                  },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
+                  },
+                  '&:hover': {
+                    backgroundColor: '#667eea !important',
+                    color: 'white !important',
+                    '& .MuiListItemIcon-root': {
+                      color: 'white !important',
+                    },
+                  },
+                },
+                '&:hover': {
+                  backgroundColor: 'transparent !important',
+                  '& .MuiListItemText-root': {
+                    color: 'inherit',
+                  },
+                  '& .MuiListItemIcon-root': {
+                    color: 'inherit',
                   },
                 },
               }}
@@ -109,28 +147,48 @@ function SuperAdminLayout({ children }) {
       <AppBar
         position="fixed"
         sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+          backgroundColor: 'white',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(229, 231, 235, 0.8)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
         }}
       >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Super Admin Paneli
-          </Typography>
-        </Toolbar>
+        <Container maxWidth="xl">
+          <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' }, color: 'grey.800' }}
+            >
+              <MenuIcon />
+            </IconButton>
+            
+            <ButtonBase
+              sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'grey.800',
+                  textDecoration: 'none',
+                }}
+              >
+                Genel Admin Hesabı
+              </Typography>
+            </ButtonBase>
+
+            <Box /> {/* Boş alan için */}
+          </Toolbar>
+        </Container>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
         <Drawer
@@ -141,8 +199,11 @@ function SuperAdminLayout({ children }) {
             keepMounted: true,
           }}
           sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: drawerWidth
+            },
           }}
         >
           {drawer}
@@ -150,8 +211,11 @@ function SuperAdminLayout({ children }) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: drawerWidth
+            },
           }}
           open
         >
@@ -163,10 +227,10 @@ function SuperAdminLayout({ children }) {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          mt: 8
         }}
       >
-        <Toolbar />
         {children}
       </Box>
     </Box>

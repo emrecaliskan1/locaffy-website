@@ -8,12 +8,12 @@ import ErrorBoundary from './components/ErrorBoundary.jsx'
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#f97316',
-      light: '#fb923c',
-      dark: '#ea580c',
+      main: '#667eea',
+      light: '#8093f1',
+      dark: '#4c63d2',
     },
     secondary: {
-      main: '#dc2626',
+      main: '#5c6fd2ff',
     },
     background: {
       default: '#f9fafb',

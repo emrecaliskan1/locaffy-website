@@ -106,14 +106,13 @@ const mockStats = {
 const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = false }) => (
   <Card sx={{ height: '100%', opacity: disabled ? 0.6 : 1 }}>
     <CardContent>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 2 }}>
         <Box
           sx={{
-            p: 1,
-            borderRadius: 1,
-            backgroundColor: `${color}.light`,
-            color: `${color}.main`,
-            mr: 2,
+            mr: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           {icon}
