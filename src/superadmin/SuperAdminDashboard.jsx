@@ -29,6 +29,7 @@ import {
   MonetizationOn as MonetizationOnIcon,
 } from '@mui/icons-material';
 import { adminService } from '../services/adminService';
+import { businessService } from '../services/businessService';
 import { useNavigate } from 'react-router-dom';
 
 const getStatusColor = (status) => {
@@ -188,6 +189,27 @@ function SuperAdminDashboard() {
         }
 
         // Backend'den gelen verileri frontend formatına map et
+        // Email bilgisini business application'lardan almak için onaylanmış başvuruları yükle
+        let emailMap = new Map(); // businessName -> email mapping
+        try {
+          const applicationsResult = await businessService.getAllApplications('APPROVED', 0, 1000);
+          if (applicationsResult && applicationsResult.content) {
+            applicationsResult.content.forEach(app => {
+              if (app.businessName && app.email) {
+                emailMap.set(app.businessName.trim().toLowerCase(), app.email);
+              }
+            });
+          } else if (Array.isArray(applicationsResult)) {
+            applicationsResult.forEach(app => {
+              if (app.businessName && app.email && app.status === 'APPROVED') {
+                emailMap.set(app.businessName.trim().toLowerCase(), app.email);
+              }
+            });
+          }
+        } catch (error) {
+          console.warn('Business application\'lar yüklenirken hata (email mapping için):', error);
+        }
+        
         const mappedBusinesses = businessesArray.map(business => {
           let statusValue;
           if (business.isActive !== undefined && business.isActive !== null) {
@@ -198,10 +220,35 @@ function SuperAdminDashboard() {
             statusValue = 'INACTIVE';
           }
           
+          // Email alanını nested yapıları da kontrol ederek bul
+          let emailValue = business.email || 
+                          business.ownerEmail || 
+                          business.userEmail || 
+                          business.contactEmail ||
+                          business.user?.email ||
+                          business.owner?.email ||
+                          business.user?.username ||
+                          business.owner?.username ||
+                          (business.user && typeof business.user === 'object' ? business.user.email || business.user.username : null) ||
+                          (business.owner && typeof business.owner === 'object' ? business.owner.email || business.owner.username : null);
+          
+          // Eğer hala email bulunamadıysa, business application'lardan businessName ile eşleştir
+          if (!emailValue || emailValue === null) {
+            const businessName = business.name?.trim().toLowerCase();
+            if (businessName && emailMap.has(businessName)) {
+              emailValue = emailMap.get(businessName);
+            }
+          }
+          
+          // Son çare olarak '-' göster
+          if (!emailValue || emailValue === null) {
+            emailValue = '-';
+          }
+          
           return {
             ...business,
             status: statusValue,
-            email: business.email || business.ownerEmail || business.userEmail || business.contactEmail || '-',
+            email: emailValue,
             phone: business.phoneNumber || business.phone || '-',
             address: business.address || business.city || '-',
             joinDate: business.createdAt || business.joinDate || business.registrationDate ? 
