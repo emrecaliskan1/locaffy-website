@@ -37,6 +37,7 @@ import {
 import { reservationService, ReservationStatus } from '../services/reservationService';
 import { authService } from '../services/authService';
 import api from '../services/api';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -85,6 +86,7 @@ const formatDate = (dateString) => {
 };
 
 function ReservationManagementView() {
+  const [searchParams] = useSearchParams();
   const [reservations, setReservations] = useState([]);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
@@ -180,6 +182,21 @@ function ReservationManagementView() {
       setLoading(false);
     }
   };
+
+  // URL parametresinden reservationId varsa modal aç
+  useEffect(() => {
+    const reservationId = searchParams.get('reservationId');
+    if (reservationId && reservations.length > 0) {
+      const targetReservation = reservations.find(r => r.id.toString() === reservationId);
+      if (targetReservation) {
+        handleViewDetails(targetReservation);
+        // URL'den parametreyi temizle
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('reservationId');
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+  }, [reservations, searchParams]);
 
   const handleViewDetails = (reservation) => {
     setSelectedReservation(reservation);

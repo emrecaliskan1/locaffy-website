@@ -146,3 +146,4 @@ export const businessService = {
         }
     }
 }
+export default businessService;

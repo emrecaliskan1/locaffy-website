@@ -135,6 +135,7 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = 
 );
 
 function DashboardView() {
+  const navigate = useNavigate();
   const [placeId, setPlaceId] = useState(null);
   const [placeName, setPlaceName] = useState('');
   const [recentReservations, setRecentReservations] = useState([]);
@@ -403,8 +404,8 @@ function DashboardView() {
                     <TableCell>Müşteri</TableCell>
                     <TableCell>Rezervasyon Tarihi</TableCell>
                     <TableCell>Kişi Sayısı</TableCell>
-                    <TableCell>Durum</TableCell>
-                    <TableCell>İşlemler</TableCell>
+                    <TableCell align="center">Durum</TableCell>
+                    <TableCell align="center">İşlemler</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -413,40 +414,26 @@ function DashboardView() {
                       <TableCell sx={{ fontWeight: 'bold' }}>{reservation.userName}</TableCell>
                       <TableCell>{formatDate(reservation.reservationTime)}</TableCell>
                       <TableCell>{reservation.numberOfPeople} kişi</TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Chip
                           label={getStatusLabel(reservation.status)}
                           color={getStatusColor(reservation.status)}
                           size="small"
                         />
                       </TableCell>
-                      <TableCell>
-                        {reservation.status === 'PENDING' && (
-                          <>
-                            <IconButton 
-                              size="small" 
-                              color="success"
-                              title="Onayla"
-                              onClick={() => {
-                                // Rezervasyon Yönetimi sayfasına yönlendir veya modal aç
-                                window.location.href = '/admin/reservations';
-                              }}
-                            >
-                              <CheckCircleIcon />
-                            </IconButton>
-                            <IconButton 
-                              size="small" 
-                              color="error"
-                              title="Reddet"
-                              onClick={() => {
-                                window.location.href = '/admin/reservations';
-                              }}
-                            >
-                              <CancelIcon />
-                            </IconButton>
-                          </>
-                        )}
-                        {reservation.status !== 'PENDING' && (
+                      <TableCell align="center">
+                        {reservation.status === 'PENDING' ? (
+                          <Button 
+                            size="small" 
+                            variant="outlined"
+                            startIcon={<ScheduleIcon />}
+                            onClick={() => {
+                              navigate(`/admin/reservations?reservationId=${reservation.id}`);
+                            }}
+                          >
+                            Rezervasyon Detayı
+                          </Button>
+                        ) : (
                           <Typography variant="body2" color="text.secondary">
                             -
                           </Typography>

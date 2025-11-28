@@ -8,6 +8,10 @@ import JoinUs from '../pages/JoinUs';
 import BusinessApplication from '../pages/BusinessApplication';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import SuperAdminDashboard from '../superadmin/SuperAdminDashboard';
+import ApplicationManagementView from '../superadmin/ApplicationManagementView';
+import DashboardView from '../admin/DashboardView';
+import ReservationManagementView from '../admin/ReservationManagementView';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +46,22 @@ export const router = createBrowserRouter([
       {
       path: 'register',
       element: <Register />
-    }]
+      },
+      {
+        path: 'admin/super-dashboard',
+        element: <SuperAdminDashboard />
+      },
+      {
+        path: 'admin/application-management',
+        element: <ApplicationManagementView />
+      },
+      {
+        path: 'admin/dashboard',
+        element: <DashboardView />
+      },
+      {
+        path: 'admin/reservations',
+        element: <ReservationManagementView />
+      }]
   }
 ]);
