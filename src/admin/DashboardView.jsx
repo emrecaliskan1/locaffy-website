@@ -30,7 +30,8 @@ import {
 } from '@mui/icons-material';
 import QRCode from 'react-qr-code';
 import { reservationService } from '../services/reservationService';
-
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 const getStatusColor = (status) => {
   switch (status) {
     case 'PENDING':

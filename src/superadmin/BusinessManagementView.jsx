@@ -72,7 +72,7 @@ const mapBackendStatusToFrontend = (status) => {
 const statusOptions = ['Aktif', 'Beklemede', 'Pasif'];
 
 function BusinessManagementView() {
-  const [businesses, setBusinesses] = useState([]);
+  const [allBusinesses, setAllBusinesses] = useState([]); // Backend'den gelen tüm işletmeler
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -88,7 +88,11 @@ function BusinessManagementView() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [size] = useState(100); // Tüm işletmeleri getirmek için büyük sayı
+  const [size] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
+  
+  // Client-side pagination: allBusinesses'dan mevcut sayfadaki işletmeleri al
+  const businesses = allBusinesses.slice(page * size, (page + 1) * size);
+  const totalPages = Math.ceil(allBusinesses.length / size);
 
   const handleAddBusiness = () => {
     // NOT: Backend'de POST /api/admin/places endpoint'i yok
@@ -155,7 +159,7 @@ function BusinessManagementView() {
     try {
       await adminService.deleteBusiness(selectedBusiness.id);
       
-      setBusinesses(prev => prev.filter(b => b.id !== selectedBusiness.id));
+      setAllBusinesses(prev => prev.filter(b => b.id !== selectedBusiness.id));
       setDeleteDialogOpen(false);
       setSelectedBusiness(null);
       setSuccessMessage('İşletme başarıyla silindi!');
@@ -189,37 +193,52 @@ function BusinessManagementView() {
   // Sayfa yüklendiğinde işletmeleri yükle
   useEffect(() => {
     loadBusinesses();
-  }, [page]);
+  }, []); // Sadece component mount olduğunda yükle
 
   const loadBusinesses = async () => {
     setLoading(true);
     setErrorMessage('');
 
     try {
-      const response = await adminService.getAllBusinesses(page, size);
+      // Backend pagination desteklemiyor, direkt List<PlaceResponse> döndürüyor
+      const response = await adminService.getAllBusinesses();
       
-      // Pagination response yapısına göre businesses'ı set et
+      // Backend direkt array döndürüyor (pagination yok)
       let businessesData = [];
-      if (response.content) {
-        businessesData = response.content;
-      } else if (Array.isArray(response)) {
+      if (Array.isArray(response)) {
         businessesData = response;
+      } else if (response.content && Array.isArray(response.content)) {
+        // Eğer gelecekte pagination eklerse, bu kısım hazır
+        businessesData = response.content;
+      } else {
+        console.warn('Beklenmeyen response formatı:', response);
+        businessesData = [];
       }
 
       // Backend'den gelen status değerlerini frontend formatına çevir
-      const mappedBusinesses = businessesData.map(business => ({
-        ...business,
-        status: mapBackendStatusToFrontend(business.status),
-        // Backend'den gelen alanları frontend formatına uyarla
-        phone: business.phone || business.phoneNumber || '-',
-        address: business.address || business.city || '-',
-        joinDate: business.joinDate || business.createdAt ? 
-          new Date(business.joinDate || business.createdAt).toLocaleDateString('tr-TR') : '-',
-        revenue: business.revenue || 0,
-        reservationCount: business.reservationCount || 0,
-      }));
+      const mappedBusinesses = businessesData.map(business => {
+        // Status - isActive boolean'ını status string'ine çevir
+        let statusValue;
+        if (business.isActive !== undefined && business.isActive !== null) {
+          statusValue = business.isActive ? 'ACTIVE' : 'INACTIVE';
+        } else if (business.status) {
+          statusValue = mapBackendStatusToFrontend(business.status);
+        } else {
+          statusValue = 'INACTIVE';
+        }
+        
+        return {
+          ...business,
+          status: statusValue,
+          email: business.email || business.ownerEmail || business.userEmail || business.contactEmail || '-',
+          phone: business.phone || business.phoneNumber || business.contactPhone || '-',
+          address: business.address || business.fullAddress || business.city || '-',
+          joinDate: business.createdAt || business.joinDate || business.registrationDate ? 
+            new Date(business.createdAt || business.joinDate || business.registrationDate).toLocaleDateString('tr-TR') : '-',
+        };
+      });
 
-      setBusinesses(mappedBusinesses);
+      setAllBusinesses(mappedBusinesses);
     } catch (error) {
       console.error('İşletmeler yüklenirken hata:', error);
       setErrorMessage(error.message || 'İşletmeler yüklenirken bir hata oluştu');
@@ -241,22 +260,22 @@ function BusinessManagementView() {
   };
 
   const getBusinessStats = () => {
-    const total = businesses.length;
-    const active = businesses.filter(b => {
+    // Tüm işletmeler üzerinden istatistik hesapla (paginated değil)
+    const total = allBusinesses.length;
+    const active = allBusinesses.filter(b => {
       const status = b.status?.toUpperCase();
       return status === 'AKTIF' || status === 'ACTIVE';
     }).length;
-    const pending = businesses.filter(b => {
+    const pending = allBusinesses.filter(b => {
       const status = b.status?.toUpperCase();
       return status === 'BEKLEMEDE' || status === 'PENDING';
     }).length;
-    const inactive = businesses.filter(b => {
+    const inactive = allBusinesses.filter(b => {
       const status = b.status?.toUpperCase();
       return status === 'PASIF' || status === 'INACTIVE' || status === 'PASSIVE';
     }).length;
-    const totalRevenue = businesses.reduce((sum, b) => sum + (b.revenue || 0), 0);
     
-    return { total, active, pending, inactive, totalRevenue };
+    return { total, active, pending, inactive };
   };
 
   const stats = getBusinessStats();
@@ -292,7 +311,7 @@ function BusinessManagementView() {
 
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <BusinessIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -305,7 +324,7 @@ function BusinessManagementView() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
@@ -317,7 +336,7 @@ function BusinessManagementView() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
@@ -329,7 +348,7 @@ function BusinessManagementView() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'error.main' }}>
@@ -337,18 +356,6 @@ function BusinessManagementView() {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Pasif İşletme
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
-                ₺{stats.totalRevenue.toLocaleString()}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Toplam Gelir
               </Typography>
             </CardContent>
           </Card>
@@ -371,72 +378,95 @@ function BusinessManagementView() {
               Henüz işletme bulunmamaktadır.
             </Alert>
           ) : (
-            <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>İşletme Adı</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Telefon</TableCell>
-                  <TableCell>Adres</TableCell>
-                  <TableCell>Kayıt Tarihi</TableCell>
-                  <TableCell>Gelir</TableCell>
-                  <TableCell>Rezervasyon</TableCell>
-                  <TableCell>Durum</TableCell>
-                  <TableCell>İşlemler</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {businesses.map((business) => (
-                  <TableRow key={business.id}>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
-                    <TableCell>{business.email || '-'}</TableCell>
-                    <TableCell>{business.phone || '-'}</TableCell>
-                    <TableCell>{business.address || business.city || '-'}</TableCell>
-                    <TableCell>{business.joinDate || '-'}</TableCell>
-                    <TableCell>₺{(business.revenue || 0).toLocaleString()}</TableCell>
-                    <TableCell>{business.reservationCount || 0}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={getStatusLabel(business.status)}
-                        color={getStatusColor(business.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton 
-                        size="small" 
-                        color="primary"
-                        onClick={() => handleEditBusiness(business)}
-                        disabled={loading}
-                        title="Güncelleme özelliği henüz backend'de oluşturulmadı"
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton 
-                        size="small" 
-                        color="success"
-                        onClick={() => handleStatusChange(business)}
-                        disabled={loading}
-                        title="Durumu Değiştir"
-                      >
-                        <CheckCircleIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton 
-                        size="small" 
-                        color="error"
-                        onClick={() => handleDeleteBusiness(business)}
-                        disabled={loading}
-                        title="Sil"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-              </Table>
-          </TableContainer>
+            <>
+              <TableContainer component={Paper} variant="outlined">
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>İşletme Adı</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Telefon</TableCell>
+                      <TableCell>Adres</TableCell>
+                      <TableCell>Kayıt Tarihi</TableCell>
+                      <TableCell>Rezervasyon</TableCell>
+                      <TableCell>Durum</TableCell>
+                      <TableCell>İşlemler</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {businesses.map((business) => (
+                      <TableRow key={business.id}>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
+                        <TableCell>{business.email || '-'}</TableCell>
+                        <TableCell>{business.phone || '-'}</TableCell>
+                        <TableCell>{business.address || '-'}</TableCell>
+                        <TableCell>{business.joinDate || '-'}</TableCell>
+                        <TableCell>{business.reservationCount || 0}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={getStatusLabel(business.status)}
+                            color={getStatusColor(business.status)}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <IconButton 
+                            size="small" 
+                            color="primary"
+                            onClick={() => handleEditBusiness(business)}
+                            disabled={loading}
+                            title="Güncelleme özelliği henüz backend'de oluşturulmadı"
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton 
+                            size="small" 
+                            color="success"
+                            onClick={() => handleStatusChange(business)}
+                            disabled={loading}
+                            title="Durumu Değiştir"
+                          >
+                            <CheckCircleIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton 
+                            size="small" 
+                            color="error"
+                            onClick={() => handleDeleteBusiness(business)}
+                            disabled={loading}
+                            title="Sil"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              
+              {/* Client-side Pagination */}
+              {allBusinesses.length > size && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 3, mb: 2 }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setPage(prev => Math.max(0, prev - 1))}
+                    disabled={page === 0 || loading}
+                  >
+                    Önceki
+                  </Button>
+                  <Typography variant="body2">
+                    Sayfa {page + 1} / {totalPages} (Toplam {allBusinesses.length} işletme)
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setPage(prev => Math.min(totalPages - 1, prev + 1))}
+                    disabled={page >= totalPages - 1 || loading}
+                  >
+                    Sonraki
+                  </Button>
+                </Box>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

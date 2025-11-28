@@ -18,6 +18,49 @@ export const reservationService = {
                 throw new Error('İnternet bağlantısını kontrol edin');
             }
 
+            if (error.response?.status === 403) {
+                // 403 hatası - Token gönderiliyor ama yetki yok
+                const token = localStorage.getItem('accessToken');
+                let tokenDebugInfo = '';
+                
+                if (token) {
+                    try {
+                        const base64Url = token.split('.')[1];
+                        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                        }).join(''));
+                        const decoded = JSON.parse(jsonPayload);
+                        const role = decoded.role || decoded.authorities?.[0] || decoded.authority;
+                        
+                        console.error('403 Forbidden - Token Debug Info (getMyPlaces):', {
+                            role: role,
+                            decodedToken: decoded,
+                            endpoint: '/business/places',
+                            hasToken: !!token
+                        });
+                        
+                        tokenDebugInfo = `Token'da role: ${role || 'bulunamadı'}. `;
+                    } catch (e) {
+                        console.error('Token decode hatası:', e);
+                        tokenDebugInfo = 'Token decode edilemedi. ';
+                    }
+                } else {
+                    tokenDebugInfo = 'Token bulunamadı. ';
+                }
+                
+                const backendMessage = error.response?.data?.message || 
+                                     error.response?.data?.error ||
+                                     'Yetki hatası';
+                
+                throw new Error(
+                    `403 Forbidden: ${backendMessage}. ` +
+                    `${tokenDebugInfo}` +
+                    `Backend'de endpoint'in @PreAuthorize("hasRole('BUSINESS_OWNER')") ile korunduğundan ve ` +
+                    `token'da ROLE_BUSINESS_OWNER olduğundan emin olun.`
+                );
+            }
+
             const errorMessage =
                 error.response?.data?.message ||
                 error.response?.data?.error ||

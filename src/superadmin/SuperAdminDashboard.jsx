@@ -115,7 +115,6 @@ function SuperAdminDashboard() {
     totalBusinesses: 0,
     activeBusinesses: 0,
     totalUsers: 0,
-    totalRevenue: 0,
     pendingApplications: 0,
     approvedApplications: 0,
     rejectedApplications: 0,
@@ -125,12 +124,10 @@ function SuperAdminDashboard() {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [page, setPage] = useState(0);
-  const [size] = useState(10);
 
   useEffect(() => {
     loadDashboardData();
-  }, [page]);
+  }, []);
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -141,7 +138,7 @@ function SuperAdminDashboard() {
       // Çünkü stats endpoint'i henüz backend'de yok
       const [statsResult, businessesResult] = await Promise.allSettled([
         adminService.getDashboardStats(),
-        adminService.getAllBusinesses(page, size)
+        adminService.getAllBusinesses() // Backend pagination desteklemiyor
       ]);
 
       // İstatistikler - endpoint henüz yoksa hata göster ama devam et
@@ -164,7 +161,6 @@ function SuperAdminDashboard() {
             totalBusinesses: 0,
             activeBusinesses: 0,
             totalUsers: 0,
-            totalRevenue: 0,
             pendingApplications: 0,
             approvedApplications: 0,
             rejectedApplications: 0,
@@ -179,12 +175,41 @@ function SuperAdminDashboard() {
       // İşletme listesi - /api/admin/places endpoint'i mevcut
       if (businessesResult.status === 'fulfilled') {
         const businessesData = businessesResult.value;
-        // Pagination response yapısına göre businesses'ı set et
-        if (businessesData.content) {
-          setBusinesses(businessesData.content);
-        } else if (Array.isArray(businessesData)) {
-          setBusinesses(businessesData);
+        
+        // Backend direkt array döndürüyor (pagination yok)
+        let businessesArray = [];
+        if (Array.isArray(businessesData)) {
+          businessesArray = businessesData;
+        } else if (businessesData.content && Array.isArray(businessesData.content)) {
+          businessesArray = businessesData.content;
+        } else {
+          console.warn('Beklenmeyen response formatı:', businessesData);
+          businessesArray = [];
         }
+
+        // Backend'den gelen verileri frontend formatına map et
+        const mappedBusinesses = businessesArray.map(business => {
+          let statusValue;
+          if (business.isActive !== undefined && business.isActive !== null) {
+            statusValue = business.isActive ? 'ACTIVE' : 'INACTIVE';
+          } else if (business.status) {
+            statusValue = business.status;
+          } else {
+            statusValue = 'INACTIVE';
+          }
+          
+          return {
+            ...business,
+            status: statusValue,
+            email: business.email || business.ownerEmail || business.userEmail || business.contactEmail || '-',
+            phone: business.phoneNumber || business.phone || '-',
+            address: business.address || business.city || '-',
+            joinDate: business.createdAt || business.joinDate || business.registrationDate ? 
+              new Date(business.createdAt || business.joinDate || business.registrationDate).toLocaleDateString('tr-TR') : '-',
+          };
+        });
+
+        setBusinesses(mappedBusinesses);
       } else {
         console.error('İşletme listesi yüklenirken hata:', businessesResult.reason);
         setErrorMessage(
@@ -258,15 +283,6 @@ function SuperAdminDashboard() {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <StatCard
-              title="Toplam Gelir"
-              value={`₺${(stats.totalRevenue || 0).toLocaleString()}`}
-              icon={<MonetizationOnIcon />}
-              color="success"
-              subtitle="Platform geliri"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <StatCard
               title="Bekleyen Başvurular"
               value={stats.pendingApplications}
               icon={<ScheduleIcon />}
@@ -336,9 +352,8 @@ function SuperAdminDashboard() {
                   <TableRow>
                     <TableCell>İşletme Adı</TableCell>
                     <TableCell>Email</TableCell>
-                    <TableCell>Şehir</TableCell>
+                    <TableCell>Adres</TableCell>
                     <TableCell>Kayıt Tarihi</TableCell>
-                    <TableCell>Gelir</TableCell>
                     <TableCell>Durum</TableCell>
                     <TableCell>İşlemler</TableCell>
                   </TableRow>
@@ -347,10 +362,9 @@ function SuperAdminDashboard() {
                   {businesses.map((business) => (
                     <TableRow key={business.id}>
                       <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
-                      <TableCell>{business.email}</TableCell>
-                      <TableCell>{business.city || '-'}</TableCell>
-                      <TableCell>{formatDate(business.joinDate)}</TableCell>
-                      <TableCell>₺{(business.revenue || 0).toLocaleString()}</TableCell>
+                      <TableCell>{business.email || '-'}</TableCell>
+                      <TableCell>{business.address || '-'}</TableCell>
+                      <TableCell>{business.joinDate || '-'}</TableCell>
                       <TableCell>
                         <Chip
                           label={getStatusLabel(business.status)}
