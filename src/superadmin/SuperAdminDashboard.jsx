@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -15,6 +15,8 @@ import {
   Chip,
   IconButton,
   Button,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -26,68 +28,53 @@ import {
   Schedule as ScheduleIcon,
   MonetizationOn as MonetizationOnIcon,
 } from '@mui/icons-material';
-
-// Mock data - gerçek uygulamada API'den gelecek
-const mockStats = {
-  totalBusinesses: 1247,
-  activeBusinesses: 1156,
-  totalUsers: 45680,
-  totalRevenue: 1250000,
-  pendingApplications: 23,
-  approvedApplications: 89,
-  rejectedApplications: 12,
-  totalReservations: 89456,
-};
-
-const mockBusinesses = [
-  {
-    id: 1,
-    name: 'Lezzet Durağı',
-    email: 'info@lezzetduragi.com',
-    status: 'Aktif',
-    city: 'İstanbul',
-    joinDate: '2024-01-15',
-    revenue: 45680,
-  },
-  {
-    id: 2,
-    name: 'Gurme Restoran',
-    email: 'info@gurmerestoran.com',
-    status: 'Beklemede',
-    city: 'Ankara',
-    joinDate: '2024-02-20',
-    revenue: 0,
-  },
-  {
-    id: 3,
-    name: 'Tatlı Köşe',
-    email: 'info@tatlikose.com',
-    status: 'Aktif',
-    city: 'İzmir',
-    joinDate: '2024-01-08',
-    revenue: 32450,
-  },
-  {
-    id: 4,
-    name: 'Kahve Evi',
-    email: 'info@kahveevi.com',
-    status: 'Pasif',
-    city: 'Bursa',
-    joinDate: '2024-03-10',
-    revenue: 12500,
-  },
-];
+import { adminService } from '../services/adminService';
+import { useNavigate } from 'react-router-dom';
 
 const getStatusColor = (status) => {
-  switch (status) {
-    case 'Aktif':
+  const statusUpper = status?.toUpperCase();
+  
+  switch (statusUpper) {
+    case 'ACTIVE':
       return 'success';
-    case 'Beklemede':
+    case 'PENDING':
       return 'warning';
-    case 'Pasif':
+    case 'INACTIVE':
+    case 'PASSIVE':
       return 'error';
     default:
       return 'default';
+  }
+};
+
+const getStatusLabel = (status) => {
+  // Backend'den gelen status değerlerini Türkçe'ye çevir
+  const statusUpper = status?.toUpperCase();
+  
+  switch (statusUpper) {
+    case 'ACTIVE':
+      return 'Aktif';
+    case 'PENDING':
+      return 'Beklemede';
+    case 'INACTIVE':
+    case 'PASSIVE':
+      return 'Pasif';
+    default:
+      return status;
+  }
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    return dateString;
   }
 };
 
@@ -123,69 +110,181 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle }) => (
 );
 
 function SuperAdminDashboard() {
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalBusinesses: 0,
+    activeBusinesses: 0,
+    totalUsers: 0,
+    totalRevenue: 0,
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0,
+    totalReservations: 0,
+  });
+
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [page, setPage] = useState(0);
+  const [size] = useState(10);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [page]);
+
+  const loadDashboardData = async () => {
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      // İstatistikleri ve işletme listesini ayrı ayrı yükle
+      // Çünkü stats endpoint'i henüz backend'de yok
+      const [statsResult, businessesResult] = await Promise.allSettled([
+        adminService.getDashboardStats(),
+        adminService.getAllBusinesses(page, size)
+      ]);
+
+      // İstatistikler - endpoint henüz yoksa hata göster ama devam et
+      if (statsResult.status === 'fulfilled') {
+        setStats(statsResult.value);
+      } else {
+        // Stats endpoint'i henüz backend'de yok (403 veya 404 hatası)
+        if (statsResult.reason.message === 'DASHBOARD_STATS_NOT_IMPLEMENTED' || 
+            statsResult.reason.response?.status === 404 ||
+            statsResult.reason.response?.status === 403) {
+          // Endpoint henüz oluşturulmadı - kullanıcıya bilgi ver ama devam et
+          const warningMsg = 'İstatistik endpoint\'i (/api/admin/dashboard/stats) henüz backend\'de oluşturulmadı. Backend geliştiricisiyle iletişime geçin.';
+          if (!errorMessage) {
+            setErrorMessage(warningMsg);
+          } else {
+            setErrorMessage(errorMessage + ' ' + warningMsg);
+          }
+          // Boş istatistikler göster
+          setStats({
+            totalBusinesses: 0,
+            activeBusinesses: 0,
+            totalUsers: 0,
+            totalRevenue: 0,
+            pendingApplications: 0,
+            approvedApplications: 0,
+            rejectedApplications: 0,
+            totalReservations: 0,
+          });
+        } else {
+          // Diğer hatalar için throw et
+          throw statsResult.reason;
+        }
+      }
+
+      // İşletme listesi - /api/admin/places endpoint'i mevcut
+      if (businessesResult.status === 'fulfilled') {
+        const businessesData = businessesResult.value;
+        // Pagination response yapısına göre businesses'ı set et
+        if (businessesData.content) {
+          setBusinesses(businessesData.content);
+        } else if (Array.isArray(businessesData)) {
+          setBusinesses(businessesData);
+        }
+      } else {
+        console.error('İşletme listesi yüklenirken hata:', businessesResult.reason);
+        setErrorMessage(
+          (errorMessage ? errorMessage + ' ' : '') + 
+          'İşletme listesi yüklenirken bir hata oluştu: ' + businessesResult.reason.message
+        );
+        setBusinesses([]);
+      }
+    } catch (error) {
+      console.error('Dashboard verileri yüklenirken hata:', error);
+      setErrorMessage(error.message || 'Dashboard verileri yüklenirken bir hata oluştu');
+      
+      // 403 hatası durumunda ana sayfaya yönlendir (sadece yetki hatası için)
+      if (error.message?.includes('Admin yetkisi') && error.response?.status !== 404) {
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
         Super Admin Kontrol Paneli
       </Typography>
 
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setErrorMessage('')}>
+          {errorMessage}
+        </Alert>
+      )}
+
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
       {/* İstatistik Kartları */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Toplam İşletme"
-            value={mockStats.totalBusinesses.toLocaleString()}
-            icon={<BusinessIcon />}
-            color="primary"
-            subtitle="Kayıtlı işletmeler"
-          />
+      {!loading && (
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Toplam İşletme"
+              value={stats.totalBusinesses.toLocaleString()}
+              icon={<BusinessIcon />}
+              color="primary"
+              subtitle="Kayıtlı işletmeler"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Aktif İşletme"
+              value={stats.activeBusinesses.toLocaleString()}
+              icon={<CheckCircleIcon />}
+              color="success"
+              subtitle="Çalışan işletmeler"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Toplam Kullanıcı"
+              value={stats.totalUsers.toLocaleString()}
+              icon={<PeopleIcon />}
+              color="info"
+              subtitle="Platform kullanıcıları"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Toplam Gelir"
+              value={`₺${(stats.totalRevenue || 0).toLocaleString()}`}
+              icon={<MonetizationOnIcon />}
+              color="success"
+              subtitle="Platform geliri"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Bekleyen Başvurular"
+              value={stats.pendingApplications}
+              icon={<ScheduleIcon />}
+              color="warning"
+              subtitle="Onay bekleyen başvurular"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <StatCard
+              title="Toplam Rezervasyon"
+              value={stats.totalReservations.toLocaleString()}
+              icon={<RestaurantIcon />}
+              color="info"
+              subtitle="Platform geneli"
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Aktif İşletme"
-            value={mockStats.activeBusinesses.toLocaleString()}
-            icon={<CheckCircleIcon />}
-            color="success"
-            subtitle="Çalışan işletmeler"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Toplam Kullanıcı"
-            value={mockStats.totalUsers.toLocaleString()}
-            icon={<PeopleIcon />}
-            color="info"
-            subtitle="Platform kullanıcıları"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Toplam Gelir"
-            value={`₺${mockStats.totalRevenue.toLocaleString()}`}
-            icon={<MonetizationOnIcon />}
-            color="success"
-            subtitle="Platform geliri"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Bekleyen Başvurular"
-            value={mockStats.pendingApplications}
-            icon={<ScheduleIcon />}
-            color="warning"
-            subtitle="Onay bekleyen başvurular"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Toplam Rezervasyon"
-            value={mockStats.totalReservations.toLocaleString()}
-            icon={<RestaurantIcon />}
-            color="info"
-            subtitle="Platform geneli"
-          />
-        </Grid>
-      </Grid>
+      )}
 
       {/* Hızlı Eylemler */}
       <Card sx={{ mb: 4 }}>
@@ -194,10 +293,18 @@ function SuperAdminDashboard() {
             Hızlı Eylemler
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="contained" startIcon={<CheckCircleIcon />}>
+            <Button 
+              variant="contained" 
+              startIcon={<CheckCircleIcon />}
+              onClick={() => navigate('/admin/application-management')}
+            >
               Başvuruları İncele
             </Button>
-            <Button variant="outlined" startIcon={<BusinessIcon />}>
+            <Button 
+              variant="outlined" 
+              startIcon={<BusinessIcon />}
+              onClick={() => navigate('/admin/business-management')}
+            >
               İşletme Yönetimi
             </Button>
             <Button variant="outlined" startIcon={<TrendingUpIcon />}>
@@ -213,47 +320,62 @@ function SuperAdminDashboard() {
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             İşletmeler
           </Typography>
-          <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>İşletme Adı</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Şehir</TableCell>
-                  <TableCell>Kayıt Tarihi</TableCell>
-                  <TableCell>Gelir</TableCell>
-                  <TableCell>Durum</TableCell>
-                  <TableCell>İşlemler</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {mockBusinesses.map((business) => (
-                  <TableRow key={business.id}>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
-                    <TableCell>{business.email}</TableCell>
-                    <TableCell>{business.city}</TableCell>
-                    <TableCell>{business.joinDate}</TableCell>
-                    <TableCell>₺{business.revenue.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={business.status}
-                        color={getStatusColor(business.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton size="small" color="primary">
-                        <CheckCircleIcon />
-                      </IconButton>
-                      <IconButton size="small" color="error">
-                        <CancelIcon />
-                      </IconButton>
-                    </TableCell>
+          
+          {loading && businesses.length === 0 ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : businesses.length === 0 ? (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              Henüz işletme bulunmamaktadır.
+            </Alert>
+          ) : (
+            <TableContainer component={Paper} variant="outlined">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>İşletme Adı</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Şehir</TableCell>
+                    <TableCell>Kayıt Tarihi</TableCell>
+                    <TableCell>Gelir</TableCell>
+                    <TableCell>Durum</TableCell>
+                    <TableCell>İşlemler</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {businesses.map((business) => (
+                    <TableRow key={business.id}>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
+                      <TableCell>{business.email}</TableCell>
+                      <TableCell>{business.city || '-'}</TableCell>
+                      <TableCell>{formatDate(business.joinDate)}</TableCell>
+                      <TableCell>₺{(business.revenue || 0).toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={getStatusLabel(business.status)}
+                          color={getStatusColor(business.status)}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton 
+                          size="small" 
+                          color="primary"
+                          onClick={() => navigate(`/admin/business-management`)}
+                        >
+                          <CheckCircleIcon />
+                        </IconButton>
+                        <IconButton size="small" color="error">
+                          <CancelIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </CardContent>
       </Card>
     </Box>

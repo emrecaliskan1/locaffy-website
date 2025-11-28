@@ -14,6 +14,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff, Email, Lock, Restaurant } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { StyledCard, PrimaryButton } from '../components/ui';
+import { authService } from '../services/authService';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -33,21 +34,89 @@ function Login() {
     if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // İşletme girişi için mock authentication
-    if (formData.email === 'isletme@locaffy.com' && formData.password === 'isletme123') {
-      // Store business auth token
-      localStorage.setItem('businessAuth', 'true');
-      navigate('/admin/dashboard');
-    } else {
-      setError('Geçersiz email veya şifre');
+    try {
+      const response = await authService.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      // Kullanıcının role'ünü kontrol et
+      const user = authService.getCurrentUser();
+      
+      // Eğer user'da role yoksa, token'dan decode et
+      let userRole = user?.role;
+      if (!userRole) {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const decoded = JSON.parse(jsonPayload);
+            userRole = decoded.role || decoded.authorities?.[0] || decoded.authority;
+            console.log('Token\'dan decode edilen role:', userRole);
+            console.log('Decoded token:', decoded);
+          } catch (e) {
+            console.error('Token decode hatası:', e);
+          }
+        }
+      }
+
+      console.log('Login response:', response);
+      console.log('Current user:', user);
+      console.log('User role:', userRole);
+
+      // Role'e göre yönlendirme yap
+      // Veritabanındaki roller: ROLE_ADMIN, ROLE_USER, ROLE_BUSINESS_OWNER
+      
+      // Super Admin kontrolü
+      if (userRole === 'ROLE_ADMIN' || userRole === 'ADMIN') {
+        console.log('Super Admin olarak yönlendiriliyor');
+        navigate('/admin/super-dashboard');
+      } 
+      // İşletme sahibi kontrolü (veritabanında ROLE_BUSINESS_OWNER)
+      else if (userRole === 'ROLE_BUSINESS_OWNER') {
+        console.log('İşletme sahibi (ROLE_BUSINESS_OWNER) olarak yönlendiriliyor');
+        navigate('/admin/dashboard');
+      } 
+      // Diğer olası işletme sahibi rolleri (geriye dönük uyumluluk için)
+      else if (
+        userRole === 'ROLE_MANAGER' || 
+        userRole === 'MANAGER' || 
+        userRole === 'BUSINESS_OWNER' ||
+        userRole === 'ROLE_BUSINESS' ||
+        userRole === 'BUSINESS'
+      ) {
+        console.log('İşletme sahibi (alternatif role) olarak yönlendiriliyor');
+        navigate('/admin/dashboard');
+      } 
+      // Normal kullanıcı (ROLE_USER) için ana sayfaya yönlendir
+      else if (userRole === 'ROLE_USER' || userRole === 'USER') {
+        console.log('Normal kullanıcı (ROLE_USER) olarak ana sayfaya yönlendiriliyor');
+        navigate('/');
+      }
+      // Eğer role belirlenemezse, token varsa admin dashboard'a yönlendir (işletme sahibi olabilir)
+      else if (localStorage.getItem('accessToken')) {
+        console.log('Role belirlenemedi, token mevcut - admin dashboard\'a yönlendiriliyor');
+        navigate('/admin/dashboard');
+      } 
+      // Diğer durumlar için ana sayfaya yönlendir
+      else {
+        console.log('Bilinmeyen role veya token yok - ana sayfaya yönlendiriliyor');
+        navigate('/');
+      }
+    } catch (error) {
+      setError(error.message || 'Giriş işlemi başarısız oldu');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const togglePasswordVisibility = () => {

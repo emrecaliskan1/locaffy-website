@@ -23,6 +23,7 @@ import {
   Restaurant as RestaurantIcon,
   Rule as RuleIcon,
   Campaign as CampaignIcon,
+  EventNote as EventNoteIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -31,6 +32,7 @@ const drawerWidth = 240;
 
 const menuItems = [
   { text: 'Kontrol Paneli', icon: <DashboardIcon />, path: '/admin/dashboard' },
+  { text: 'Rezervasyon Yönetimi', icon: <EventNoteIcon />, path: '/admin/reservations' },
   { text: 'Masa Planı', icon: <TableChartIcon />, path: '/admin/table-plan' },
   { text: 'Menü Yönetimi', icon: <RestaurantIcon />, path: '/admin/menu-management' },
   { text: 'Rezervasyon Kuralları', icon: <RuleIcon />, path: '/admin/reservation-rules' },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -15,7 +15,8 @@ import {
   Chip,
   IconButton,
   Button,
-  LinearProgress,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -28,6 +29,68 @@ import {
   QrCode as QrCodeIcon,
 } from '@mui/icons-material';
 import QRCode from 'react-qr-code';
+import { reservationService } from '../services/reservationService';
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return 'warning';
+    case 'APPROVED':
+      return 'success';
+    case 'REJECTED':
+      return 'error';
+    case 'CANCELLED':
+      return 'default';
+    default:
+      return 'default';
+  }
+};
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return 'Beklemede';
+    case 'APPROVED':
+      return 'Onaylandı';
+    case 'REJECTED':
+      return 'Reddedildi';
+    case 'CANCELLED':
+      return 'İptal Edildi';
+    default:
+      return status;
+  }
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    return dateString;
+  }
+};
+
+const formatTime = (dateString) => {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('tr-TR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    return dateString;
+  }
+};
+
+
 
 // Mock data - gerçek uygulamada API'den gelecek
 const mockStats = {
@@ -39,58 +102,8 @@ const mockStats = {
   averageWaitTime: 12,
 };
 
-const mockReservations = [
-  {
-    id: 1,
-    customerName: 'Ahmet Yılmaz',
-    tableNumber: 'A12',
-    time: '19:30',
-    status: 'Başarılı',
-    people: 4,
-  },
-  {
-    id: 2,
-    customerName: 'Fatma Demir',
-    tableNumber: 'B05',
-    time: '20:15',
-    status: 'Onay Bekliyor',
-    people: 2,
-  },
-  {
-    id: 3,
-    customerName: 'Mehmet Kaya',
-    tableNumber: 'C08',
-    time: '18:45',
-    status: 'Gecikmeli',
-    people: 6,
-  },
-  {
-    id: 4,
-    customerName: 'Ayşe Özkan',
-    tableNumber: 'A03',
-    time: '21:00',
-    status: 'İptal Edildi',
-    people: 3,
-  },
-];
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Başarılı':
-      return 'success';
-    case 'Onay Bekliyor':
-      return 'warning';
-    case 'Gecikmeli':
-      return 'info';
-    case 'İptal Edildi':
-      return 'error';
-    default:
-      return 'default';
-  }
-};
-
-const StatCard = ({ title, value, icon, color = 'primary', subtitle }) => (
-  <Card sx={{ height: '100%' }}>
+const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = false }) => (
+  <Card sx={{ height: '100%', opacity: disabled ? 0.6 : 1 }}>
     <CardContent>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Box
@@ -121,18 +134,127 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle }) => (
 );
 
 function DashboardView() {
+  const [placeId, setPlaceId] = useState(null);
+  const [placeName, setPlaceName] = useState('');
+  const [recentReservations, setRecentReservations] = useState([]);
+  const [allReservations, setAllReservations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    const loadPlaceId = async () => {
+      setLoading(true);
+      setErrorMessage('');
+
+      try {
+        const places = await reservationService.getMyPlaces();
+
+        if (places && Array.isArray(places) && places.length > 0) {
+          const firstPlace = places[0];
+          const placeId = firstPlace.id;
+          const placeName = firstPlace.name || firstPlace.placeName || '';
+
+          setPlaceId(placeId);
+          if (placeName) {
+            setPlaceName(placeName);
+          }
+        } else {
+          setErrorMessage('Hiç işletme bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.');
+        }
+      } catch (error) {
+        console.error('Place\'ler yüklenirken hata:', error);
+        setErrorMessage(error.message || 'İşletme bilgileri yüklenirken bir hata oluştu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPlaceId();
+  }, []);
+
+  useEffect(() => {
+    if (placeId) {
+      loadReservations();
+    }
+  }, [placeId]);
+
+  const loadReservations = async () => {
+    if (!placeId) return;
+
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      const data = await reservationService.getPlaceReservations(placeId);
+      setAllReservations(data);
+
+      const recent = data
+        .sort((a, b) => new Date(b.createdAt || b.reservationTime) - new Date(a.createdAt || a.reservationTime))
+        .slice(0, 5);
+      setRecentReservations(recent);
+    } catch (error) {
+      setErrorMessage(error.message || 'Rezervasyonlar yüklenirken bir hata oluştu');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Geçici istatistikler (backend endpoint gelince kaldırılacak)
+  const calculateTempStats = () => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // Bu ayki rezervasyonlar
+    const monthlyReservations = allReservations.filter(r => {
+      const resDate = new Date(r.createdAt || r.reservationTime);
+      return resDate >= startOfMonth;
+    });
+
+    // İptal sayısı
+    const cancellationCount = monthlyReservations.filter(r => r.status === 'CANCELLED').length;
+
+    // Grup rezervasyonları (8+ kişi)
+    const groupReservations = monthlyReservations.filter(r => r.numberOfPeople >= 8).length;
+
+    return {
+      monthlyReservations: monthlyReservations.length,
+      cancellationCount,
+      groupReservations,
+    };
+  };
+
+  const tempStats = calculateTempStats();
+
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
         Kontrol Paneli
       </Typography>
 
+      {placeName && (
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+          İşletme: <strong>{placeName}</strong>
+        </Typography>
+      )}
+
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage('')}>
+          {successMessage}
+        </Alert>
+      )}
+
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setErrorMessage('')}>
+          {errorMessage}
+        </Alert>
+      )}
+
       {/* İstatistik Kartları */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Aylık Rezervasyon"
-            value={mockStats.monthlyReservations.toLocaleString()}
+            value={tempStats.monthlyReservations.toLocaleString()}
             icon={<RestaurantIcon />}
             color="primary"
             subtitle="Bu ay"
@@ -141,25 +263,27 @@ function DashboardView() {
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Doluluk Oranı"
-            value={`%${mockStats.occupancyRate}`}
+            value="Yakında"
             icon={<TrendingUpIcon />}
             color="success"
-            subtitle="Ortalama"
+            subtitle="Backend endpoint bekleniyor"
+            disabled={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Tahmini Gelir"
-            value={`₺${mockStats.estimatedRevenue.toLocaleString()}`}
+            value="Yakında"
             icon={<MonetizationOnIcon />}
             color="success"
-            subtitle="Bu ay"
+            subtitle="Backend endpoint bekleniyor"
+            disabled={true}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="İptal Sayısı"
-            value={mockStats.cancellationCount}
+            value={tempStats.cancellationCount}
             icon={<CancelIcon />}
             color="error"
             subtitle="Bu ay"
@@ -168,19 +292,20 @@ function DashboardView() {
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Grup Rezervasyonları"
-            value={mockStats.groupReservations}
+            value={tempStats.groupReservations}
             icon={<PeopleIcon />}
             color="info"
-            subtitle="Bu ay"
+            subtitle="Bu ay (8+ kişi)"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Ortalama Bekleme"
-            value={`${mockStats.averageWaitTime} dk`}
+            value="Yakında"
             icon={<ScheduleIcon />}
             color="warning"
-            subtitle="Günlük ortalama"
+            subtitle="Backend endpoint bekleniyor"
+            disabled={true}
           />
         </Grid>
       </Grid>
@@ -221,14 +346,29 @@ function DashboardView() {
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             Hızlı Eylemler
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="contained" startIcon={<CheckCircleIcon />}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Button 
+              variant="contained" 
+              startIcon={<CheckCircleIcon />}
+              disabled={true}
+              title="Backend endpoint bekleniyor"
+            >
               Toplu Onaylama
             </Button>
-            <Button variant="outlined" startIcon={<RestaurantIcon />}>
+            <Button 
+              variant="outlined" 
+              startIcon={<RestaurantIcon />}
+              disabled={true}
+              title="Backend endpoint bekleniyor"
+            >
               Masa Durumu Güncelle
             </Button>
-            <Button variant="outlined" startIcon={<PeopleIcon />}>
+            <Button 
+              variant="outlined" 
+              startIcon={<PeopleIcon />}
+              disabled={true}
+              title="Yakında eklenecek"
+            >
               Rezervasyon Ekle
             </Button>
           </Box>
@@ -241,45 +381,82 @@ function DashboardView() {
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             Son Rezervasyonlar
           </Typography>
-          <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Müşteri</TableCell>
-                  <TableCell>Masa</TableCell>
-                  <TableCell>Saat</TableCell>
-                  <TableCell>Kişi Sayısı</TableCell>
-                  <TableCell>Durum</TableCell>
-                  <TableCell>İşlemler</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {mockReservations.map((reservation) => (
-                  <TableRow key={reservation.id}>
-                    <TableCell>{reservation.customerName}</TableCell>
-                    <TableCell>{reservation.tableNumber}</TableCell>
-                    <TableCell>{reservation.time}</TableCell>
-                    <TableCell>{reservation.people}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={reservation.status}
-                        color={getStatusColor(reservation.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton size="small" color="primary">
-                        <CheckCircleIcon />
-                      </IconButton>
-                      <IconButton size="small" color="error">
-                        <CancelIcon />
-                      </IconButton>
-                    </TableCell>
+          
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {!loading && recentReservations.length === 0 && !errorMessage && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              Henüz rezervasyon bulunmamaktadır.
+            </Alert>
+          )}
+
+          {!loading && (
+            <TableContainer component={Paper} variant="outlined">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Müşteri</TableCell>
+                    <TableCell>Rezervasyon Tarihi</TableCell>
+                    <TableCell>Kişi Sayısı</TableCell>
+                    <TableCell>Durum</TableCell>
+                    <TableCell>İşlemler</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {recentReservations.map((reservation) => (
+                    <TableRow key={reservation.id}>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{reservation.userName}</TableCell>
+                      <TableCell>{formatDate(reservation.reservationTime)}</TableCell>
+                      <TableCell>{reservation.numberOfPeople} kişi</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={getStatusLabel(reservation.status)}
+                          color={getStatusColor(reservation.status)}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {reservation.status === 'PENDING' && (
+                          <>
+                            <IconButton 
+                              size="small" 
+                              color="success"
+                              title="Onayla"
+                              onClick={() => {
+                                // Rezervasyon Yönetimi sayfasına yönlendir veya modal aç
+                                window.location.href = '/admin/reservations';
+                              }}
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                            <IconButton 
+                              size="small" 
+                              color="error"
+                              title="Reddet"
+                              onClick={() => {
+                                window.location.href = '/admin/reservations';
+                              }}
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </>
+                        )}
+                        {reservation.status !== 'PENDING' && (
+                          <Typography variant="body2" color="text.secondary">
+                            -
+                          </Typography>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </CardContent>
       </Card>
     </Box>
@@ -287,4 +464,3 @@ function DashboardView() {
 }
 
 export default DashboardView;
-
