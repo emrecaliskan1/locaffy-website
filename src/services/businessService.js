@@ -29,23 +29,41 @@ export const businessService = {
             return response.data;
         } catch (error) {
             if (!error.response) {
-                throw new Error('İnternet bağlantısını kontrol edin');
+                const networkError = new Error('İnternet bağlantısını kontrol edin');
+                networkError.response = null;
+                throw networkError;
             }
 
-            // 409 Conflict - Başvuru zaten onaylanmış veya reddedilmiş
             if (error.response?.status === 409) {
                 const message = error.response?.data?.message || 
                                'Bu başvuru zaten işleme alınmış. Sadece bekleyen başvurular onaylanabilir.';
-                throw new Error(message);
+                const conflictError = new Error(message);
+                conflictError.response = error.response;
+                throw conflictError;
+            }
+
+            if (error.response?.status === 500) {
+                const backendMessage = error.response?.data?.message || 
+                                     error.response?.data?.error ||
+                                     error.response?.data?.detail ||
+                                     error.response?.data?.title;
+                const message = backendMessage || 
+                               'Sunucu hatası oluştu. Lütfen backend loglarını kontrol edin.';
+                const serverError = new Error(message);
+                serverError.response = error.response;
+                throw serverError;
             }
 
             const errorMessage =
                 error.response?.data?.message ||
                 error.response?.data?.error ||
+                error.response?.data?.detail ||
                 error.message ||
                 'Başvuru onaylanırken bir hata oluştu';
 
-            throw new Error(errorMessage);
+            const customError = new Error(errorMessage);
+            customError.response = error.response;
+            throw customError;
         }
     },
 

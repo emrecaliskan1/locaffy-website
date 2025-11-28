@@ -65,20 +65,6 @@ const getStatusLabel = (status) => {
   }
 };
 
-const formatDate = (dateString) => {
-  if (!dateString) return '-';
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('tr-TR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  } catch (error) {
-    return dateString;
-  }
-};
-
 const StatCard = ({ title, value, icon, color = 'primary', subtitle }) => (
   <Card sx={{ height: '100%' }}>
     <CardContent>
@@ -184,30 +170,46 @@ function SuperAdminDashboard() {
         } else if (businessesData.content && Array.isArray(businessesData.content)) {
           businessesArray = businessesData.content;
         } else {
-          console.warn('Beklenmeyen response formatı:', businessesData);
           businessesArray = [];
         }
 
         // Backend'den gelen verileri frontend formatına map et
-        // Email bilgisini business application'lardan almak için onaylanmış başvuruları yükle
+        // Email ve tarih bilgisini business application'lardan almak için onaylanmış başvuruları yükle
         let emailMap = new Map(); // businessName -> email mapping
+        let dateMap = new Map(); // businessName -> onay tarihi (updatedAt) mapping
         try {
           const applicationsResult = await businessService.getAllApplications('APPROVED', 0, 1000);
           if (applicationsResult && applicationsResult.content) {
             applicationsResult.content.forEach(app => {
-              if (app.businessName && app.email) {
-                emailMap.set(app.businessName.trim().toLowerCase(), app.email);
+              if (app.businessName && app.status === 'APPROVED') {
+                const businessNameKey = app.businessName.trim().toLowerCase();
+                if (app.email) {
+                  emailMap.set(businessNameKey, app.email);
+                }
+                // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt
+                const approvalDate = app.updatedAt || app.approvedAt || app.updated_at || app.approved_at;
+                if (approvalDate) {
+                  dateMap.set(businessNameKey, approvalDate);
+                }
               }
             });
           } else if (Array.isArray(applicationsResult)) {
             applicationsResult.forEach(app => {
-              if (app.businessName && app.email && app.status === 'APPROVED') {
-                emailMap.set(app.businessName.trim().toLowerCase(), app.email);
+              if (app.businessName && app.status === 'APPROVED') {
+                const businessNameKey = app.businessName.trim().toLowerCase();
+                if (app.email) {
+                  emailMap.set(businessNameKey, app.email);
+                }
+                // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt
+                const approvalDate = app.updatedAt || app.approvedAt || app.updated_at || app.approved_at;
+                if (approvalDate) {
+                  dateMap.set(businessNameKey, approvalDate);
+                }
               }
             });
           }
         } catch (error) {
-          console.warn('Business application\'lar yüklenirken hata (email mapping için):', error);
+          // Business application'lar yüklenirken hata - sessizce geç
         }
         
         const mappedBusinesses = businessesArray.map(business => {
@@ -245,20 +247,78 @@ function SuperAdminDashboard() {
             emailValue = '-';
           }
           
+          // Tarih formatlaması - önce backend'den gelen alanları kontrol et, sonra business application'lardan al
+          let joinDate = '';
+          // Backend'den gelebilecek tüm olası tarih alanlarını kontrol et (camelCase ve snake_case)
+          const dateFields = [
+            business.createdAt,
+            business.created_at, // snake_case variant
+            business.joinDate,
+            business.join_date,
+            business.registrationDate,
+            business.registration_date,
+            business.createdDate,
+            business.created_date,
+            business.dateCreated,
+            business.date_created,
+            business.registeredAt,
+            business.registered_at,
+            business.updatedAt,
+            business.updated_at
+          ];
+          
+          // Önce backend'den gelen tarih alanlarını kontrol et
+          for (const dateField of dateFields) {
+            if (dateField) {
+              try {
+                const date = new Date(dateField);
+                if (!isNaN(date.getTime())) {
+                  // Geçerli bir tarih
+                  joinDate = date.toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                  });
+                  break;
+                }
+              } catch (e) {
+                // Tarih formatlama hatası - sessizce geç
+              }
+            }
+          }
+          
+          // Eğer backend'den tarih gelmediyse, business application'lardan al
+          if (!joinDate) {
+            const businessName = business.name?.trim().toLowerCase();
+            if (businessName && dateMap.has(businessName)) {
+              try {
+                const appDate = dateMap.get(businessName);
+                const date = new Date(appDate);
+                if (!isNaN(date.getTime())) {
+                  joinDate = date.toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                  });
+                }
+              } catch (e) {
+                // Business application tarih formatlama hatası - sessizce geç
+              }
+            }
+          }
+          
           return {
             ...business,
             status: statusValue,
             email: emailValue,
             phone: business.phoneNumber || business.phone || '-',
             address: business.address || business.city || '-',
-            joinDate: business.createdAt || business.joinDate || business.registrationDate ? 
-              new Date(business.createdAt || business.joinDate || business.registrationDate).toLocaleDateString('tr-TR') : '-',
+            joinDate: joinDate || '',
           };
         });
 
         setBusinesses(mappedBusinesses);
       } else {
-        console.error('İşletme listesi yüklenirken hata:', businessesResult.reason);
         setErrorMessage(
           (errorMessage ? errorMessage + ' ' : '') + 
           'İşletme listesi yüklenirken bir hata oluştu: ' + businessesResult.reason.message
@@ -266,7 +326,6 @@ function SuperAdminDashboard() {
         setBusinesses([]);
       }
     } catch (error) {
-      console.error('Dashboard verileri yüklenirken hata:', error);
       setErrorMessage(error.message || 'Dashboard verileri yüklenirken bir hata oluştu');
       
       // 403 hatası durumunda ana sayfaya yönlendir (sadece yetki hatası için)
@@ -411,7 +470,7 @@ function SuperAdminDashboard() {
                       <TableCell sx={{ fontWeight: 'bold' }}>{business.name}</TableCell>
                       <TableCell>{business.email || '-'}</TableCell>
                       <TableCell>{business.address || '-'}</TableCell>
-                      <TableCell>{business.joinDate || '-'}</TableCell>
+                      <TableCell>{business.joinDate || ''}</TableCell>
                       <TableCell>
                         <Chip
                           label={getStatusLabel(business.status)}

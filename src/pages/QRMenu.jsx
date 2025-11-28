@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import menuService from '../services/menuService';
+import PlaceLogo from '../components/PlaceLogo';
 
 function QRMenu() {
     const { businessId } = useParams();
@@ -56,12 +57,13 @@ function QRMenu() {
                 const data = await menuService.getPlaceMenu(id);
                 setBusinessData({
                     name: data.placeName,
-                    description: "En lezzetli menüler",
-                    coverImage: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1000&auto=format&fit=crop",
-                    logo: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=200&auto=format&fit=crop",
-                    address: "Adres bilgisi",
-                    phone: "Telefon bilgisi",
-                    workingHours: "09:00 - 22:00"
+                    description: data.description || "En lezzetli menüler",
+                    coverImage: data.mainImageUrl || "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1000&auto=format&fit=crop",
+                    // Backend'den mainImageUrl dönüyor (banner ve logo aynı alanı kullanıyor)
+                    logo: data.mainImageUrl || null,
+                    address: data.address || "Adres bilgisi",
+                    phone: data.phoneNumber || "Telefon bilgisi",
+                    workingHours: data.openingHours || "09:00 - 22:00"
                 });
                 setMenuData(data);
                 setFilteredItems(data.allItems || []);
@@ -159,14 +161,11 @@ function QRMenu() {
                         bgcolor: 'background.paper',
                         borderRadius: '50%',
                         p: 0.5,
-                        boxShadow: 3
+                        boxShadow: 3,
+                        zIndex: 1
                     }}
                 >
-                    <img
-                        src={businessData.logo}
-                        alt="Logo"
-                        style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
-                    />
+                    <PlaceLogo logoUrl={businessData.logo} size={80} />
                 </Box>
             </Box>
 

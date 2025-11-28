@@ -159,6 +159,15 @@ function ApplicationManagementView() {
         loadApplications();
       }, 500);
     } catch (error) {
+      console.error('Approval error details:', {
+        error,
+        response: error.response,
+        responseData: error.response?.data,
+        responseStatus: error.response?.status,
+        message: error.message,
+        applicationId: selectedApplication?.id
+      });
+
       // 409 Conflict - Başvuru zaten işleme alınmış
       if (error.message?.includes('zaten işleme alınmış') || error.message?.includes('Sadece bekleyen')) {
         setErrorMessage(error.message);
@@ -167,7 +176,13 @@ function ApplicationManagementView() {
           loadApplications();
         }, 500);
       } else if (error.response?.status === 500) {
-        setErrorMessage('Bu işlem için Super Admin yetkisi gereklidir. Lütfen Super Admin olarak giriş yapın.');
+        // Backend'den gelen detaylı mesajı göster
+        const backendMessage = error.response?.data?.message || 
+                              error.response?.data?.error ||
+                              error.response?.data?.detail ||
+                              error.response?.data?.title ||
+                              error.message;
+        setErrorMessage(backendMessage || 'Sunucu hatası oluştu. Lütfen backend loglarını kontrol edin.');
       } else {
         setErrorMessage(error.message || 'Başvuru onaylanırken bir hata oluştu');
       }
@@ -247,7 +262,13 @@ function ApplicationManagementView() {
       const mappedApplications = (response.content || []).map(app => ({
         ...app,
         phone: app.phoneNumber,
-        applicationDate: app.createdAt ? new Date(app.createdAt).toLocaleDateString('tr-TR') : app.createdAt,
+        applicationDate: app.createdAt 
+          ? new Date(app.createdAt).toLocaleDateString('tr-TR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          : (app.applicationDate || ''),
       }));
       setApplications(mappedApplications);
     } catch (error) {
@@ -409,7 +430,16 @@ function ApplicationManagementView() {
                       <TableCell sx={{ fontWeight: 'bold' }}>{application.businessName}</TableCell>
                       <TableCell>{application.ownerName}</TableCell>
                       <TableCell>{application.businessType}</TableCell>
-                      <TableCell>{application.applicationDate}</TableCell>
+                      <TableCell>
+                        {application.applicationDate || 
+                         (application.createdAt 
+                           ? new Date(application.createdAt).toLocaleDateString('tr-TR', {
+                               year: 'numeric',
+                               month: '2-digit',
+                               day: '2-digit'
+                             })
+                           : '')}
+                      </TableCell>
                       <TableCell>
                         <Chip
                           label={getStatusLabel(application.status)}
@@ -507,7 +537,15 @@ function ApplicationManagementView() {
                       </Typography>
                     )}
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Başvuru Tarihi:</strong> {selectedApplication.applicationDate}
+                      <strong>Başvuru Tarihi:</strong> {
+                        selectedApplication.createdAt 
+                          ? new Date(selectedApplication.createdAt).toLocaleDateString('tr-TR', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit'
+                            })
+                          : (selectedApplication.applicationDate || '')
+                      }
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       <strong>Durum:</strong>

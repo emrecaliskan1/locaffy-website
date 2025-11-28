@@ -32,6 +32,7 @@ import QRCode from 'react-qr-code';
 import { reservationService } from '../services/reservationService';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
+import PlaceLogoUpload from '../components/PlaceLogoUpload';
 const getStatusColor = (status) => {
   switch (status) {
     case 'PENDING':
@@ -137,6 +138,7 @@ function DashboardView() {
   const navigate = useNavigate();
   const [placeId, setPlaceId] = useState(null);
   const [placeName, setPlaceName] = useState('');
+  const [placeMainImageUrl, setPlaceMainImageUrl] = useState(null);
   const [recentReservations, setRecentReservations] = useState([]);
   const [allReservations, setAllReservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -155,16 +157,18 @@ function DashboardView() {
           const firstPlace = places[0];
           const placeId = firstPlace.id;
           const placeName = firstPlace.name || firstPlace.placeName || '';
+          // Backend'den mainImageUrl dönüyor (banner ve logo aynı alanı kullanıyor)
+          const mainImageUrl = firstPlace.mainImageUrl || null;
 
           setPlaceId(placeId);
           if (placeName) {
             setPlaceName(placeName);
           }
+          setPlaceMainImageUrl(mainImageUrl);
         } else {
           setErrorMessage('Hiç işletme bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.');
         }
       } catch (error) {
-        console.error('Place\'ler yüklenirken hata:', error);
         setErrorMessage(error.message || 'İşletme bilgileri yüklenirken bir hata oluştu.');
       } finally {
         setLoading(false);
@@ -340,6 +344,29 @@ function DashboardView() {
           </Box>
         </CardContent>
       </Card>
+
+      {/* İşletme Ayarları - Logo Yükleme */}
+      {placeId && (
+        <Card sx={{ mb: 4 }}>
+          <CardContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                İşletme ID: <strong>{placeId}</strong>
+                {placeName && ` - ${placeName}`}
+              </Typography>
+            </Box>
+            <PlaceLogoUpload
+              placeId={placeId}
+              currentMainImageUrl={placeMainImageUrl}
+              onLogoUpdate={(newMainImageUrl) => {
+                setPlaceMainImageUrl(newMainImageUrl);
+                setSuccessMessage('Logo başarıyla güncellendi!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+              }}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Hızlı Eylemler */}
       <Card sx={{ mb: 4 }}>
