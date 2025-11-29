@@ -329,18 +329,24 @@ function DashboardView() {
               variant="contained"
               color="secondary"
               startIcon={<QrCodeIcon />}
-              onClick={() => window.open(`${window.location.origin}/menu/1`, '_blank')}
+              onClick={() => placeId ? window.open(`${window.location.origin}/menu/${placeId}`, '_blank') : null}
               sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
             >
               Menüyü Görüntüle
             </Button>
           </Box>
           <Box sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}>
-            <QRCode
-              value={`${window.location.origin}/menu/1`}
-              size={120}
-              level="H"
-            />
+            {placeId ? (
+              <QRCode
+                value={`${window.location.origin}/menu/${placeId}`}
+                size={120}
+                level="H"
+              />
+            ) : (
+              <Box sx={{ width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
+            )}
           </Box>
         </CardContent>
       </Card>

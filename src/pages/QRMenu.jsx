@@ -55,11 +55,12 @@ function QRMenu() {
                 }
 
                 const data = await menuService.getPlaceMenu(id);
+                
                 setBusinessData({
                     name: data.placeName,
                     description: data.description || "En lezzetli menüler",
                     coverImage: data.mainImageUrl || "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1000&auto=format&fit=crop",
-                    // Backend'den mainImageUrl dönüyor (banner ve logo aynı alanı kullanıyor)
+                    // mainImageUrl hem logo hem banner için kullanılabilir (backend'den geliyor)
                     logo: data.mainImageUrl || null,
                     address: data.address || "Adres bilgisi",
                     phone: data.phoneNumber || "Telefon bilgisi",
@@ -80,6 +81,12 @@ function QRMenu() {
         }
     }, [businessId]);
 
+    // Tags'leri parse et (virgülle ayrılmış string'den array'e)
+    const parseTags = (tagsString) => {
+        if (!tagsString) return [];
+        return tagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    };
+
     useEffect(() => {
         if (!menuData) return;
 
@@ -91,11 +98,27 @@ function QRMenu() {
             result = menuData.menuByCategory[activeCategory] || [];
         }
 
+        // Sadece aktif (isAvailable: true) ürünleri göster
+        result = result.filter(item => item.isAvailable !== false);
+
+        // Display order'a göre sırala (küçük değerler önce)
+        result.sort((a, b) => {
+            const orderA = a.displayOrder || 0;
+            const orderB = b.displayOrder || 0;
+            return orderA - orderB;
+        });
+
+        // Arama filtresi
         if (searchQuery) {
-            result = result.filter(item =>
-                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
+            const query = searchQuery.toLowerCase();
+            result = result.filter(item => {
+                const nameMatch = item.name?.toLowerCase().includes(query);
+                const descMatch = item.description?.toLowerCase().includes(query);
+                // Tags'lerde de ara
+                const tags = parseTags(item.tags);
+                const tagsMatch = tags.some(tag => tag.toLowerCase().includes(query));
+                return nameMatch || descMatch || tagsMatch;
+            });
         }
 
         setFilteredItems(result);
@@ -288,15 +311,21 @@ function QRMenu() {
                                             WebkitBoxOrient: 'vertical',
                                             flex: 1
                                         }}>
-                                            {item.description}
+                                            {item.description || ''}
                                         </Typography>
-                                        {item.tags && item.tags.includes('popular') && (
-                                            <Chip
-                                                label="Popüler"
-                                                color="warning"
-                                                size="small"
-                                                sx={{ alignSelf: 'flex-start', height: 20, fontSize: '0.7rem' }}
-                                            />
+                                        {/* Tags gösterimi */}
+                                        {item.tags && parseTags(item.tags).length > 0 && (
+                                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
+                                                {parseTags(item.tags).map((tag, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        label={tag}
+                                                        size="small"
+                                                        color={tag.toLowerCase() === 'popular' ? 'warning' : 'default'}
+                                                        sx={{ height: 20, fontSize: '0.7rem' }}
+                                                    />
+                                                ))}
+                                            </Box>
                                         )}
                                     </Box>
                                 </Card>
