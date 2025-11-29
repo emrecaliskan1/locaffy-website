@@ -212,7 +212,6 @@ function BusinessManagementView() {
         // Eğer gelecekte pagination eklerse, bu kısım hazır
         businessesData = response.content;
       } else {
-        console.warn('Beklenmeyen response formatı:', response);
         businessesData = [];
       }
 
@@ -252,8 +251,17 @@ function BusinessManagementView() {
           });
         }
       } catch (error) {
-        console.warn('Business application\'lar yüklenirken hata (email ve tarih mapping için):', error);
+        // Business application'lar yüklenirken hata - sessizce geç
       }
+      
+      // Backend'den gelen rezervasyon sayılarını map'e al
+      const reservationCountMap = new Map(); // placeId -> reservationCount
+      businessesData.forEach(business => {
+        if (business.id && (business.reservationCount !== undefined || business.reservation_count !== undefined)) {
+          const count = business.reservationCount || business.reservation_count || 0;
+          reservationCountMap.set(business.id, count);
+        }
+      });
       
       const mappedBusinesses = businessesData.map(business => {
         // Status - isActive boolean'ını status string'ine çevir
@@ -351,6 +359,9 @@ function BusinessManagementView() {
           }
         }
         
+        // Rezervasyon sayısını al (backend'den çekilen veya 0)
+        const reservationCount = reservationCountMap.get(business.id) || 0;
+        
         return {
           ...business,
           status: statusValue,
@@ -358,12 +369,12 @@ function BusinessManagementView() {
           phone: business.phone || business.phoneNumber || business.contactPhone || '-',
           address: business.address || business.fullAddress || business.city || '-',
           joinDate: joinDate || '',
+          reservationCount: reservationCount,
         };
       });
 
       setAllBusinesses(mappedBusinesses);
     } catch (error) {
-      console.error('İşletmeler yüklenirken hata:', error);
       setErrorMessage(error.message || 'İşletmeler yüklenirken bir hata oluştu');
     } finally {
       setLoading(false);
