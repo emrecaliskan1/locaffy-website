@@ -30,6 +30,7 @@ import {
   TableChart as TableChartIcon,
   Rule as RuleIcon,
   Campaign as CampaignIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { reservationService } from '../services/reservationService';
@@ -93,6 +94,7 @@ function AdminLayout({ children }) {
     { text: 'Menü', icon: <RestaurantIcon />, path: '/admin/menu-management' },
     { text: 'Rezervasyon Kuralları', icon: <RuleIcon />, path: '/admin/reservation-rules' },
     { text: 'Promosyonlar', icon: <CampaignIcon />, path: '/admin/promotions' },
+    { text: 'Ayarlar', icon: <SettingsIcon />, path: '/admin/business-settings' },
   ];
 
   const superAdminMenuItems = [

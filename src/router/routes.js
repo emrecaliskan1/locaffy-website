@@ -16,6 +16,7 @@ export const ROUTES = {
   ADMIN_MENU_MANAGEMENT: '/admin/menu-management',
   ADMIN_RESERVATION_RULES: '/admin/reservation-rules',
   ADMIN_PROMOTIONS: '/admin/promotions',
+  ADMIN_BUSINESS_SETTINGS: '/admin/business-settings',
 };
 
 export const ROUTE_NAMES = {
@@ -36,4 +37,5 @@ export const ROUTE_NAMES = {
   ADMIN_MENU_MANAGEMENT: 'Menü Yönetimi',
   ADMIN_RESERVATION_RULES: 'Rezervasyon Kuralları',
   ADMIN_PROMOTIONS: 'Promosyonlar',
+  ADMIN_BUSINESS_SETTINGS: 'İşletme Ayarları',
 };

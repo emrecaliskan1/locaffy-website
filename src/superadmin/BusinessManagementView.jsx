@@ -89,11 +89,19 @@ function BusinessManagementView() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [size] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
+  const [size, setSize] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
   
   // Client-side pagination: allBusinesses'dan mevcut sayfadaki işletmeleri al
-  const businesses = allBusinesses.slice(page * size, (page + 1) * size);
-  const totalPages = Math.ceil(allBusinesses.length / size);
+  const paginatedSize = size === allBusinesses.length ? allBusinesses.length : size;
+  const businesses = allBusinesses.slice(page * paginatedSize, (page + 1) * paginatedSize);
+  const totalPages = Math.ceil(allBusinesses.length / paginatedSize) || 1;
+  
+  // Sayfa değiştiğinde veya size değiştiğinde, geçersiz sayfadaysak ilk sayfaya dön
+  useEffect(() => {
+    if (page >= totalPages && totalPages > 0) {
+      setPage(0);
+    }
+  }, [totalPages, page]);
 
   const handleAddBusiness = () => {
     // NOT: Backend'de POST /api/admin/places endpoint'i yok
@@ -579,25 +587,75 @@ function BusinessManagementView() {
               </TableContainer>
               
               {/* Client-side Pagination */}
-              {allBusinesses.length > size && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 3, mb: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                    disabled={page === 0 || loading}
-                  >
-                    Önceki
-                  </Button>
-                  <Typography variant="body2">
-                    Sayfa {page + 1} / {totalPages} (Toplam {allBusinesses.length} işletme)
+              {totalPages > 1 && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mt: 3, mb: 2, flexWrap: 'wrap' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Sayfa başına:
+                    </Typography>
+                    <FormControl size="small" sx={{ minWidth: 80 }}>
+                      <Select
+                        value={size}
+                        onChange={(e) => {
+                          setSize(Number(e.target.value));
+                          setPage(0); // Sayfa başına kayıt sayısı değiştiğinde ilk sayfaya dön
+                        }}
+                      >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={25}>25</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
+                        <MenuItem value={100}>100</MenuItem>
+                        <MenuItem value={allBusinesses.length}>Tümü</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {page * size + 1}-{Math.min((page + 1) * size, allBusinesses.length)} / {allBusinesses.length}
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(0)}
+                      disabled={page === 0 || loading}
+                    >
+                      İlk
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(prev => Math.max(0, prev - 1))}
+                      disabled={page === 0 || loading}
+                    >
+                      Önceki
+                    </Button>
+                    <Typography variant="body2">
+                      Sayfa {page + 1} / {totalPages}
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(prev => Math.min(totalPages - 1, prev + 1))}
+                      disabled={page >= totalPages - 1 || loading}
+                    >
+                      Sonraki
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(totalPages - 1)}
+                      disabled={page >= totalPages - 1 || loading}
+                    >
+                      Son
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+              {totalPages === 1 && allBusinesses.length > 0 && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Toplam {allBusinesses.length} işletme gösteriliyor
                   </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={() => setPage(prev => Math.min(totalPages - 1, prev + 1))}
-                    disabled={page >= totalPages - 1 || loading}
-                  >
-                    Sonraki
-                  </Button>
                 </Box>
               )}
             </>

@@ -32,7 +32,6 @@ import QRCode from 'react-qr-code';
 import { reservationService } from '../services/reservationService';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
-import PlaceLogoUpload from '../components/PlaceLogoUpload';
 const getStatusColor = (status) => {
   switch (status) {
     case 'PENDING':
@@ -351,28 +350,6 @@ function DashboardView() {
         </CardContent>
       </Card>
 
-      {/* İşletme Ayarları - Logo Yükleme */}
-      {placeId && (
-        <Card sx={{ mb: 4 }}>
-          <CardContent>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                İşletme ID: <strong>{placeId}</strong>
-                {placeName && ` - ${placeName}`}
-              </Typography>
-            </Box>
-            <PlaceLogoUpload
-              placeId={placeId}
-              currentMainImageUrl={placeMainImageUrl}
-              onLogoUpdate={(newMainImageUrl) => {
-                setPlaceMainImageUrl(newMainImageUrl);
-                setSuccessMessage('Logo başarıyla güncellendi!');
-                setTimeout(() => setSuccessMessage(''), 3000);
-              }}
-            />
-          </CardContent>
-        </Card>
-      )}
 
       {/* Hızlı Eylemler */}
       <Card sx={{ mb: 4 }}>

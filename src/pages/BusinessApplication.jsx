@@ -23,6 +23,7 @@ import {
   Restaurant as RestaurantIcon,
   Send as SendIcon,
   Lock,
+  Schedule as ScheduleIcon,
 } from '@mui/icons-material';
 import { LocationPicker, HeroSection } from '../components/ui';
 import { businessService } from '../services/businessService';
@@ -41,6 +42,16 @@ const businessTypeMapping = {
   'Bistro': 'BISTRO'
 };
 
+const weekDays = [
+  { value: 'MONDAY', label: 'Pazartesi' },
+  { value: 'TUESDAY', label: 'Salı' },
+  { value: 'WEDNESDAY', label: 'Çarşamba' },
+  { value: 'THURSDAY', label: 'Perşembe' },
+  { value: 'FRIDAY', label: 'Cuma' },
+  { value: 'SATURDAY', label: 'Cumartesi' },
+  { value: 'SUNDAY', label: 'Pazar' },
+];
+
 const initialFormData = {
   businessName: '',
   businessType: '',
@@ -52,7 +63,10 @@ const initialFormData = {
   location: null,
   description: '',
   password: '',
-  passwordConfirm: ''
+  passwordConfirm: '',
+  openingTime: '09:00',
+  closingTime: '23:00',
+  workingDays: []
 };
 
 function BusinessApplication() {
@@ -88,6 +102,9 @@ function BusinessApplication() {
         passwordConfirm: formData.passwordConfirm,
         latitude: formData.location?.lat || 41.0082,
         longitude: formData.location?.lng || 28.9784,
+        openingTime: formData.openingTime || '09:00',
+        closingTime: formData.closingTime || '23:00',
+        workingDays: formData.workingDays.length > 0 ? formData.workingDays : ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
       };
 
       const response = await businessService.submitApplication(backendData);
@@ -116,7 +133,27 @@ function BusinessApplication() {
       formData.password &&
       formData.passwordConfirm &&
       formData.password === formData.passwordConfirm &&
-      formData.password.length >= 6;
+      formData.password.length >= 6 &&
+      formData.openingTime &&
+      formData.closingTime &&
+      formData.workingDays.length > 0;
+  };
+
+  const handleWorkingDayToggle = (day) => {
+    setFormData(prev => {
+      const currentDays = prev.workingDays || [];
+      if (currentDays.includes(day)) {
+        return {
+          ...prev,
+          workingDays: currentDays.filter(d => d !== day)
+        };
+      } else {
+        return {
+          ...prev,
+          workingDays: [...currentDays, day]
+        };
+      }
+    });
   };
 
   if (submitSuccess) {
@@ -351,6 +388,74 @@ function BusinessApplication() {
                 </Grid>
               </Box>
 
+              {/* Çalışma Saatleri ve Günleri */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                  <ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  Çalışma Saatleri ve Günleri
+                </Typography>
+                <Divider sx={{ mb: 3 }} />
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Açılış Saati"
+                      type="time"
+                      value={formData.openingTime}
+                      onChange={(e) => handleInputChange('openingTime', e.target.value)}
+                      required
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        step: 300, // 5 dakika adımlar
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Kapanış Saati"
+                      type="time"
+                      value={formData.closingTime}
+                      onChange={(e) => handleInputChange('closingTime', e.target.value)}
+                      required
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        step: 300, // 5 dakika adımlar
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" sx={{ mb: 2, fontWeight: 'medium' }}>
+                      Çalışma Günleri *
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                      {weekDays.map((day) => (
+                        <Button
+                          key={day.value}
+                          variant={formData.workingDays.includes(day.value) ? 'contained' : 'outlined'}
+                          onClick={() => handleWorkingDayToggle(day.value)}
+                          sx={{
+                            minWidth: 100,
+                            textTransform: 'none',
+                          }}
+                        >
+                          {day.label}
+                        </Button>
+                      ))}
+                    </Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                      İşletmenizin çalıştığı günleri seçin. En az bir gün seçilmelidir.
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
 
               {/* Şifre Bilgileri */}
               <Box sx={{ mb: 4 }}>

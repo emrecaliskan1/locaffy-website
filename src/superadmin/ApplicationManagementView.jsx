@@ -32,6 +32,7 @@ import {
   Email as EmailIcon,
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
+  Schedule as ScheduleIcon,
 } from '@mui/icons-material';
 import { businessService } from '../services/businessService';
 import { authService } from '../services/authService';
@@ -64,6 +65,19 @@ const getStatusLabel = (status) => {
     default:
       return status;
   }
+};
+
+const getDayLabel = (day) => {
+  const dayMap = {
+    'MONDAY': 'Pazartesi',
+    'TUESDAY': 'Salı',
+    'WEDNESDAY': 'Çarşamba',
+    'THURSDAY': 'Perşembe',
+    'FRIDAY': 'Cuma',
+    'SATURDAY': 'Cumartesi',
+    'SUNDAY': 'Pazar',
+  };
+  return dayMap[day] || day;
 };
 
 function ApplicationManagementView() {
@@ -564,10 +578,54 @@ function ApplicationManagementView() {
                       Açıklama
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {selectedApplication.description}
+                      {selectedApplication.description || 'Açıklama bulunmamaktadır.'}
                     </Typography>
                   </Card>
                 </Grid>
+                {(selectedApplication.openingTime || selectedApplication.closingTime || selectedApplication.workingDays) && (
+                  <Grid item xs={12}>
+                    <Card variant="outlined" sx={{ p: 2 }}>
+                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                        <ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
+                        Çalışma Saatleri ve Günleri
+                      </Typography>
+                      {(selectedApplication.openingTime || selectedApplication.closingTime) && (
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <strong>Çalışma Saatleri:</strong>
+                          </Typography>
+                          <Typography variant="body1" sx={{ ml: 2 }}>
+                            {selectedApplication.openingTime || '09:00'} - {selectedApplication.closingTime || '23:00'}
+                          </Typography>
+                        </Box>
+                      )}
+                      {selectedApplication.workingDays && Array.isArray(selectedApplication.workingDays) && selectedApplication.workingDays.length > 0 && (
+                        <Box>
+                          <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <strong>Çalışma Günleri:</strong>
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1, ml: 2 }}>
+                            {selectedApplication.workingDays.map((day, index) => (
+                              <Chip
+                                key={index}
+                                label={getDayLabel(day)}
+                                size="small"
+                                color="primary"
+                                variant="outlined"
+                              />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
+                      {(!selectedApplication.openingTime && !selectedApplication.closingTime && 
+                        (!selectedApplication.workingDays || !Array.isArray(selectedApplication.workingDays) || selectedApplication.workingDays.length === 0)) && (
+                        <Typography variant="body2" color="text.secondary">
+                          Çalışma saatleri bilgisi bulunmamaktadır.
+                        </Typography>
+                      )}
+                    </Card>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <Card variant="outlined" sx={{ p: 2 }}>
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>

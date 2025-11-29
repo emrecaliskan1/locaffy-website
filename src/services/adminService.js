@@ -1,8 +1,6 @@
 import api from './api';
 
 export const adminService = {
-    // NOT: Bu endpoint backend'de henüz oluşturulmadı
-    // Backend geliştiricisi /api/admin/dashboard/stats endpoint'ini oluşturmalı
     getDashboardStats: async () => {
         try {
             const response = await api.get('/admin/dashboard/stats');
@@ -30,14 +28,9 @@ export const adminService = {
         }
     },
 
-    // Backend'de /api/admin/places endpoint'i kullanılıyor
-    // NOT: Backend şu an pagination desteklemiyor, direkt List<PlaceResponse> döndürüyor
     getAllBusinesses: async () => {
         try {
-            // Backend'deki mevcut endpoint: GET /api/admin/places
-            // Response: List<PlaceResponse> (pagination yok)
             const response = await api.get('/admin/places');
-            // Backend direkt array döndürüyor
             return response.data;
         } catch (error) {
             if (!error.response) {
@@ -45,8 +38,6 @@ export const adminService = {
             }
 
             if (error.response?.status === 403) {
-                // 403 hatası - Token gönderiliyor ama yetki yok
-                // Token'ı kontrol et ve debug bilgisi ver
                 const token = localStorage.getItem('accessToken');
                 let tokenDebugInfo = '';
                 
@@ -152,6 +143,88 @@ export const adminService = {
                 `İşletme durumu değiştirilirken bir hata oluştu (Status: ${error.response?.status})`;
 
             throw new Error(errorMessage);
+        }
+    },
+
+    getBusinessSettings: async () => {
+        try {
+            const response = await api.get('/business/place/settings');
+            const data = response.data;
+            
+            // openingHours formatı: "09:00-23:00" -> openingTime ve closingTime'a ayır
+            let openingTime = '09:00';
+            let closingTime = '23:00';
+            if (data.openingHours) {
+                const hours = data.openingHours.split('-');
+                if (hours.length === 2) {
+                    openingTime = hours[0].trim();
+                    closingTime = hours[1].trim();
+                }
+            } else if (data.openingTime && data.closingTime) {
+                openingTime = data.openingTime;
+                closingTime = data.closingTime;
+            }
+            
+            // workingDays formatı: "MONDAY,TUESDAY,..." -> array'e çevir
+            let workingDays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+            if (data.workingDays) {
+                if (Array.isArray(data.workingDays)) {
+                    workingDays = data.workingDays;
+                } else if (typeof data.workingDays === 'string') {
+                    workingDays = data.workingDays.split(',').map(day => day.trim()).filter(day => day.length > 0);
+                }
+            }
+            
+            return { openingTime, closingTime, workingDays };
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            const backendMessage = error.response?.data?.message || 
+                                 error.response?.data?.error ||
+                                 error.response?.data?.detail ||
+                                 'Bir hata oluştu';
+
+            if (error.response?.status === 403) {
+                throw new Error(`403 Forbidden: ${backendMessage}. Bu işlem için Business Owner yetkisi gereklidir.`);
+            } else if (error.response?.status === 404) {
+                throw new Error('Endpoint bulunamadı. Backend\'i kontrol edin.');
+            } else if (error.response?.status === 500) {
+                throw new Error(`Sunucu hatası: ${backendMessage}. Backend loglarını kontrol edin.`);
+            }
+
+            throw new Error(backendMessage);
+        }
+    },
+
+    updateBusinessSettings: async (settings) => {
+        try {
+            const response = await api.put('/business/place/settings', {
+                openingTime: settings.openingTime,
+                closingTime: settings.closingTime,
+                workingDays: settings.workingDays
+            });
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            const backendMessage = error.response?.data?.message || 
+                                 error.response?.data?.error ||
+                                 error.response?.data?.detail ||
+                                 'Bir hata oluştu';
+
+            if (error.response?.status === 403) {
+                throw new Error(`403 Forbidden: ${backendMessage}. Bu işlem için Business Owner yetkisi gereklidir.`);
+            } else if (error.response?.status === 404) {
+                throw new Error('Endpoint bulunamadı. Backend\'i kontrol edin.');
+            } else if (error.response?.status === 500) {
+                throw new Error(`Sunucu hatası: ${backendMessage}. Backend loglarını kontrol edin.`);
+            }
+
+            throw new Error(backendMessage);
         }
     }
 };
