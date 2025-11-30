@@ -104,7 +104,7 @@ function BusinessApplication() {
         longitude: formData.location?.lng || 28.9784,
         openingTime: formData.openingTime || '09:00',
         closingTime: formData.closingTime || '23:00',
-        workingDays: formData.workingDays.length > 0 ? formData.workingDays : ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA'],
+        workingDays: formData.workingDays,
       };
 
       const response = await businessService.submitApplication(backendData);
