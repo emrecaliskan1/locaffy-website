@@ -203,8 +203,8 @@ export const adminService = {
                 closingTime = data.closingTime;
             }
             
-            // workingDays formatı: "MONDAY,TUESDAY,..." -> array'e çevir
-            let workingDays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+            // workingDays formatı: "PAZARTESİ,SALI,..." -> array'e çevir
+            let workingDays = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA'];
             if (data.workingDays) {
                 if (Array.isArray(data.workingDays)) {
                     workingDays = data.workingDays;

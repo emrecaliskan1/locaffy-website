@@ -21,13 +21,13 @@ import { reservationService } from '../services/reservationService';
 import PlaceLogoUpload from '../components/PlaceLogoUpload';
 
 const weekDays = [
-  { value: 'MONDAY', label: 'Pazartesi' },
-  { value: 'TUESDAY', label: 'Salı' },
-  { value: 'WEDNESDAY', label: 'Çarşamba' },
-  { value: 'THURSDAY', label: 'Perşembe' },
-  { value: 'FRIDAY', label: 'Cuma' },
-  { value: 'SATURDAY', label: 'Cumartesi' },
-  { value: 'SUNDAY', label: 'Pazar' },
+  { value: 'PAZARTESİ', label: 'Pazartesi' },
+  { value: 'SALI', label: 'Salı' },
+  { value: 'ÇARŞAMBA', label: 'Çarşamba' },
+  { value: 'PERŞEMBE', label: 'Perşembe' },
+  { value: 'CUMA', label: 'Cuma' },
+  { value: 'CUMARTESİ', label: 'Cumartesi' },
+  { value: 'PAZAR', label: 'Pazar' },
 ];
 
 function BusinessSettingsView() {
@@ -73,7 +73,7 @@ function BusinessSettingsView() {
       setSettings({
         openingTime: data.openingTime || '09:00',
         closingTime: data.closingTime || '23:00',
-        workingDays: data.workingDays || ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
+        workingDays: data.workingDays || ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA']
       });
     } catch (error) {
       setErrorMessage(error.message || 'Ayarlar yüklenirken bir hata oluştu');
