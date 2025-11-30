@@ -43,13 +43,13 @@ const businessTypeMapping = {
 };
 
 const weekDays = [
-  { value: 'MONDAY', label: 'Pazartesi' },
-  { value: 'TUESDAY', label: 'Salı' },
-  { value: 'WEDNESDAY', label: 'Çarşamba' },
-  { value: 'THURSDAY', label: 'Perşembe' },
-  { value: 'FRIDAY', label: 'Cuma' },
-  { value: 'SATURDAY', label: 'Cumartesi' },
-  { value: 'SUNDAY', label: 'Pazar' },
+  { value: 'PAZARTESİ', label: 'PAZARTESİ' },
+  { value: 'SALI', label: 'SALI' },
+  { value: 'ÇARŞAMBA', label: 'ÇARŞAMBA' },
+  { value: 'PERŞEMBE', label: 'PERŞEMBE' },
+  { value: 'CUMA', label: 'CUMA' },
+  { value: 'CUMARTESİ', label: 'CUMARTESİ' },
+  { value: 'PAZAR', label: 'PAZAR' },
 ];
 
 const initialFormData = {
@@ -104,7 +104,7 @@ function BusinessApplication() {
         longitude: formData.location?.lng || 28.9784,
         openingTime: formData.openingTime || '09:00',
         closingTime: formData.closingTime || '23:00',
-        workingDays: formData.workingDays.length > 0 ? formData.workingDays : ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
+        workingDays: formData.workingDays.length > 0 ? formData.workingDays : ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA'],
       };
 
       const response = await businessService.submitApplication(backendData);
