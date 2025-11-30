@@ -26,6 +26,7 @@ import BusinessSettingsView from './admin/BusinessSettingsView';
 import SuperAdminDashboard from './superadmin/SuperAdminDashboard';
 import BusinessManagementView from './superadmin/BusinessManagementView';
 import ApplicationManagementView from './superadmin/ApplicationManagementView';
+import ReviewsView from './admin/ReviewsView';
 
 function AppContent() {
   const location = useLocation();
@@ -52,6 +53,11 @@ function AppContent() {
         <Route path="/admin/business-management" element={
           <SuperAdminLayout>
             <BusinessManagementView />
+          </SuperAdminLayout>
+        } />
+        <Route path="/admin/super-reviews" element={
+          <SuperAdminLayout>
+            <ReviewsView />
           </SuperAdminLayout>
         } />
         <Route path="/admin/dashboard" element={
@@ -87,6 +93,11 @@ function AppContent() {
         <Route path="/admin/business-settings" element={
           <AdminLayout>
             <BusinessSettingsView />
+          </AdminLayout>
+        } />
+        <Route path="/admin/reviews" element={
+          <AdminLayout>
+            <ReviewsView />
           </AdminLayout>
         } />
       </Routes>

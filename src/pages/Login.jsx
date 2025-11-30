@@ -345,46 +345,6 @@ function Login() {
               </Stack>
             </Box>
 
-            <Divider sx={{ my: 4 }}>
-              <Typography variant="body2" sx={{ color: 'grey.500', px: 2 }}>
-                veya
-              </Typography>
-            </Divider>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  textAlign: 'center',
-                  color: 'grey.600'
-                }}
-              >
-                Demo Giriş Bilgileri:
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  textAlign: 'center',
-                  color: 'grey.500',
-                  mt: 1
-                }}
-              >
-                Email: isletme@locaffy.com
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  textAlign: 'center',
-                  color: 'grey.500'
-                }}
-              >
-                Şifre: isletme123
-              </Typography>
-            </motion.div>
           </StyledCard>
         </motion.div>
       </Container>

@@ -31,6 +31,7 @@ import {
   Rule as RuleIcon,
   Campaign as CampaignIcon,
   Settings as SettingsIcon,
+  RateReview as RateReviewIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { reservationService } from '../services/reservationService';
@@ -90,6 +91,7 @@ function AdminLayout({ children }) {
   const adminMenuItems = [
     { text: 'Panel', icon: <DashboardIcon />, path: '/admin/dashboard' },
     { text: 'Rezervasyonlar', icon: <EventNoteIcon />, path: '/admin/reservations' },
+    { text: 'Yorumlar', icon: <RateReviewIcon />, path: '/admin/reviews' },
     { text: 'Masa Planı', icon: <TableChartIcon />, path: '/admin/table-plan' },
     { text: 'Menü', icon: <RestaurantIcon />, path: '/admin/menu-management' },
     { text: 'Rezervasyon Kuralları', icon: <RuleIcon />, path: '/admin/reservation-rules' },

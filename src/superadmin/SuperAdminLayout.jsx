@@ -27,6 +27,7 @@ import {
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  RateReview as RateReviewIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -59,6 +60,7 @@ const menuItems = [
   { text: 'Başvuru Yönetimi', icon: <AssignmentIcon />, path: '/admin/application-management' },
   { text: 'İşletme Yönetimi', icon: <BusinessIcon />, path: '/admin/business-management' },
   { text: 'Kullanıcı Yönetimi', icon: <PeopleIcon />, path: '/admin/user-management' },
+  { text: 'Yorumlar', icon: <RateReviewIcon />, path: '/admin/super-reviews' },
   { text: 'Raporlar', icon: <AssessmentIcon />, path: '/admin/reports' },
   { text: 'Sistem Ayarları', icon: <SettingsIcon />, path: '/admin/system-settings' },
 ];
@@ -77,7 +79,7 @@ function SuperAdminLayout({ children }) {
   const handleLogout = () => {
     // TODO: Implement logout logic
     localStorage.removeItem('superAdminAuth');
-    navigate('/admin');
+    navigate('/login');
   };
 
   const drawer = (
