@@ -165,17 +165,53 @@ function ReservationManagementView() {
 
     try {
       const data = await reservationService.getPlaceReservations(placeId);
-      setReservations(data);
       
-      // İstatistikleri hesapla
-      const statsData = {
-        total: data.length,
-        pending: data.filter(r => r.status === 'PENDING').length,
-        approved: data.filter(r => r.status === 'APPROVED').length,
-        rejected: data.filter(r => r.status === 'REJECTED').length,
-        cancelled: data.filter(r => r.status === 'CANCELLED').length,
-      };
-      setStats(statsData);
+      // Tarihi geçmiş ve hala PENDING olan rezervasyonları otomatik iptal et
+      const now = new Date();
+      const expiredPendingReservations = data.filter(reservation => {
+        if (reservation.status !== 'PENDING') return false;
+        
+        const reservationTime = new Date(reservation.reservationTime);
+        return reservationTime < now; // Rezervasyon tarihi geçmiş
+      });
+
+      // Tarihi geçmiş PENDING rezervasyonları iptal et
+      if (expiredPendingReservations.length > 0) {
+        const cancelPromises = expiredPendingReservations.map(reservation =>
+          reservationService.cancelReservation(reservation.id).catch(error => {
+            console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
+            return null; // Hata olsa bile devam et
+          })
+        );
+        
+        await Promise.all(cancelPromises);
+        
+        // Rezervasyonları yeniden yükle
+        const updatedData = await reservationService.getPlaceReservations(placeId);
+        setReservations(updatedData);
+        
+        // İstatistikleri hesapla
+        const statsData = {
+          total: updatedData.length,
+          pending: updatedData.filter(r => r.status === 'PENDING').length,
+          approved: updatedData.filter(r => r.status === 'APPROVED').length,
+          rejected: updatedData.filter(r => r.status === 'REJECTED').length,
+          cancelled: updatedData.filter(r => r.status === 'CANCELLED').length,
+        };
+        setStats(statsData);
+      } else {
+        setReservations(data);
+        
+        // İstatistikleri hesapla
+        const statsData = {
+          total: data.length,
+          pending: data.filter(r => r.status === 'PENDING').length,
+          approved: data.filter(r => r.status === 'APPROVED').length,
+          rejected: data.filter(r => r.status === 'REJECTED').length,
+          cancelled: data.filter(r => r.status === 'CANCELLED').length,
+        };
+        setStats(statsData);
+      }
     } catch (error) {
       setErrorMessage(error.message || 'Rezervasyonlar yüklenirken bir hata oluştu');
     } finally {

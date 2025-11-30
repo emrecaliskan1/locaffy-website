@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -22,6 +22,10 @@ import {
   TextField,
   Alert,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,
@@ -82,7 +86,7 @@ const getDayLabel = (day) => {
 
 function ApplicationManagementView() {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState([]);
+  const [allApplications, setAllApplications] = useState([]); // Tüm başvurular
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
@@ -93,9 +97,21 @@ function ApplicationManagementView() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
   const [page, setPage] = useState(0);
-  const [size] = useState(10);
+  const [size, setSize] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
   const [statusFilter, setStatusFilter] = useState(null);
   const [isAuthorized, setIsAuthorized] = useState(false);
+
+  // Client-side pagination: allApplications'dan mevcut sayfadaki başvuruları al
+  const paginatedSize = size === allApplications.length ? allApplications.length : size;
+  const applications = allApplications.slice(page * paginatedSize, (page + 1) * paginatedSize);
+  const totalPages = Math.ceil(allApplications.length / paginatedSize) || 1;
+  
+  // Sayfa değiştiğinde veya size değiştiğinde, geçersiz sayfadaysak ilk sayfaya dön
+  useEffect(() => {
+    if (page >= totalPages && totalPages > 0) {
+      setPage(0);
+    }
+  }, [totalPages, page]);
 
   // Role kontrolü
   React.useEffect(() => {
@@ -156,7 +172,7 @@ function ApplicationManagementView() {
     try {
       const response = await businessService.approveApplication(selectedApplication.id);
 
-      setApplications(prev => prev.map(app =>
+      setAllApplications(prev => prev.map(app =>
         app.id === selectedApplication.id
           ? { ...app, status: 'APPROVED', updatedAt: response.updatedAt }
           : app
@@ -217,7 +233,7 @@ function ApplicationManagementView() {
         rejectionReason
       );
 
-      setApplications(prev => prev.map(app =>
+      setAllApplications(prev => prev.map(app =>
         app.id === selectedApplication.id
           ? {
             ...app,
@@ -262,7 +278,7 @@ function ApplicationManagementView() {
       loadApplications();
       loadStats();
     }
-  }, [page, statusFilter, isAuthorized]);
+  }, [statusFilter, isAuthorized]); // page ve size kaldırıldı - client-side pagination için
 
   const loadApplications = async () => {
     if (!isAuthorized) return;
@@ -271,7 +287,8 @@ function ApplicationManagementView() {
     setErrorMessage('');
 
     try {
-      const response = await businessService.getAllApplications(statusFilter, page, size);
+      // Tüm başvuruları yükle (client-side pagination için)
+      const response = await businessService.getAllApplications(statusFilter, 0, 1000);
 
       const mappedApplications = (response.content || []).map(app => ({
         ...app,
@@ -284,7 +301,7 @@ function ApplicationManagementView() {
             })
           : (app.applicationDate || ''),
       }));
-      setApplications(mappedApplications);
+      setAllApplications(mappedApplications);
     } catch (error) {
       // 500 hatası için özel mesaj
       if (error.response?.status === 500) {
@@ -426,73 +443,148 @@ function ApplicationManagementView() {
           )}
 
           {!loading && (
-            <TableContainer component={Paper} variant="outlined">
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>İşletme Adı</TableCell>
-                    <TableCell>İşletme Sahibi</TableCell>
-                    <TableCell>İşletme Türü</TableCell>
-                    <TableCell>Başvuru Tarihi</TableCell>
-                    <TableCell>Durum</TableCell>
-                    <TableCell>İşlemler</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {applications.map((application) => (
-                    <TableRow key={application.id}>
-                      <TableCell sx={{ fontWeight: 'bold' }}>{application.businessName}</TableCell>
-                      <TableCell>{application.ownerName}</TableCell>
-                      <TableCell>{application.businessType}</TableCell>
-                      <TableCell>
-                        {application.applicationDate || 
-                         (application.createdAt 
-                           ? new Date(application.createdAt).toLocaleDateString('tr-TR', {
-                               year: 'numeric',
-                               month: '2-digit',
-                               day: '2-digit'
-                             })
-                           : '')}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={getStatusLabel(application.status)}
-                          color={getStatusColor(application.status)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={() => handleViewDetails(application)}
-                        >
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                        {application.status === 'PENDING' && (
-                          <>
-                            <IconButton
-                              size="small"
-                              color="success"
-                              onClick={() => handleApprove(application)}
-                            >
-                              <CheckCircleIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              color="error"
-                              onClick={() => handleReject(application)}
-                            >
-                              <CancelIcon fontSize="small" />
-                            </IconButton>
-                          </>
-                        )}
-                      </TableCell>
+            <>
+              <TableContainer component={Paper} variant="outlined">
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>İşletme Adı</TableCell>
+                      <TableCell>İşletme Sahibi</TableCell>
+                      <TableCell>İşletme Türü</TableCell>
+                      <TableCell>Başvuru Tarihi</TableCell>
+                      <TableCell>Durum</TableCell>
+                      <TableCell>İşlemler</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {applications.map((application) => (
+                      <TableRow key={application.id}>
+                        <TableCell sx={{ fontWeight: 'bold' }}>{application.businessName}</TableCell>
+                        <TableCell>{application.ownerName}</TableCell>
+                        <TableCell>{application.businessType}</TableCell>
+                        <TableCell>
+                          {application.applicationDate || 
+                           (application.createdAt 
+                             ? new Date(application.createdAt).toLocaleDateString('tr-TR', {
+                                 year: 'numeric',
+                                 month: '2-digit',
+                                 day: '2-digit'
+                               })
+                             : '')}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={getStatusLabel(application.status)}
+                            color={getStatusColor(application.status)}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleViewDetails(application)}
+                          >
+                            <VisibilityIcon fontSize="small" />
+                          </IconButton>
+                          {application.status === 'PENDING' && (
+                            <>
+                              <IconButton
+                                size="small"
+                                color="success"
+                                onClick={() => handleApprove(application)}
+                              >
+                                <CheckCircleIcon fontSize="small" />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                color="error"
+                                onClick={() => handleReject(application)}
+                              >
+                                <CancelIcon fontSize="small" />
+                              </IconButton>
+                            </>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              
+              {/* Client-side Pagination */}
+              {totalPages > 1 && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mt: 3, mb: 2, flexWrap: 'wrap' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Sayfa başına:
+                    </Typography>
+                    <FormControl size="small" sx={{ minWidth: 80 }}>
+                      <Select
+                        value={size}
+                        onChange={(e) => {
+                          setSize(Number(e.target.value));
+                          setPage(0); // Sayfa başına kayıt sayısı değiştiğinde ilk sayfaya dön
+                        }}
+                      >
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={25}>25</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
+                        <MenuItem value={100}>100</MenuItem>
+                        <MenuItem value={allApplications.length}>Tümü</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {page * size + 1}-{Math.min((page + 1) * size, allApplications.length)} / {allApplications.length}
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(0)}
+                      disabled={page === 0 || loading}
+                    >
+                      İlk
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(prev => Math.max(0, prev - 1))}
+                      disabled={page === 0 || loading}
+                    >
+                      Önceki
+                    </Button>
+                    <Typography variant="body2">
+                      Sayfa {page + 1} / {totalPages}
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(prev => Math.min(totalPages - 1, prev + 1))}
+                      disabled={page >= totalPages - 1 || loading}
+                    >
+                      Sonraki
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setPage(totalPages - 1)}
+                      disabled={page >= totalPages - 1 || loading}
+                    >
+                      Son
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+              {totalPages === 1 && allApplications.length > 0 && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Toplam {allApplications.length} başvuru gösteriliyor
+                  </Typography>
+                </Box>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

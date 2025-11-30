@@ -190,12 +190,43 @@ function DashboardView() {
 
     try {
       const data = await reservationService.getPlaceReservations(placeId);
-      setAllReservations(data);
+      
+      // Tarihi geçmiş ve hala PENDING olan rezervasyonları otomatik iptal et
+      const now = new Date();
+      const expiredPendingReservations = data.filter(reservation => {
+        if (reservation.status !== 'PENDING') return false;
+        
+        const reservationTime = new Date(reservation.reservationTime);
+        return reservationTime < now; // Rezervasyon tarihi geçmiş
+      });
 
-      const recent = data
-        .sort((a, b) => new Date(b.createdAt || b.reservationTime) - new Date(a.createdAt || a.reservationTime))
-        .slice(0, 5);
-      setRecentReservations(recent);
+      // Tarihi geçmiş PENDING rezervasyonları iptal et
+      if (expiredPendingReservations.length > 0) {
+        const cancelPromises = expiredPendingReservations.map(reservation =>
+          reservationService.cancelReservation(reservation.id).catch(error => {
+            console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
+            return null; // Hata olsa bile devam et
+          })
+        );
+        
+        await Promise.all(cancelPromises);
+        
+        // Rezervasyonları yeniden yükle
+        const updatedData = await reservationService.getPlaceReservations(placeId);
+        setAllReservations(updatedData);
+
+        const recent = updatedData
+          .sort((a, b) => new Date(b.createdAt || b.reservationTime) - new Date(a.createdAt || a.reservationTime))
+          .slice(0, 5);
+        setRecentReservations(recent);
+      } else {
+        setAllReservations(data);
+
+        const recent = data
+          .sort((a, b) => new Date(b.createdAt || b.reservationTime) - new Date(a.createdAt || a.reservationTime))
+          .slice(0, 5);
+        setRecentReservations(recent);
+      }
     } catch (error) {
       setErrorMessage(error.message || 'Rezervasyonlar yüklenirken bir hata oluştu');
     } finally {

@@ -26,13 +26,11 @@ import {
   MenuItem,
   Alert,
   CircularProgress,
+  Switch,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
   Business as BusinessIcon,
 } from '@mui/icons-material';
 import { adminService } from '../services/adminService';
@@ -124,12 +122,13 @@ function BusinessManagementView() {
 
   const handleEditBusiness = (business) => {
     setSelectedBusiness(business);
+    
     setNewBusiness({
       name: business.name,
       email: business.email,
       phone: business.phone,
       address: business.address,
-      status: business.status,
+      status: business.status, // Status artık dialog'da kullanılmıyor ama state'te tutuluyor
     });
     setEditDialogOpen(true);
   };
@@ -137,21 +136,43 @@ function BusinessManagementView() {
   const handleUpdateBusiness = async () => {
     if (!selectedBusiness) return;
 
-    // NOT: Backend'de PUT /api/admin/places/{id} endpoint'i yok
-    // Bu özellik backend'de oluşturulana kadar disabled olmalı
-    setErrorMessage('İşletme güncelleme özelliği henüz backend\'de oluşturulmadı. Backend geliştiricisiyle iletişime geçin.');
-    setEditDialogOpen(false);
-    setSelectedBusiness(null);
-    setNewBusiness({ name: '', email: '', phone: '', address: '', status: 'Beklemede' });
-    
-    // Geçici olarak mock data güncelleme (backend endpoint oluşturulana kadar)
-    // setBusinesses(prev => prev.map(business => 
-    //   business.id === selectedBusiness.id 
-    //     ? { ...business, ...newBusiness }
-    //     : business
-    // ));
-    // setSuccessMessage('İşletme başarıyla güncellendi!');
-    // setTimeout(() => setSuccessMessage(''), 3000);
+    setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      // Mevcut durumu backend formatına çevir
+      let backendStatus = 'PENDING';
+      const currentStatus = selectedBusiness.status?.toUpperCase();
+      if (currentStatus === 'ACTIVE' || currentStatus === 'AKTIF') {
+        backendStatus = 'ACTIVE';
+      } else if (currentStatus === 'INACTIVE' || currentStatus === 'PASSIVE' || currentStatus === 'PASIF') {
+        backendStatus = 'INACTIVE';
+      } else if (currentStatus === 'PENDING' || currentStatus === 'BEKLEMEDE') {
+        backendStatus = 'PENDING';
+      }
+
+      await adminService.updateBusiness(selectedBusiness.id, {
+        name: newBusiness.name,
+        email: newBusiness.email,
+        phone: newBusiness.phone,
+        address: newBusiness.address,
+        status: backendStatus // Mevcut durumu koru, toggle ile değiştirilecek
+      });
+
+      // Başarılı olursa listeyi yeniden yükle
+      await loadBusinesses();
+      
+      setEditDialogOpen(false);
+      setSelectedBusiness(null);
+      setNewBusiness({ name: '', email: '', phone: '', address: '', status: 'Beklemede' });
+      setSuccessMessage('İşletme başarıyla güncellendi!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      setErrorMessage(error.message || 'İşletme güncellenirken bir hata oluştu');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteBusiness = (business) => {
@@ -545,11 +566,19 @@ function BusinessManagementView() {
                         <TableCell>{business.joinDate || ''}</TableCell>
                         <TableCell>{business.reservationCount || 0}</TableCell>
                         <TableCell>
-                          <Chip
-                            label={getStatusLabel(business.status)}
-                            color={getStatusColor(business.status)}
-                            size="small"
-                          />
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Switch
+                              checked={business.status === 'ACTIVE' || business.status === 'Aktif'}
+                              onChange={() => handleStatusChange(business)}
+                              disabled={loading}
+                              color="primary"
+                            />
+                            <Chip
+                              label={getStatusLabel(business.status)}
+                              color={getStatusColor(business.status)}
+                              size="small"
+                            />
+                          </Box>
                         </TableCell>
                         <TableCell>
                           <IconButton 
@@ -557,27 +586,9 @@ function BusinessManagementView() {
                             color="primary"
                             onClick={() => handleEditBusiness(business)}
                             disabled={loading}
-                            title="Güncelleme özelliği henüz backend'de oluşturulmadı"
+                            title="İşletmeyi Düzenle"
                           >
                             <EditIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton 
-                            size="small" 
-                            color="success"
-                            onClick={() => handleStatusChange(business)}
-                            disabled={loading}
-                            title="Durumu Değiştir"
-                          >
-                            <CheckCircleIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton 
-                            size="small" 
-                            color="error"
-                            onClick={() => handleDeleteBusiness(business)}
-                            disabled={loading}
-                            title="Sil"
-                          >
-                            <DeleteIcon fontSize="small" />
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -764,29 +775,15 @@ function BusinessManagementView() {
             margin="normal"
             required
           />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Durum</InputLabel>
-            <Select
-              value={newBusiness.status}
-              label="Durum"
-              onChange={(e) => setNewBusiness(prev => ({ ...prev, status: e.target.value }))}
-            >
-              {statusOptions.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)}>İptal</Button>
+          <Button onClick={() => setEditDialogOpen(false)} disabled={loading}>İptal</Button>
           <Button 
             onClick={handleUpdateBusiness} 
             variant="contained"
-            disabled={!newBusiness.name || !newBusiness.email || !newBusiness.phone || !newBusiness.address}
+            disabled={!newBusiness.name || !newBusiness.email || !newBusiness.phone || !newBusiness.address || loading}
           >
-            Güncelle
+            {loading ? 'Güncelleniyor...' : 'Güncelle'}
           </Button>
         </DialogActions>
       </Dialog>

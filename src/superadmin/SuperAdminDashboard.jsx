@@ -13,7 +13,6 @@ import {
   TableRow,
   Paper,
   Chip,
-  IconButton,
   Button,
   Alert,
   CircularProgress,
@@ -24,7 +23,6 @@ import {
   People as PeopleIcon,
   Restaurant as RestaurantIcon,
   CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
   Schedule as ScheduleIcon,
   MonetizationOn as MonetizationOnIcon,
 } from '@mui/icons-material';
@@ -307,6 +305,38 @@ function SuperAdminDashboard() {
             }
           }
           
+          // Sıralama için ham tarih bilgisini de sakla
+          let sortDate = null;
+          for (const dateField of dateFields) {
+            if (dateField) {
+              try {
+                const date = new Date(dateField);
+                if (!isNaN(date.getTime())) {
+                  sortDate = date;
+                  break;
+                }
+              } catch (e) {
+                // Tarih formatlama hatası - sessizce geç
+              }
+            }
+          }
+          
+          // Eğer backend'den tarih gelmediyse, business application'lardan al
+          if (!sortDate) {
+            const businessName = business.name?.trim().toLowerCase();
+            if (businessName && dateMap.has(businessName)) {
+              try {
+                const appDate = dateMap.get(businessName);
+                sortDate = new Date(appDate);
+                if (isNaN(sortDate.getTime())) {
+                  sortDate = null;
+                }
+              } catch (e) {
+                // Business application tarih formatlama hatası - sessizce geç
+              }
+            }
+          }
+          
           return {
             ...business,
             status: statusValue,
@@ -314,10 +344,18 @@ function SuperAdminDashboard() {
             phone: business.phoneNumber || business.phone || '-',
             address: business.address || business.city || '-',
             joinDate: joinDate || '',
+            sortDate: sortDate || new Date(0), // Sıralama için
           };
         });
 
-        setBusinesses(mappedBusinesses);
+        // Son eklenen 10 işletmeyi göster - tarihe göre sırala (en yeni önce)
+        const sortedBusinesses = mappedBusinesses.sort((a, b) => {
+          // En yeni önce (azalan sıra)
+          return b.sortDate.getTime() - a.sortDate.getTime();
+        });
+        
+        // Son 10 işletmeyi al
+        setBusinesses(sortedBusinesses.slice(0, 10));
       } else {
         setErrorMessage(
           (errorMessage ? errorMessage + ' ' : '') + 
@@ -440,7 +478,7 @@ function SuperAdminDashboard() {
       <Card>
         <CardContent>
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-            İşletmeler
+            Son Eklenen 10 İşletme
           </Typography>
           
           {loading && businesses.length === 0 ? (
@@ -461,7 +499,6 @@ function SuperAdminDashboard() {
                     <TableCell>Adres</TableCell>
                     <TableCell>Kayıt Tarihi</TableCell>
                     <TableCell>Durum</TableCell>
-                    <TableCell>İşlemler</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -477,18 +514,6 @@ function SuperAdminDashboard() {
                           color={getStatusColor(business.status)}
                           size="small"
                         />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton 
-                          size="small" 
-                          color="primary"
-                          onClick={() => navigate(`/admin/business-management`)}
-                        >
-                          <CheckCircleIcon />
-                        </IconButton>
-                        <IconButton size="small" color="error">
-                          <CancelIcon />
-                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

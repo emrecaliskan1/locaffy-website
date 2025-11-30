@@ -146,6 +146,44 @@ export const adminService = {
         }
     },
 
+    updateBusiness: async (placeId, businessData) => {
+        try {
+            const response = await api.put(`/admin/places/${placeId}`, {
+                name: businessData.name,
+                email: businessData.email,
+                phone: businessData.phone,
+                address: businessData.address,
+                status: businessData.status
+            });
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            if (error.response?.status === 403) {
+                throw new Error('Bu işlem için Admin yetkisi gereklidir.');
+            } else if (error.response?.status === 404) {
+                throw new Error('İşletme bulunamadı.');
+            } else if (error.response?.status === 400) {
+                const errorMessage =
+                    error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    'Geçersiz veri. Lütfen tüm alanları kontrol edin.';
+                throw new Error(errorMessage);
+            } else if (error.response?.status === 500) {
+                throw new Error('Sunucu hatası. Lütfen daha sonra tekrar deneyin.');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                `İşletme güncellenirken bir hata oluştu (Status: ${error.response?.status})`;
+
+            throw new Error(errorMessage);
+        }
+    },
+
     getBusinessSettings: async () => {
         try {
             const response = await api.get('/business/place/settings');
