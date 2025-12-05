@@ -707,114 +707,238 @@ function ApplicationManagementView() {
         </CardContent>
       </Card>
 
-      {/* Başvuru Detay Dialog */}
-      <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Başvuru Detayları</DialogTitle>
-        <DialogContent>
+      {/* Başvuru Detayları Modal */}
+      <Dialog 
+        open={detailDialogOpen} 
+        onClose={() => setDetailDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+      >
+        <DialogTitle sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          textAlign: 'center',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          py: 3
+        }}>
+          {selectedApplication?.businessName} - Başvuru Detayları
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 3, backgroundColor: '#f8fafc' }}>
           {selectedApplication && (
-            <Box sx={{ mt: 2 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      İşletme Bilgileri
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedApplication.businessName}</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedApplication.ownerName}</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mr: 1, fontWeight: 'bold' }}>
-                        Vergi No:
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              {/* İşletme Bilgileri */}
+              <Grid item xs={12} sm={6}>
+                <Card sx={{ 
+                  p: 2,
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid #e2e8f0',
+                  background: 'white',
+                  height: '100%'
+                }}>
+                  <Typography variant="h6" gutterBottom sx={{ 
+                    fontWeight: 'bold',
+                    color: '#1e293b',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
+                    <BusinessIcon sx={{ mr: 1, color: '#667eea' }} />
+                    İşletme Bilgileri
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>İşletme Adı</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                        {selectedApplication.businessName}
                       </Typography>
-                      <Typography variant="body1">{selectedApplication.taxNumber}</Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <EmailIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedApplication.email}</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PhoneIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedApplication.phone}</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <LocationIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedApplication.address}</Typography>
-                    </Box>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      İşletme Detayları
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>İşletme Türü:</strong> {selectedApplication.businessType}
-                    </Typography>
-                    {selectedApplication.capacity && (
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        <strong>Kapasite:</strong> {selectedApplication.capacity} kişi
+                    
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>İşletme Sahibi</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                        {selectedApplication.ownerName}
                       </Typography>
+                    </Box>
+                    
+                    {selectedApplication.taxNumber && (
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Vergi No</Typography>
+                        <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                          {selectedApplication.taxNumber}
+                        </Typography>
+                      </Box>
                     )}
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Başvuru Tarihi:</strong> {
-                        selectedApplication.createdAt 
-                          ? new Date(selectedApplication.createdAt).toLocaleDateString('tr-TR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit'
-                            })
-                          : (selectedApplication.applicationDate || '')
-                      }
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Durum:</strong>
-                      <Chip
-                        label={getStatusLabel(selectedApplication.status)}
-                        color={getStatusColor(selectedApplication.status)}
-                        size="small"
-                        sx={{ ml: 1 }}
-                      />
-                    </Typography>
-                  </Card>
-                </Grid>
-                <Grid item xs={12}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Açıklama
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Email</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                        {selectedApplication.email}
+                      </Typography>
+                    </Box>
+                    
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Telefon</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                        {selectedApplication.phone}
+                      </Typography>
+                    </Box>
+                    
+                    {selectedApplication.address && (
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Adres</Typography>
+                        <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #667eea' }}>
+                          {selectedApplication.address}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Card>
+              </Grid>
+
+              {/* İşletme Detayları */}
+              <Grid item xs={12} sm={6}>
+                <Card sx={{ 
+                  p: 2,
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid #e2e8f0',
+                  background: 'white',
+                  height: '100%'
+                }}>
+                  <Typography variant="h6" gutterBottom sx={{ 
+                    fontWeight: 'bold',
+                    color: '#1e293b',
+                    mb: 2
+                  }}>
+                    İşletme Detayları
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>İşletme Türü</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #10b981' }}>
+                        {selectedApplication.businessType}
+                      </Typography>
+                    </Box>
+                    
+                    {selectedApplication.capacity && (
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Kapasite</Typography>
+                        <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #10b981' }}>
+                          {selectedApplication.capacity} kişi
+                        </Typography>
+                      </Box>
+                    )}
+                    
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Başvuru Tarihi</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: '600', pl: 1, borderLeft: '3px solid #10b981' }}>
+                        {selectedApplication.createdAt 
+                          ? new Date(selectedApplication.createdAt).toLocaleDateString('tr-TR')
+                          : selectedApplication.applicationDate || ''}
+                      </Typography>
+                    </Box>
+                    
+                    <Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Durum</Typography>
+                      <Box sx={{ pl: 1, borderLeft: '3px solid #10b981', py: 0.5 }}>
+                        <Chip
+                          label={getStatusLabel(selectedApplication.status)}
+                          color={getStatusColor(selectedApplication.status)}
+                          size="small"
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                </Card>
+              </Grid>
+
+              {/* Açıklama */}
+              <Grid item xs={12}>
+                <Card sx={{ 
+                  p: 2,
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid #e2e8f0',
+                  background: 'white'
+                }}>
+                  <Typography variant="h6" gutterBottom sx={{ 
+                    fontWeight: 'bold',
+                    color: '#1e293b',
+                    mb: 2
+                  }}>
+                    Açıklama
+                  </Typography>
+                  <Box sx={{
+                    p: 2,
+                    backgroundColor: '#f8fafc',
+                    borderRadius: 1,
+                    border: '1px solid #e2e8f0',
+                    minHeight: '60px',
+                    borderLeft: '4px solid #f59e0b'
+                  }}>
+                    <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
                       {selectedApplication.description || 'Açıklama bulunmamaktadır.'}
                     </Typography>
-                  </Card>
-                </Grid>
-                {(selectedApplication.openingTime || selectedApplication.closingTime || selectedApplication.workingDays) && (
-                  <Grid item xs={12}>
-                    <Card variant="outlined" sx={{ p: 2 }}>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-                        <ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
-                        Çalışma Saatleri ve Günleri
-                      </Typography>
+                  </Box>
+                </Card>
+              </Grid>
+
+              {/* Çalışma Saatleri */}
+              {(selectedApplication.openingTime || selectedApplication.closingTime || selectedApplication.workingDays) && (
+                <Grid item xs={12}>
+                  <Card sx={{ 
+                    p: 2,
+                    borderRadius: 2,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    border: '1px solid #e2e8f0',
+                    background: 'white'
+                  }}>
+                    <Typography variant="h6" gutterBottom sx={{ 
+                      fontWeight: 'bold',
+                      color: '#1e293b',
+                      mb: 2,
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}>
+                      <ScheduleIcon sx={{ mr: 1, color: '#667eea' }} />
+                      Çalışma Saatleri ve Günleri
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       {(selectedApplication.openingTime || selectedApplication.closingTime) && (
-                        <Box sx={{ mb: 2 }}>
-                          <Typography variant="body2" color="text.secondary" gutterBottom>
-                            <strong>Çalışma Saatleri:</strong>
+                        <Box sx={{
+                          p: 2,
+                          backgroundColor: '#f1f5f9',
+                          borderRadius: 1,
+                          border: '1px solid #e2e8f0',
+                          borderLeft: '4px solid #8b5cf6'
+                        }}>
+                          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 'bold' }}>
+                            Çalışma Saatleri
                           </Typography>
-                          <Typography variant="body1" sx={{ ml: 2 }}>
+                          <Typography variant="body1" sx={{ fontWeight: '600' }}>
                             {selectedApplication.openingTime || '09:00'} - {selectedApplication.closingTime || '23:00'}
                           </Typography>
                         </Box>
                       )}
+                      
                       {selectedApplication.workingDays && Array.isArray(selectedApplication.workingDays) && selectedApplication.workingDays.length > 0 && (
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" gutterBottom>
-                            <strong>Çalışma Günleri:</strong>
+                        <Box sx={{
+                          p: 2,
+                          backgroundColor: '#f1f5f9',
+                          borderRadius: 1,
+                          border: '1px solid #e2e8f0',
+                          borderLeft: '4px solid #8b5cf6'
+                        }}>
+                          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontWeight: 'bold' }}>
+                            Çalışma Günleri
                           </Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1, ml: 2 }}>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
                             {selectedApplication.workingDays.map((day, index) => (
                               <Chip
                                 key={index}
@@ -822,47 +946,38 @@ function ApplicationManagementView() {
                                 size="small"
                                 color="primary"
                                 variant="outlined"
+                                sx={{ fontWeight: '500' }}
                               />
                             ))}
                           </Box>
                         </Box>
                       )}
-                      {(!selectedApplication.openingTime && !selectedApplication.closingTime && 
-                        (!selectedApplication.workingDays || !Array.isArray(selectedApplication.workingDays) || selectedApplication.workingDays.length === 0)) && (
-                        <Typography variant="body2" color="text.secondary">
-                          Çalışma saatleri bilgisi bulunmamaktadır.
-                        </Typography>
-                      )}
-                    </Card>
-                  </Grid>
-                )}
-                <Grid item xs={12}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Yüklenen Belgeler
-                    </Typography>
-                    {selectedApplication.documents && selectedApplication.documents.length > 0 ? (
-                      selectedApplication.documents.map((doc, index) => (
-                        <Chip
-                          key={index}
-                          label={doc}
-                          variant="outlined"
-                          sx={{ mr: 1, mb: 1 }}
-                        />
-                      ))
-                    ) : (
-                      <Typography variant="body2" color="text.secondary">
-                        Belge bulunmamaktadır.
-                      </Typography>
-                    )}
+                    </Box>
                   </Card>
                 </Grid>
-              </Grid>
-            </Box>
+              )}
+            </Grid>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDetailDialogOpen(false)}>Kapat</Button>
+
+        <DialogActions sx={{
+          p: 3,
+          backgroundColor: '#f8fafc',
+          borderTop: '1px solid #e2e8f0',
+          gap: 1
+        }}>
+          <Button 
+            onClick={() => setDetailDialogOpen(false)}
+            variant="outlined"
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: '500',
+              px: 3
+            }}
+          >
+            Kapat
+          </Button>
           {selectedApplication?.status === 'PENDING' && (
             <>
               <Button
@@ -870,6 +985,12 @@ function ApplicationManagementView() {
                 variant="contained"
                 color="success"
                 startIcon={<CheckCircleIcon />}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: '600',
+                  px: 3
+                }}
               >
                 Onayla
               </Button>
@@ -878,6 +999,12 @@ function ApplicationManagementView() {
                 variant="contained"
                 color="error"
                 startIcon={<CancelIcon />}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: '600',
+                  px: 3
+                }}
               >
                 Reddet
               </Button>

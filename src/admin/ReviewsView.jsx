@@ -705,30 +705,92 @@ function ReviewsView() {
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
                 aria-labelledby="delete-dialog-title"
+                maxWidth="sm"
+                fullWidth
             >
-                <DialogTitle id="delete-dialog-title">Yorumu Sil</DialogTitle>
+                <DialogTitle id="delete-dialog-title" sx={{
+                    background: 'linear-gradient(135deg, #d32f2f 0%, #f44336 100%)',
+                    color: 'white',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    py: 3
+                }}>
+                    Yorumu Sil
+                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Bu yorumu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
-                        <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                                Yorum ID: {selectedReview?.id}
-                            </Typography>
-                            <Typography variant="body2">
-                                Kullanıcı: {selectedReview?.username}
-                            </Typography>
-                            <Typography variant="body2">
-                                Puan: {selectedReview?.rating}/5
-                            </Typography>
-                            <Typography variant="body2" sx={{ mt: 1 }}>
-                                {selectedReview?.comment}
+                    <Box sx={{ mt: 2 }}>
+                        {/* Uyarı Mesajı */}
+                        <Box sx={{ 
+                            p: 2,
+                            backgroundColor: '#fff3cd',
+                            borderRadius: 1,
+                            borderLeft: '4px solid #f57c00',
+                            mb: 3
+                        }}>
+                            <Typography variant="body1" sx={{ fontWeight: 'medium', color: '#8b4513' }}>
+                                ⚠️ Bu yorumu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
                             </Typography>
                         </Box>
-                    </DialogContentText>
+
+                        {/* Üst Kısım - ID Bilgileri */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            gap: 3, 
+                            flexWrap: 'wrap', 
+                            p: 2,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 1,
+                            mb: 3 
+                        }}>
+                            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                <strong>Yorum ID:</strong> {selectedReview?.id}
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                <strong>Kullanıcı:</strong> {selectedReview?.username}
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                <strong>Puan:</strong> {selectedReview?.rating}/5
+                            </Typography>
+                        </Box>
+
+                        {/* Orta Kısım - Yorum İçeriği */}
+                        <Box sx={{ mb: 3 }}>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                                Silinecek Yorum
+                            </Typography>
+                            <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                    whiteSpace: 'pre-wrap',
+                                    p: 3,
+                                    backgroundColor: '#ffebee',
+                                    borderRadius: 1,
+                                    borderLeft: '4px solid #d32f2f',
+                                    fontSize: '16px',
+                                    lineHeight: 1.6
+                                }}
+                            >
+                                {selectedReview?.comment || 'Yorum bulunmuyor'}
+                            </Typography>
+                        </Box>
+                    </Box>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDeleteDialogOpen(false)}>İptal</Button>
-                    <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+                <DialogActions sx={{ p: 3, gap: 2 }}>
+                    <Button 
+                        onClick={() => setDeleteDialogOpen(false)}
+                        variant="outlined"
+                        size="large"
+                        sx={{ minWidth: '120px' }}
+                    >
+                        İptal
+                    </Button>
+                    <Button 
+                        onClick={handleDeleteConfirm} 
+                        color="error" 
+                        variant="contained"
+                        size="large"
+                        sx={{ minWidth: '120px', fontWeight: 'bold' }}
+                    >
                         Sil
                     </Button>
                 </DialogActions>
@@ -739,89 +801,119 @@ function ReviewsView() {
                 open={detailDialogOpen}
                 onClose={() => setDetailDialogOpen(false)}
                 aria-labelledby="detail-dialog-title"
-                maxWidth="md"
+                maxWidth="sm"
                 fullWidth
             >
-                <DialogTitle id="detail-dialog-title">Yorum Detayları</DialogTitle>
+                <DialogTitle sx={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    py: 3
+                }}>
+                    Yorum Detayları
+                </DialogTitle>
                 <DialogContent>
                     {selectedReview && (
                         <Box sx={{ mt: 1 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Yorum ID
-                                    </Typography>
-                                    <Typography variant="body1" sx={{ mb: 2 }}>
-                                        {selectedReview.id}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Mekan ID
-                                    </Typography>
-                                    <Typography
-                                        variant="body1"
-                                        sx={{ mb: 2, cursor: 'pointer', color: 'primary.main' }}
+                            {/* Üst Kısım - ID Bilgileri Tek Sırada */}
+                            <Box sx={{ 
+                                display: 'flex', 
+                                gap: 3, 
+                                flexWrap: 'wrap', 
+                                p: 2,
+                                backgroundColor: '#f8f9fa',
+                                borderRadius: 1,
+                                mb: 3 
+                            }}>
+                                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                    <strong>Yorum ID:</strong> {selectedReview.id}
+                                </Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                    <strong>Mekan ID:</strong> 
+                                    <span 
+                                        style={{ cursor: 'pointer', color: '#667eea', marginLeft: '4px', fontWeight: 'bold' }}
                                         onClick={() => handlePlaceClick(selectedReview.placeId)}
                                     >
                                         {selectedReview.placeId}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Kullanıcı ID
-                                    </Typography>
-                                    <Typography variant="body1" sx={{ mb: 2 }}>
-                                        {selectedReview.userId}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Kullanıcı Adı
-                                    </Typography>
-                                    <Typography
-                                        variant="body1"
-                                        sx={{ mb: 2, cursor: 'pointer', color: 'primary.main' }}
+                                    </span>
+                                </Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                    <strong>Kullanıcı:</strong> 
+                                    <span 
+                                        style={{ cursor: 'pointer', color: '#667eea', marginLeft: '4px', fontWeight: 'bold' }}
                                         onClick={() => handleUserClick(selectedReview.userId)}
                                     >
-                                        {selectedReview.username}
-                                    </Typography>
-                                </Grid>
+                                        {selectedReview.username} (ID: {selectedReview.userId})
+                                    </span>
+                                </Typography>
+                            </Box>
+
+                            {/* Orta Kısım - Yıldız ve Yorum */}
+                            <Box sx={{ mb: 3 }}>
+                                {/* Verilen Puan */}
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                                    Verilen Puan
+                                </Typography>
+                                <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
+                                    <Rating value={selectedReview.rating || 0} readOnly size="large" />
+                                    <Chip
+                                        label={`${selectedReview.rating}/5`}
+                                        color={getRatingColor(selectedReview.rating)}
+                                        size="medium"
+                                        sx={{ fontWeight: 'bold' }}
+                                    />
+                                </Box>
+                                
+                                {/* Yorum Metni */}
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                                    Yorum Metni
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    sx={{ 
+                                        whiteSpace: 'pre-wrap',
+                                        p: 3,
+                                        backgroundColor: '#f5f5f5',
+                                        borderRadius: 1,
+                                        borderLeft: '4px solid #667eea',
+                                        fontSize: '16px',
+                                        lineHeight: 1.6,
+                                        mb: 3
+                                    }}
+                                >
+                                    {selectedReview.comment || 'Yorum bulunmuyor'}
+                                </Typography>
+                            </Box>
+
+                            {/* Alt Kısım - Tarihler Yan Yana */}
+                            <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Puan
-                                    </Typography>
-                                    <Box display="flex" alignItems="center" gap={1} sx={{ mb: 2 }}>
-                                        <Rating value={selectedReview.rating || 0} readOnly />
-                                        <Chip
-                                            label={`${selectedReview.rating}/5`}
-                                            color={getRatingColor(selectedReview.rating)}
-                                            size="small"
-                                        />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography variant="subtitle2" color="textSecondary">
-                                        Yorum Metni
-                                    </Typography>
-                                    <Typography variant="body1" sx={{ mb: 2, whiteSpace: 'pre-wrap' }}>
-                                        {selectedReview.comment || '-'}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
+                                    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
                                         Oluşturulma Tarihi
                                     </Typography>
-                                    <Typography variant="body1" sx={{ mb: 2 }}>
+                                    <Typography variant="body1" sx={{ 
+                                        p: 2,
+                                        backgroundColor: '#e8f5e8',
+                                        borderRadius: 1,
+                                        fontWeight: 'medium'
+                                    }}>
                                         {formatDate(selectedReview.createdAt)}
                                     </Typography>
                                 </Grid>
+                                
                                 <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="textSecondary">
+                                    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
                                         Güncellenme Tarihi
                                     </Typography>
-                                    <Typography variant="body1" sx={{ mb: 2 }}>
-                                        {selectedReview.updatedAt ? formatDate(selectedReview.updatedAt) : '-'}
+                                    <Typography variant="body1" sx={{ 
+                                        p: 2,
+                                        backgroundColor: '#fff3cd',
+                                        borderRadius: 1,
+                                        fontWeight: 'medium'
+                                    }}>
+                                        {selectedReview.updatedAt ? formatDate(selectedReview.updatedAt) : 'Güncellenmemiş'}
                                     </Typography>
                                 </Grid>
                             </Grid>
