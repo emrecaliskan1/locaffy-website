@@ -216,7 +216,9 @@ function ReservationManagementView() {
         
         // Rezervasyonları yeniden yükle
         const updatedData = await reservationService.getPlaceReservations(placeId);
-        setReservations(updatedData);
+        // En yeni rezervasyonları üstte göster
+        const sortedData = updatedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setReservations(sortedData);
         
         // İstatistikleri hesapla
         const statsData = {
@@ -230,7 +232,8 @@ function ReservationManagementView() {
         };
         setStats(statsData);
       } else {
-        setReservations(data);
+        const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setReservations(sortedData);
         
         // İstatistikleri hesapla
         const statsData = {
@@ -798,93 +801,137 @@ function ReservationManagementView() {
       </Card>
 
       {/* Rezervasyon Detay Dialog */}
-      <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Rezervasyon Detayları</DialogTitle>
+      <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          py: 3
+        }}>
+          Rezervasyon Detayları
+        </DialogTitle>
         <DialogContent>
           {selectedReservation && (
             <Box sx={{ mt: 2 }}>
+              {/* Müşteri Bilgileri - En Üstte */}
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 3, 
+                flexWrap: 'wrap', 
+                p: 2,
+                backgroundColor: '#f8f9fa',
+                borderRadius: 1,
+                mb: 3 
+              }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                  <PersonIcon sx={{ mr: 1, verticalAlign: 'middle', fontSize: '18px' }} />
+                  <strong>Müşteri:</strong> {selectedReservation.userName}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                  <strong>Müşteri ID:</strong> {selectedReservation.userId}
+                </Typography>
+              </Box>
+
+              {/* Rezervasyon Bilgileri */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                  Rezervasyon Bilgileri
+                </Typography>
+                <Box sx={{ 
+                  p: 3,
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: 1,
+                  borderLeft: '4px solid #667eea'
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <AccessTimeIcon sx={{ mr: 1, color: '#667eea' }} />
+                    <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                      {formatDate(selectedReservation.reservationTime)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <PeopleIcon sx={{ mr: 1, color: '#667eea' }} />
+                    <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                      {selectedReservation.numberOfPeople} kişi
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body1" sx={{ mr: 2, fontWeight: 'bold' }}>
+                      Durum:
+                    </Typography>
+                    <Chip
+                      label={getStatusLabel(selectedReservation.status)}
+                      color={getStatusColor(selectedReservation.status)}
+                      size="medium"
+                      sx={{ fontWeight: 'bold' }}
+                    />
+                  </Box>
+                  {selectedReservation.rejectionReason && (
+                    <Box sx={{ mt: 2, p: 2, backgroundColor: '#ffebee', borderRadius: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 0.5, color: '#d32f2f' }}>
+                        Red Sebebi:
+                      </Typography>
+                      <Typography variant="body2" color="error">
+                        {selectedReservation.rejectionReason}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+
+              {/* Not Bilgisi */}
+              {selectedReservation.note && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                    <NoteIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                    Not
+                  </Typography>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      whiteSpace: 'pre-wrap',
+                      p: 3,
+                      backgroundColor: '#fff8e1',
+                      borderRadius: 1,
+                      borderLeft: '4px solid #ffa726',
+                      fontSize: '16px',
+                      lineHeight: 1.6
+                    }}
+                  >
+                    {selectedReservation.note}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Zaman Bilgileri - En Altta */}
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Müşteri Bilgileri
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">{selectedReservation.userName}</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mr: 1, fontWeight: 'bold' }}>
-                        Müşteri ID:
-                      </Typography>
-                      <Typography variant="body1">{selectedReservation.userId}</Typography>
-                    </Box>
-                  </Card>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
+                    Oluşturulma
+                  </Typography>
+                  <Typography variant="body1" sx={{ 
+                    p: 2,
+                    backgroundColor: '#e8f5e8',
+                    borderRadius: 1,
+                    fontWeight: 'medium'
+                  }}>
+                    {formatDate(selectedReservation.createdAt)}
+                  </Typography>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Rezervasyon Bilgileri
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <AccessTimeIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">
-                        {formatDate(selectedReservation.reservationTime)}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PeopleIcon sx={{ mr: 1, color: 'primary.main' }} />
-                      <Typography variant="body1">
-                        {selectedReservation.numberOfPeople} kişi
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mr: 1, fontWeight: 'bold' }}>
-                        Durum:
-                      </Typography>
-                      <Chip
-                        label={getStatusLabel(selectedReservation.status)}
-                        color={getStatusColor(selectedReservation.status)}
-                        size="small"
-                      />
-                    </Box>
-                    {selectedReservation.rejectionReason && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                          Red Sebebi:
-                        </Typography>
-                        <Typography variant="body2" color="error">
-                          {selectedReservation.rejectionReason}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Card>
-                </Grid>
-                {selectedReservation.note && (
-                  <Grid item xs={12}>
-                    <Card variant="outlined" sx={{ p: 2 }}>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                        <NoteIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-                        Not
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {selectedReservation.note}
-                      </Typography>
-                    </Card>
-                  </Grid>
-                )}
-                <Grid item xs={12}>
-                  <Card variant="outlined" sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Zaman Bilgileri
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Oluşturulma:</strong> {formatDate(selectedReservation.createdAt)}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      <strong>Son Güncelleme:</strong> {formatDate(selectedReservation.updatedAt)}
-                    </Typography>
-                  </Card>
+                
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
+                    Son Güncelleme
+                  </Typography>
+                  <Typography variant="body1" sx={{ 
+                    p: 2,
+                    backgroundColor: '#fff3cd',
+                    borderRadius: 1,
+                    fontWeight: 'medium'
+                  }}>
+                    {formatDate(selectedReservation.updatedAt)}
+                  </Typography>
                 </Grid>
               </Grid>
             </Box>

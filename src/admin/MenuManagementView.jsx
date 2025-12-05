@@ -835,7 +835,15 @@ function MenuManagementView() {
 
       {/* Ürün Ekleme Dialog */}
       <Dialog open={addDialogOpen} onClose={() => !loading && setAddDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Yeni Ürün Ekle</DialogTitle>
+        <DialogTitle sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          py: 3
+        }}>
+         Yeni Ürün Ekle
+        </DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -991,7 +999,15 @@ function MenuManagementView() {
 
       {/* Ürün Düzenleme Dialog */}
       <Dialog open={editDialogOpen} onClose={() => !loading && setEditDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Ürün Düzenle</DialogTitle>
+        <DialogTitle sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          py: 3
+        }}>
+          Ürün Düzenle
+        </DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
