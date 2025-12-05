@@ -419,74 +419,255 @@ function ReservationManagementView() {
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <EventNoteIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-              <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                <Box sx={{ color: 'primary.main', fontSize: '1.5rem' }}>
+                  <EventNoteIcon />
+                </Box>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center'
+              }}>
                 {stats.total}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
                 Toplam
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
-                {stats.pending}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Bekleyen
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'warning.main'
+              }}>
+                {stats.pending}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Onay bekliyor
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                {stats.approved}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Onaylı
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'success.main'
+              }}>
+                {stats.approved}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Onaylanmış
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
-                {stats.completed}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Tamamlandı
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'info.main'
+              }}>
+                {stats.completed}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Bitti
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.disabled' }}>
-                {stats.noShow}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Gelmedi
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'text.disabled'
+              }}>
+                {stats.noShow}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                No-show
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '150px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important',
+              textAlign: 'center'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
+                İptal
+              </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'text.secondary'
+              }}>
                 {stats.cancelled}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                İptal
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                İptal edilmiş
               </Typography>
             </CardContent>
           </Card>

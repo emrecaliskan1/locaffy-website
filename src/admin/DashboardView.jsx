@@ -112,28 +112,47 @@ const mockStats = {
 };
 
 const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = false }) => (
-  <Card sx={{ height: '100%', opacity: disabled ? 0.6 : 1 }}>
-    <CardContent>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 2 }}>
-        <Box
-          sx={{
-            mr: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+  <Card sx={{ 
+    height: '180px', 
+    display: 'flex', 
+    flexDirection: 'column',
+    width: '100%',
+    minWidth: '250px',
+    opacity: disabled ? 0.6 : 1
+  }}>
+    <CardContent sx={{ 
+      flex: 1, 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'space-between',
+      padding: '16px !important'
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Box sx={{ mr: 2, color: `${color}.main`, fontSize: '1.5rem' }}>
           {icon}
         </Box>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h6" component="div" sx={{ 
+          fontWeight: 'bold',
+          fontSize: '1rem',
+          lineHeight: 1.2
+        }}>
           {title}
         </Typography>
       </Box>
-      <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+      <Typography variant="h3" component="div" sx={{ 
+        fontWeight: 'bold', 
+        mb: 1,
+        fontSize: '2rem',
+        textAlign: 'center'
+      }}>
         {value}
       </Typography>
       {subtitle && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{
+          textAlign: 'center',
+          fontSize: '0.875rem',
+          lineHeight: 1.3
+        }}>
           {subtitle}
         </Typography>
       )}
@@ -305,26 +324,6 @@ function DashboardView() {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <StatCard
-            title="Doluluk Oranı"
-            value="Yakında"
-            icon={<TrendingUpIcon />}
-            color="success"
-            subtitle="Backend endpoint bekleniyor"
-            disabled={true}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Tahmini Gelir"
-            value="Yakında"
-            icon={<MonetizationOnIcon />}
-            color="success"
-            subtitle="Backend endpoint bekleniyor"
-            disabled={true}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
             title="İptal Sayısı"
             value={tempStats.cancellationCount}
             icon={<CancelIcon />}
@@ -341,53 +340,7 @@ function DashboardView() {
             subtitle="Bu ay (8+ kişi)"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <StatCard
-            title="Ortalama Bekleme"
-            value="Yakında"
-            icon={<ScheduleIcon />}
-            color="warning"
-            subtitle="Backend endpoint bekleniyor"
-            disabled={true}
-          />
-        </Grid>
       </Grid>
-
-      {/* QR Menü Kartı */}
-      <Card sx={{ mb: 4, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Dijital QR Menünüz
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 2, opacity: 0.9 }}>
-              Müşterilerinizin menünüze hızlıca ulaşması için bu QR kodu masalarınıza yerleştirin.
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<QrCodeIcon />}
-              onClick={() => placeId ? window.open(`${window.location.origin}/menu/${placeId}`, '_blank') : null}
-              sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
-            >
-              Menüyü Görüntüle
-            </Button>
-          </Box>
-          <Box sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}>
-            {placeId ? (
-              <QRCode
-                value={`${window.location.origin}/menu/${placeId}`}
-                size={120}
-                level="H"
-              />
-            ) : (
-              <Box sx={{ width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <CircularProgress />
-              </Box>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
 
 
       {/* Hızlı Eylemler */}
@@ -426,7 +379,7 @@ function DashboardView() {
       </Card>
 
       {/* Rezervasyon Takibi */}
-      <Card>
+      <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             Son Rezervasyonlar
@@ -493,6 +446,42 @@ function DashboardView() {
               </Table>
             </TableContainer>
           )}
+        </CardContent>
+      </Card>
+
+      {/* QR Menü Kartı */}
+      <Card sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              Dijital QR Menünüz
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2, opacity: 0.9 }}>
+              Müşterilerinizin menünüze hızlıca ulaşması için bu QR kodu masalarınıza yerleştirin.
+            </Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<QrCodeIcon />}
+              onClick={() => placeId ? window.open(`${window.location.origin}/menu/${placeId}`, '_blank') : null}
+              sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
+            >
+              Menüyü Görüntüle
+            </Button>
+          </Box>
+          <Box sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}>
+            {placeId ? (
+              <QRCode
+                value={`${window.location.origin}/menu/${placeId}`}
+                size={120}
+                level="H"
+              />
+            ) : (
+              <Box sx={{ width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
+            )}
+          </Box>
         </CardContent>
       </Card>
     </Box>

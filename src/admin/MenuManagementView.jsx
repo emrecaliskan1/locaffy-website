@@ -488,50 +488,184 @@ function MenuManagementView() {
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <RestaurantIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-              <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '200px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ mr: 2, color: 'primary.main', fontSize: '1.5rem' }}>
+                  <RestaurantIcon />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  lineHeight: 1.2
+                }}>
+                  Toplam Ürün
+                </Typography>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center'
+              }}>
                 {totalItems}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Toplam Ürün
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Menü ürünleri
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '200px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ mr: 2, color: 'success.main', fontSize: '1.5rem' }}>
+                  <RestaurantIcon />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  lineHeight: 1.2
+                }}>
+                  Aktif Ürün
+                </Typography>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'success.main'
+              }}>
                 {activeItems}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Aktif Ürün
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Mevcut ürünler
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'error.main' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '200px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ mr: 2, color: 'error.main', fontSize: '1.5rem' }}>
+                  <RestaurantIcon />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  lineHeight: 1.2
+                }}>
+                  Pasif Ürün
+                </Typography>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'error.main'
+              }}>
                 {inactiveItems}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Pasif Ürün
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Devre dışı ürünler
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '200px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ mr: 2, color: 'info.main', fontSize: '1.5rem' }}>
+                  <RestaurantIcon />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  lineHeight: 1.2
+                }}>
+                  Kategori
+                </Typography>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'info.main'
+              }}>
                 {categories.length}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Kategori
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Menü kategorileri
               </Typography>
             </CardContent>
           </Card>

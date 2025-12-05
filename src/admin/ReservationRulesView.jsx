@@ -79,21 +79,24 @@ function ReservationRulesView() {
   };
 
   const RuleCard = ({ title, icon, children }) => (
-    <Card sx={{ height: '100%' }}>
-      <CardContent>
+    <Card sx={{ 
+      height: 'auto', 
+      display: 'flex', 
+      flexDirection: 'column',
+      width: '100%',
+      minHeight: '200px'
+    }}>
+      <CardContent sx={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        padding: '16px !important'
+      }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Box
-            sx={{
-              p: 1,
-              borderRadius: 1,
-              backgroundColor: 'primary.light',
-              color: 'primary.main',
-              mr: 2,
-            }}
-          >
+          <Box sx={{ mr: 2, color: 'primary.main', fontSize: '1.5rem' }}>
             {icon}
           </Box>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
             {title}
           </Typography>
         </Box>
@@ -155,30 +158,7 @@ function ReservationRulesView() {
                 endAdornment: <InputAdornment position="end">dakika</InputAdornment>,
               }}
               inputProps={{ min: 5, max: 60 }}
-            />
-            
-            <TextField
-              fullWidth
-              label="Depozito Kesintisi Yüzdesi"
-              type="number"
-              value={rules.depositDeductionPercentage}
-              onChange={(e) => handleInputChange('depositDeductionPercentage', parseInt(e.target.value))}
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              }}
-              inputProps={{ min: 0, max: 100 }}
-            />
-
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={rules.autoConfirmReservations}
-                  onChange={(e) => handleSwitchChange('autoConfirmReservations', e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Rezervasyonları Otomatik Onayla"
+              helperText="Müşteri kaç dakika sonra gelirse rezervasyon iptal edilecek"
             />
           </RuleCard>
         </Grid>
@@ -197,175 +177,92 @@ function ReservationRulesView() {
                 endAdornment: <InputAdornment position="end">kişi</InputAdornment>,
               }}
               inputProps={{ min: 1, max: 50 }}
-            />
-
-            <TextField
-              fullWidth
-              label="Önceden Rezervasyon Günü"
-              type="number"
-              value={rules.advanceBookingDays}
-              onChange={(e) => handleInputChange('advanceBookingDays', parseInt(e.target.value))}
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">gün</InputAdornment>,
-              }}
-              inputProps={{ min: 1, max: 365 }}
-            />
-
-            <TextField
-              fullWidth
-              label="Minimum Rezervasyon Saati"
-              type="number"
-              value={rules.minBookingHours}
-              onChange={(e) => handleInputChange('minBookingHours', parseInt(e.target.value))}
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">saat</InputAdornment>,
-              }}
-              inputProps={{ min: 1, max: 24 }}
-            />
-          </RuleCard>
-        </Grid>
-
-        {/* Grup Rezervasyon Kuralları */}
-        <Grid item xs={12} md={6}>
-          <RuleCard title="Grup Rezervasyon Kuralları" icon={<PeopleIcon />}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={rules.allowGroupReservations}
-                  onChange={(e) => handleSwitchChange('allowGroupReservations', e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Grup Rezervasyonlarına İzin Ver"
-            />
-
-            <TextField
-              fullWidth
-              label="Maksimum Grup Büyüklüğü"
-              type="number"
-              value={rules.maxGroupSize}
-              onChange={(e) => handleInputChange('maxGroupSize', parseInt(e.target.value))}
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">kişi</InputAdornment>,
-              }}
-              inputProps={{ min: 2, max: 50 }}
-              disabled={!rules.allowGroupReservations}
-            />
-
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={rules.requireDepositForGroups}
-                  onChange={(e) => handleSwitchChange('requireDepositForGroups', e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Grup Rezervasyonları İçin Depozito Gerekli"
-              disabled={!rules.allowGroupReservations}
-            />
-
-            <TextField
-              fullWidth
-              label="Grup Depozito Yüzdesi"
-              type="number"
-              value={rules.groupDepositPercentage}
-              onChange={(e) => handleInputChange('groupDepositPercentage', parseInt(e.target.value))}
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              }}
-              inputProps={{ min: 0, max: 100 }}
-              disabled={!rules.requireDepositForGroups || !rules.allowGroupReservations}
-            />
-          </RuleCard>
-        </Grid>
-
-        {/* Politika Metinleri */}
-        <Grid item xs={12} md={6}>
-          <RuleCard title="Politika Metinleri" icon={<RuleIcon />}>
-            <TextField
-              fullWidth
-              label="İptal Politikası"
-              value={rules.cancellationPolicy}
-              onChange={(e) => handleInputChange('cancellationPolicy', e.target.value)}
-              margin="normal"
-              multiline
-              rows={3}
-            />
-
-            <TextField
-              fullWidth
-              label="Gecikme Politikası"
-              value={rules.lateArrivalPolicy}
-              onChange={(e) => handleInputChange('lateArrivalPolicy', e.target.value)}
-              margin="normal"
-              multiline
-              rows={3}
-            />
-
-            <TextField
-              fullWidth
-              label="Grup Rezervasyon Politikası"
-              value={rules.groupBookingPolicy}
-              onChange={(e) => handleInputChange('groupBookingPolicy', e.target.value)}
-              margin="normal"
-              multiline
-              rows={3}
+              helperText="Tek bir rezervasyonda kabul edilecek maksimum kişi sayısı"
             />
           </RuleCard>
         </Grid>
 
         {/* Özet Bilgiler */}
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Card sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              padding: '16px !important'
+            }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
                 Mevcut Kurallar Özeti
               </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary.main">
-                      {rules.lateCancellationMinutes} dk
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Gecikme İptali
-                    </Typography>
-                  </Paper>
+              <Divider sx={{ mb: 3 }} />
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <Card sx={{ 
+                    height: '120px', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    bgcolor: 'primary.main',
+                    color: 'white'
+                  }}>
+                    <CardContent sx={{ 
+                      flex: 1, 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      padding: '16px !important'
+                    }}>
+                      <Typography variant="h3" component="div" sx={{ 
+                        fontWeight: 'bold', 
+                        mb: 1,
+                        fontSize: '2rem'
+                      }}>
+                        {rules.lateCancellationMinutes} dk
+                      </Typography>
+                      <Typography variant="body2" sx={{
+                        fontSize: '0.875rem',
+                        opacity: 0.9
+                      }}>
+                        Gecikme İptali
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary.main">
-                      %{rules.depositDeductionPercentage}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Depozito Kesintisi
-                    </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary.main">
-                      {rules.maxPersonCount} kişi
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Maksimum Kapasite
-                    </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary.main">
-                      {rules.advanceBookingDays} gün
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Önceden Rezervasyon
-                    </Typography>
-                  </Paper>
+                <Grid item xs={12} sm={6} md={6}>
+                  <Card sx={{ 
+                    height: '120px', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    bgcolor: 'success.main',
+                    color: 'white'
+                  }}>
+                    <CardContent sx={{ 
+                      flex: 1, 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      padding: '16px !important'
+                    }}>
+                      <Typography variant="h3" component="div" sx={{ 
+                        fontWeight: 'bold', 
+                        mb: 1,
+                        fontSize: '2rem'
+                      }}>
+                        {rules.maxPersonCount} kişi
+                      </Typography>
+                      <Typography variant="body2" sx={{
+                        fontSize: '0.875rem',
+                        opacity: 0.9
+                      }}>
+                        Maksimum Kapasite
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </Grid>
             </CardContent>
