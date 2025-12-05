@@ -374,50 +374,168 @@ function ApplicationManagementView() {
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <BusinessIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-              <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '250px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ mr: 2, color: 'primary.main', fontSize: '1.5rem' }}>
+                  <BusinessIcon />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  lineHeight: 1.2
+                }}>
+                  Toplam Başvuru
+                </Typography>
+              </Box>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                fontSize: '2rem',
+                textAlign: 'center'
+              }}>
                 {stats.total}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Toplam Başvuru
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Tüm başvuru sayısı
               </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
-                {stats.pending}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '250px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Bekleyen Başvuru
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'warning.main'
+              }}>
+                {stats.pending}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Onay bekleyen başvurular
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                {stats.approved}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '250px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
                 Onaylanan Başvuru
               </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'success.main'
+              }}>
+                {stats.approved}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Onaylandı sayısı
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'error.main' }}>
+          <Card sx={{ 
+            height: '180px', 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: '250px'
+          }}>
+            <CardContent sx={{ 
+              flex: 1, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              padding: '16px !important'
+            }}>
+              <Typography variant="h6" component="div" sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                lineHeight: 1.2,
+                mb: 1
+              }}>
+                Reddedilen Başvuru
+              </Typography>
+              <Typography variant="h3" component="div" sx={{ 
+                fontWeight: 'bold', 
+                fontSize: '2rem',
+                textAlign: 'center',
+                color: 'error.main'
+              }}>
                 {stats.rejected}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Reddedilen Başvuru
+              <Typography variant="body2" color="text.secondary" sx={{
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                lineHeight: 1.3
+              }}>
+                Reddedilen sayısı
               </Typography>
             </CardContent>
           </Card>
