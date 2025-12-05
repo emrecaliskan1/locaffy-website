@@ -45,6 +45,10 @@ const getStatusColor = (status) => {
       return 'warning';
     case 'APPROVED':
       return 'success';
+    case 'COMPLETED':
+      return 'info';
+    case 'NO_SHOW':
+      return 'default';
     case 'REJECTED':
       return 'error';
     case 'CANCELLED':
@@ -60,6 +64,10 @@ const getStatusLabel = (status) => {
       return 'Beklemede';
     case 'APPROVED':
       return 'Onaylandı';
+    case 'COMPLETED':
+      return 'Tamamlandı';
+    case 'NO_SHOW':
+      return 'Gelmedi';
     case 'REJECTED':
       return 'Reddedildi';
     case 'CANCELLED':
@@ -85,6 +93,24 @@ const formatDate = (dateString) => {
   }
 };
 
+// Rezervasyon saati geçti mi kontrol et
+const isReservationTimePassed = (reservationTime) => {
+  if (!reservationTime) return false;
+  const now = new Date();
+  const resTime = new Date(reservationTime);
+  return resTime <= now;
+};
+
+// Rezervasyonun tamamlanabilir olup olmadığını kontrol et
+const canMarkAsCompleted = (reservation) => {
+  // Sadece APPROVED veya NO_SHOW durumlarında
+  const validStatuses = ['APPROVED', 'NO_SHOW'];
+  if (!validStatuses.includes(reservation.status)) return false;
+  
+  // Rezervasyon saati geçmiş olmalı
+  return isReservationTimePassed(reservation.reservationTime);
+};
+
 function ReservationManagementView() {
   const [searchParams] = useSearchParams();
   const [reservations, setReservations] = useState([]);
@@ -103,6 +129,8 @@ function ReservationManagementView() {
     total: 0, 
     pending: 0, 
     approved: 0, 
+    completed: 0,
+    noShow: 0,
     rejected: 0, 
     cancelled: 0 
   });
@@ -195,6 +223,8 @@ function ReservationManagementView() {
           total: updatedData.length,
           pending: updatedData.filter(r => r.status === 'PENDING').length,
           approved: updatedData.filter(r => r.status === 'APPROVED').length,
+          completed: updatedData.filter(r => r.status === 'COMPLETED').length,
+          noShow: updatedData.filter(r => r.status === 'NO_SHOW').length,
           rejected: updatedData.filter(r => r.status === 'REJECTED').length,
           cancelled: updatedData.filter(r => r.status === 'CANCELLED').length,
         };
@@ -207,6 +237,8 @@ function ReservationManagementView() {
           total: data.length,
           pending: data.filter(r => r.status === 'PENDING').length,
           approved: data.filter(r => r.status === 'APPROVED').length,
+          completed: data.filter(r => r.status === 'COMPLETED').length,
+          noShow: data.filter(r => r.status === 'NO_SHOW').length,
           rejected: data.filter(r => r.status === 'REJECTED').length,
           cancelled: data.filter(r => r.status === 'CANCELLED').length,
         };
@@ -336,6 +368,30 @@ function ReservationManagementView() {
     }
   };
 
+  const handleComplete = async (reservationId) => {
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      await reservationService.completeReservation(reservationId);
+
+      setSuccessMessage('✓ Rezervasyon gerçekleşti olarak işaretlendi');
+      setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Listeyi yenile
+      setTimeout(() => {
+        loadReservations();
+      }, 500);
+    } catch (error) {
+      // Backend'den gelen detaylı hata mesajını göster
+      const errorMsg = error.message || 'Rezervasyon tamamlanırken bir hata oluştu';
+      setErrorMessage(errorMsg);
+      console.error('Rezervasyon tamamlama hatası:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
@@ -362,7 +418,7 @@ function ReservationManagementView() {
 
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={2}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <EventNoteIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -370,12 +426,12 @@ function ReservationManagementView() {
                 {stats.total}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Toplam Rezervasyon
+                Toplam
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={2}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
@@ -387,38 +443,50 @@ function ReservationManagementView() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={2}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
                 {stats.approved}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Onaylanan
+                Onaylı
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={2}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'error.main' }}>
-                {stats.rejected}
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
+                {stats.completed}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Reddedilen
+                Tamamlandı
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2.4}>
+        <Grid item xs={12} sm={6} md={2}>
+          <Card>
+            <CardContent sx={{ textAlign: 'center' }}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.disabled' }}>
+                {stats.noShow}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Gelmedi
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={2}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
                 {stats.cancelled}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                İptal Edilen
+                İptal
               </Typography>
             </CardContent>
           </Card>
@@ -509,7 +577,26 @@ function ReservationManagementView() {
                             </IconButton>
                           </>
                         )}
-                        {(reservation.status === 'APPROVED' || reservation.status === 'PENDING') && (
+                        {(reservation.status === 'APPROVED' || reservation.status === 'NO_SHOW') && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color={reservation.status === 'NO_SHOW' ? 'warning' : 'info'}
+                            onClick={() => handleComplete(reservation.id)}
+                            disabled={!canMarkAsCompleted(reservation)}
+                            sx={{ mr: 1, minWidth: 'auto', px: 1 }}
+                            title={
+                              !isReservationTimePassed(reservation.reservationTime)
+                                ? `Rezervasyon saati: ${formatDate(reservation.reservationTime)}`
+                                : reservation.status === 'NO_SHOW'
+                                ? 'Müşteri Geç Geldi (Gerçekleşti Yap)'
+                                : 'Gerçekleşti Olarak İşaretle'
+                            }
+                          >
+                            {reservation.status === 'NO_SHOW' ? '⏰ Geç Geldi' : '✓ Gerçekleşti'}
+                          </Button>
+                        )}
+                        {(reservation.status === 'PENDING' || reservation.status === 'APPROVED') && (
                           <IconButton
                             size="small"
                             color="default"

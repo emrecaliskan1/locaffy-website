@@ -3,6 +3,8 @@ import api from './api';
 export const ReservationStatus = {
     PENDING: 'PENDING',
     APPROVED: 'APPROVED',
+    COMPLETED: 'COMPLETED',
+    NO_SHOW: 'NO_SHOW',
     REJECTED: 'REJECTED',
     CANCELLED: 'CANCELLED',
 };
@@ -124,6 +126,25 @@ export const reservationService = {
         return reservationService.updateReservationStatus(reservationId, {
             status: ReservationStatus.CANCELLED
         });
+    },
+
+    completeReservation: async (reservationId) => {
+        try {
+            const response = await api.post(`/reservations/${reservationId}/complete`);
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantısını kontrol edin');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                'Rezervasyon tamamlanırken bir hata oluştu';
+
+            throw new Error(errorMessage);
+        }
     },
 
     createReservation: async (reservationData) => {

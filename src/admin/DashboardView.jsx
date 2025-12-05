@@ -38,6 +38,10 @@ const getStatusColor = (status) => {
       return 'warning';
     case 'APPROVED':
       return 'success';
+    case 'COMPLETED':
+      return 'info';
+    case 'NO_SHOW':
+      return 'default';
     case 'REJECTED':
       return 'error';
     case 'CANCELLED':
@@ -53,6 +57,10 @@ const getStatusLabel = (status) => {
       return 'Beklemede';
     case 'APPROVED':
       return 'Onaylandı';
+    case 'COMPLETED':
+      return 'Tamamlandı';
+    case 'NO_SHOW':
+      return 'Gelmedi';
     case 'REJECTED':
       return 'Reddedildi';
     case 'CANCELLED':
