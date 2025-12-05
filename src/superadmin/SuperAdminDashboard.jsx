@@ -64,29 +64,46 @@ const getStatusLabel = (status) => {
 };
 
 const StatCard = ({ title, value, icon, color = 'primary', subtitle }) => (
-  <Card sx={{ height: '100%' }}>
-    <CardContent>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Box
-          sx={{
-            p: 1,
-            borderRadius: 1,
-            backgroundColor: `${color}.light`,
-            color: `${color}.main`,
-            mr: 2,
-          }}
-        >
+  <Card sx={{ 
+    height: '180px', 
+    display: 'flex', 
+    flexDirection: 'column',
+    width: '100%',
+    minWidth: '250px'
+  }}>
+    <CardContent sx={{ 
+      flex: 1, 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'space-between',
+      padding: '16px !important'
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Box sx={{ mr: 2, color: `${color}.main`, fontSize: '1.5rem' }}>
           {icon}
         </Box>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h6" component="div" sx={{ 
+          fontWeight: 'bold',
+          fontSize: '1rem',
+          lineHeight: 1.2
+        }}>
           {title}
         </Typography>
       </Box>
-      <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+      <Typography variant="h3" component="div" sx={{ 
+        fontWeight: 'bold', 
+        mb: 1,
+        fontSize: '2rem',
+        textAlign: 'center'
+      }}>
         {value}
       </Typography>
       {subtitle && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{
+          textAlign: 'center',
+          fontSize: '0.875rem',
+          lineHeight: 1.3
+        }}>
           {subtitle}
         </Typography>
       )}
@@ -379,9 +396,38 @@ function SuperAdminDashboard() {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
-        Super Admin Kontrol Paneli
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
+          Super Admin Kontrol Paneli
+        </Typography>
+        
+        {/* Hızlı Eylemler - Başlık yanında */}
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', ml: 'auto', mr: 8 }}>
+          <Button 
+            variant="outlined" 
+            startIcon={<CheckCircleIcon />}
+            onClick={() => navigate('/admin/application-management')}
+            size="small"
+          >
+            Başvuruları İncele
+          </Button>
+          <Button 
+            variant="outlined" 
+            startIcon={<BusinessIcon />}
+            onClick={() => navigate('/admin/business-management')}
+            size="small"
+          >
+            İşletme Yönetimi
+          </Button>
+          <Button 
+            variant="outlined" 
+            startIcon={<TrendingUpIcon />}
+            size="small"
+          >
+            Raporları Görüntüle
+          </Button>
+        </Box>
+      </Box>
 
       {errorMessage && (
         <Alert severity="error" sx={{ mb: 3 }} onClose={() => setErrorMessage('')}>
@@ -398,7 +444,7 @@ function SuperAdminDashboard() {
       {/* İstatistik Kartları */}
       {!loading && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Toplam İşletme"
               value={stats.totalBusinesses.toLocaleString()}
@@ -407,7 +453,7 @@ function SuperAdminDashboard() {
               subtitle="Kayıtlı işletmeler"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Aktif İşletme"
               value={stats.activeBusinesses.toLocaleString()}
@@ -416,7 +462,7 @@ function SuperAdminDashboard() {
               subtitle="Çalışan işletmeler"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Toplam Kullanıcı"
               value={stats.totalUsers.toLocaleString()}
@@ -425,16 +471,7 @@ function SuperAdminDashboard() {
               subtitle="Platform kullanıcıları"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <StatCard
-              title="Bekleyen Başvurular"
-              value={stats.pendingApplications}
-              icon={<ScheduleIcon />}
-              color="warning"
-              subtitle="Onay bekleyen başvurular"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Toplam Rezervasyon"
               value={stats.totalReservations.toLocaleString()}
@@ -443,36 +480,17 @@ function SuperAdminDashboard() {
               subtitle="Platform geneli"
             />
           </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Bekleyen Başvurular"
+              value={stats.pendingApplications}
+              icon={<ScheduleIcon />}
+              color="warning"
+              subtitle="Onay bekleyen başvurular"
+            />
+          </Grid>
         </Grid>
       )}
-
-      {/* Hızlı Eylemler */}
-      <Card sx={{ mb: 4 }}>
-        <CardContent>
-          <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Hızlı Eylemler
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              variant="contained" 
-              startIcon={<CheckCircleIcon />}
-              onClick={() => navigate('/admin/application-management')}
-            >
-              Başvuruları İncele
-            </Button>
-            <Button 
-              variant="outlined" 
-              startIcon={<BusinessIcon />}
-              onClick={() => navigate('/admin/business-management')}
-            >
-              İşletme Yönetimi
-            </Button>
-            <Button variant="outlined" startIcon={<TrendingUpIcon />}>
-              Raporları Görüntüle
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
 
       {/* İşletme Listesi */}
       <Card>

@@ -39,6 +39,9 @@ import {
     Visibility as VisibilityIcon,
     FilterList as FilterListIcon,
     Star as StarIcon,
+    Comment as CommentIcon,
+    ThumbUp as ThumbUpIcon,
+    ThumbDown as ThumbDownIcon,
 } from '@mui/icons-material';
 import { reviewService } from '../services/reviewService';
 import { useNavigate } from 'react-router-dom';
@@ -276,54 +279,185 @@ function ReviewsView() {
             )}
 
             {/* İstatistikler */}
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Toplam Yorum
-                            </Typography>
-                            <Typography variant="h5" component="div">
+                    <Card sx={{ 
+                        height: '180px', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        width: '100%',
+                        minWidth: '250px'
+                    }}>
+                        <CardContent sx={{ 
+                            flex: 1, 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            justifyContent: 'space-between',
+                            padding: '16px !important'
+                        }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ mr: 2, color: 'primary.main', fontSize: '1.5rem' }}>
+                                    <CommentIcon />
+                                </Box>
+                                <Typography variant="h6" component="div" sx={{ 
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2
+                                }}>
+                                    Toplam Yorum
+                                </Typography>
+                            </Box>
+                            <Typography variant="h3" component="div" sx={{ 
+                                fontWeight: 'bold', 
+                                mb: 1,
+                                fontSize: '2rem',
+                                textAlign: 'center'
+                            }}>
                                 {paginationData.totalElements || reviews.length}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{
+                                textAlign: 'center',
+                                fontSize: '0.875rem',
+                                lineHeight: 1.3
+                            }}>
+                                Tüm yorumlar
                             </Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Ortalama Puan
-                            </Typography>
-                            <Typography variant="h5" component="div">
+                    <Card sx={{ 
+                        height: '180px', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        width: '100%',
+                        minWidth: '250px'
+                    }}>
+                        <CardContent sx={{ 
+                            flex: 1, 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            justifyContent: 'space-between',
+                            padding: '16px !important'
+                        }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ mr: 2, color: 'warning.main', fontSize: '1.5rem' }}>
+                                    <StarIcon />
+                                </Box>
+                                <Typography variant="h6" component="div" sx={{ 
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2
+                                }}>
+                                    Ortalama Puan
+                                </Typography>
+                            </Box>
+                            <Typography variant="h3" component="div" sx={{ 
+                                fontWeight: 'bold', 
+                                mb: 1,
+                                fontSize: '2rem',
+                                textAlign: 'center'
+                            }}>
                                 {reviews.length > 0
                                     ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
                                     : '0.0'}
-                                <StarIcon sx={{ fontSize: 20, verticalAlign: 'middle', ml: 0.5 }} />
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{
+                                textAlign: 'center',
+                                fontSize: '0.875rem',
+                                lineHeight: 1.3
+                            }}>
+                                5 üzerinden
                             </Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                5 Yıldız
-                            </Typography>
-                            <Typography variant="h5" component="div">
+                    <Card sx={{ 
+                        height: '180px', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        width: '100%',
+                        minWidth: '250px'
+                    }}>
+                        <CardContent sx={{ 
+                            flex: 1, 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            justifyContent: 'space-between',
+                            padding: '16px !important'
+                        }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ mr: 2, color: 'success.main', fontSize: '1.5rem' }}>
+                                    <ThumbUpIcon />
+                                </Box>
+                                <Typography variant="h6" component="div" sx={{ 
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2
+                                }}>
+                                    5 Yıldız
+                                </Typography>
+                            </Box>
+                            <Typography variant="h3" component="div" sx={{ 
+                                fontWeight: 'bold', 
+                                mb: 1,
+                                fontSize: '2rem',
+                                textAlign: 'center'
+                            }}>
                                 {reviews.filter((r) => r.rating === 5).length}
                             </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{
+                                textAlign: 'center',
+                                fontSize: '0.875rem',
+                                lineHeight: 1.3
+                            }}>
+                                Mükemmel yorumlar
+                            </Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                1-2 Yıldız
-                            </Typography>
-                            <Typography variant="h5" component="div">
+                    <Card sx={{ 
+                        height: '180px', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        width: '100%',
+                        minWidth: '250px'
+                    }}>
+                        <CardContent sx={{ 
+                            flex: 1, 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            justifyContent: 'space-between',
+                            padding: '16px !important'
+                        }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ mr: 2, color: 'error.main', fontSize: '1.5rem' }}>
+                                    <ThumbDownIcon />
+                                </Box>
+                                <Typography variant="h6" component="div" sx={{ 
+                                    fontWeight: 'bold',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2
+                                }}>
+                                    1-2 Yıldız
+                                </Typography>
+                            </Box>
+                            <Typography variant="h3" component="div" sx={{ 
+                                fontWeight: 'bold', 
+                                mb: 1,
+                                fontSize: '2rem',
+                                textAlign: 'center'
+                            }}>
                                 {reviews.filter((r) => r.rating <= 2).length}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{
+                                textAlign: 'center',
+                                fontSize: '0.875rem',
+                                lineHeight: 1.3
+                            }}>
+                                Düşük puanlı yorumlar
                             </Typography>
                         </CardContent>
                     </Card>
