@@ -12,7 +12,6 @@ export const ROUTES = {
   APPLICATION_MANAGEMENT: '/admin/application-management',
   BUSINESS_MANAGEMENT: '/admin/business-management',
   ADMIN_DASHBOARD: '/admin/dashboard',
-  ADMIN_TABLE_PLAN: '/admin/table-plan',
   ADMIN_MENU_MANAGEMENT: '/admin/menu-management',
   ADMIN_RESERVATION_RULES: '/admin/reservation-rules',
   ADMIN_PROMOTIONS: '/admin/promotions',

@@ -17,7 +17,6 @@ import SuperAdminAuth from './superadmin/SuperAdminAuth';
 import AdminLayout from './admin/AdminLayout';
 import SuperAdminLayout from './superadmin/SuperAdminLayout';
 import DashboardView from './admin/DashboardView';
-import TablePlanView from './admin/TablePlanView';
 import MenuManagementView from './admin/MenuManagementView';
 import ReservationRulesView from './admin/ReservationRulesView';
 import PromotionsView from './admin/PromotionsView';
@@ -63,11 +62,6 @@ function AppContent() {
         <Route path="/admin/dashboard" element={
           <AdminLayout>
             <DashboardView />
-          </AdminLayout>
-        } />
-        <Route path="/admin/table-plan" element={
-          <AdminLayout>
-            <TablePlanView />
           </AdminLayout>
         } />
         <Route path="/admin/menu-management" element={
