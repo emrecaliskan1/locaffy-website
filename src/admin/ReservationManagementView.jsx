@@ -101,6 +101,15 @@ const isReservationTimePassed = (reservationTime) => {
   return resTime <= now;
 };
 
+// NO_SHOW için 2 saatlik zaman penceresinde mi kontrol et
+const isWithinTwoHourWindow = (reservationTime) => {
+  if (!reservationTime) return false;
+  const now = new Date();
+  const resTime = new Date(reservationTime);
+  const twoHoursLater = new Date(resTime.getTime() + 2 * 60 * 60 * 1000); // 2 saat ekle
+  return now <= twoHoursLater;
+};
+
 // Rezervasyonun tamamlanabilir olup olmadığını kontrol et
 const canMarkAsCompleted = (reservation) => {
   // Sadece APPROVED veya NO_SHOW durumlarında
@@ -108,7 +117,14 @@ const canMarkAsCompleted = (reservation) => {
   if (!validStatuses.includes(reservation.status)) return false;
   
   // Rezervasyon saati geçmiş olmalı
-  return isReservationTimePassed(reservation.reservationTime);
+  if (!isReservationTimePassed(reservation.reservationTime)) return false;
+  
+  // NO_SHOW ise 2 saat içinde olmalı
+  if (reservation.status === 'NO_SHOW') {
+    return isWithinTwoHourWindow(reservation.reservationTime);
+  }
+  
+  return true;
 };
 
 function ReservationManagementView() {
@@ -386,10 +402,18 @@ function ReservationManagementView() {
         loadReservations();
       }, 500);
     } catch (error) {
-      // Backend'den gelen detaylı hata mesajını göster
-      const errorMsg = error.message || 'Rezervasyon tamamlanırken bir hata oluştu';
-      setErrorMessage(errorMsg);
-      console.error('Rezervasyon tamamlama hatası:', error);
+      // 422 Validation hatasını özel olarak yakala
+      if (error.response?.status === 422) {
+        const errorMsg = error.response?.data?.message || 
+                        "Rezervasyon saatinden çok fazla zaman geçtiği için 'Geç Geldi' işlemi yapılamaz.";
+        setErrorMessage(errorMsg);
+        console.error('Rezervasyon tamamlama validation hatası:', error.response?.data);
+      } else {
+        // Diğer hatalar
+        const errorMsg = error.message || 'İşlem sırasında bir hata oluştu';
+        setErrorMessage(errorMsg);
+        console.error('Rezervasyon tamamlama hatası:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -768,10 +792,22 @@ function ReservationManagementView() {
                             color={reservation.status === 'NO_SHOW' ? 'warning' : 'info'}
                             onClick={() => handleComplete(reservation.id)}
                             disabled={!canMarkAsCompleted(reservation)}
-                            sx={{ mr: 1, minWidth: 'auto', px: 1 }}
+                            sx={{ 
+                              mr: 1, 
+                              minWidth: 'auto', 
+                              px: 1,
+                              opacity: !canMarkAsCompleted(reservation) ? 0.5 : 1,
+                              '&.Mui-disabled': {
+                                borderColor: reservation.status === 'NO_SHOW' ? 'warning.main' : 'info.main',
+                                color: reservation.status === 'NO_SHOW' ? 'warning.main' : 'info.main',
+                                opacity: 0.4
+                              }
+                            }}
                             title={
                               !isReservationTimePassed(reservation.reservationTime)
                                 ? `Rezervasyon saati: ${formatDate(reservation.reservationTime)}`
+                                : reservation.status === 'NO_SHOW' && !isWithinTwoHourWindow(reservation.reservationTime)
+                                ? 'Rezervasyon saatinden çok fazla zaman geçtiği için işlem yapılamaz'
                                 : reservation.status === 'NO_SHOW'
                                 ? 'Müşteri Geç Geldi (Gerçekleşti Yap)'
                                 : 'Gerçekleşti Olarak İşaretle'
