@@ -28,6 +28,7 @@ import {
   Alert,
   CircularProgress,
   Autocomplete,
+  Divider,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -834,17 +835,23 @@ function MenuManagementView() {
       </Card>
 
       {/* Ürün Ekleme Dialog */}
-      <Dialog open={addDialogOpen} onClose={() => !loading && setAddDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={addDialogOpen} 
+        onClose={() => !loading && setAddDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
          Yeni Ürün Ekle
         </DialogTitle>
-        <DialogContent>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <TextField
             fullWidth
             label="Ürün Adı"
@@ -976,7 +983,7 @@ function MenuManagementView() {
             </Alert>
           </Box>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
           <Button 
             onClick={() => {
               setAddDialogOpen(false);
@@ -984,6 +991,7 @@ function MenuManagementView() {
               setImagePreview(null);
             }} 
             disabled={loading}
+            variant="outlined"
           >
             İptal
           </Button>
@@ -998,17 +1006,23 @@ function MenuManagementView() {
       </Dialog>
 
       {/* Ürün Düzenleme Dialog */}
-      <Dialog open={editDialogOpen} onClose={() => !loading && setEditDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={editDialogOpen} 
+        onClose={() => !loading && setEditDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           Ürün Düzenle
         </DialogTitle>
-        <DialogContent>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <TextField
             fullWidth
             label="Ürün Adı"
@@ -1191,7 +1205,7 @@ function MenuManagementView() {
             </Alert>
           </Box>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
           <Button 
             onClick={() => {
               setEditDialogOpen(false);
@@ -1200,6 +1214,7 @@ function MenuManagementView() {
               setImagePreview(null);
             }} 
             disabled={loading}
+            variant="outlined"
           >
             İptal
           </Button>

@@ -27,6 +27,7 @@ import {
   Alert,
   CircularProgress,
   Switch,
+  Divider,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -793,128 +794,79 @@ function BusinessManagementView() {
       </Card>
 
       {/* İşletme Ekleme Dialog */}
-      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={addDialogOpen} 
+        onClose={() => setAddDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           Yeni İşletme Ekle
         </DialogTitle>
-        <DialogContent sx={{ p: 3, backgroundColor: '#f8fafc' }}>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
-              <Card sx={{ 
-                p: 2,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                border: '1px solid #e2e8f0',
-                background: 'white'
-              }}>
-                <Typography variant="h6" gutterBottom sx={{ 
-                  fontWeight: 'bold',
-                  color: '#1e293b',
-                  mb: 2
-                }}>
-                  İşletme Bilgileri
-                </Typography>
-                
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <TextField
-                    fullWidth
-                    label="İşletme Adı"
-                    value={newBusiness.name}
-                    onChange={(e) => setNewBusiness(prev => ({ ...prev, name: e.target.value }))}
-                    required
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2
-                      }
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    type="email"
-                    value={newBusiness.email}
-                    onChange={(e) => setNewBusiness(prev => ({ ...prev, email: e.target.value }))}
-                    required
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2
-                      }
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Telefon"
-                    value={newBusiness.phone}
-                    onChange={(e) => setNewBusiness(prev => ({ ...prev, phone: e.target.value }))}
-                    required
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2
-                      }
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Adres"
-                    value={newBusiness.address}
-                    onChange={(e) => setNewBusiness(prev => ({ ...prev, address: e.target.value }))}
-                    required
-                    variant="outlined"
-                    multiline
-                    rows={2}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2
-                      }
-                    }}
-                  />
-                  <FormControl fullWidth>
-                    <InputLabel>Durum</InputLabel>
-                    <Select
-                      value={newBusiness.status}
-                      label="Durum"
-                      onChange={(e) => setNewBusiness(prev => ({ ...prev, status: e.target.value }))}
-                      sx={{
-                        borderRadius: 2
-                      }}
-                    >
-                      {statusOptions.map((status) => (
-                        <MenuItem key={status} value={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Card>
-            </Grid>
-          </Grid>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              fullWidth
+              label="İşletme Adı"
+              value={newBusiness.name}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, name: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              value={newBusiness.email}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, email: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Telefon"
+              value={newBusiness.phone}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, phone: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Adres"
+              value={newBusiness.address}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, address: e.target.value }))}
+              required
+              variant="outlined"
+              multiline
+              rows={2}
+            />
+            <FormControl fullWidth>
+              <InputLabel>Durum</InputLabel>
+              <Select
+                value={newBusiness.status}
+                label="Durum"
+                onChange={(e) => setNewBusiness(prev => ({ ...prev, status: e.target.value }))}
+              >
+                {statusOptions.map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
         </DialogContent>
-        <DialogActions sx={{
-          p: 3,
-          backgroundColor: '#f8fafc',
-          borderTop: '1px solid #e2e8f0',
-          gap: 1
-        }}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
           <Button 
             onClick={() => setAddDialogOpen(false)}
             variant="outlined"
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '500',
-              px: 3
-            }}
           >
             İptal
           </Button>
@@ -922,13 +874,6 @@ function BusinessManagementView() {
             onClick={handleAddBusiness} 
             variant="contained"
             disabled={!newBusiness.name || !newBusiness.email || !newBusiness.phone || !newBusiness.address}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '600',
-              px: 3,
-              background: '#6366f1'
-            }}
           >
             Ekle
           </Button>
@@ -936,130 +881,66 @@ function BusinessManagementView() {
       </Dialog>
 
       {/* İşletme Düzenleme Dialog */}
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={editDialogOpen} 
+        onClose={() => setEditDialogOpen(false)} 
+        maxWidth="xs" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           İşletme Bilgilerini Düzenle
         </DialogTitle>
-        <DialogContent sx={{ p: 3, backgroundColor: '#f8fafc' }}>
-          <Grid container spacing={2} sx={{ mt: 1.5, justifyContent: 'center' }}>
-            <Grid item xs={12} sm={11} md={10}>
-              <Card sx={{ 
-                p: 4,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                border: '1px solid #e2e8f0',
-                background: 'white',
-                width: '100%',
-                minWidth: '400px'
-              }}>
-                
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>İşletme Adı</Typography>
-                    <TextField
-                      fullWidth
-                      value={newBusiness.name}
-                      onChange={(e) => setNewBusiness(prev => ({ ...prev, name: e.target.value }))}
-                      required
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:focus-within': {
-                            borderLeft: '3px solid #667eea'
-                          }
-                        }
-                      }}
-                    />
-                  </Box>
-                  
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Email</Typography>
-                    <TextField
-                      fullWidth
-                      type="email"
-                      value={newBusiness.email}
-                      onChange={(e) => setNewBusiness(prev => ({ ...prev, email: e.target.value }))}
-                      required
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:focus-within': {
-                            borderLeft: '3px solid #667eea'
-                          }
-                        }
-                      }}
-                    />
-                  </Box>
-                  
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Telefon</Typography>
-                    <TextField
-                      fullWidth
-                      value={newBusiness.phone}
-                      onChange={(e) => setNewBusiness(prev => ({ ...prev, phone: e.target.value }))}
-                      required
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:focus-within': {
-                            borderLeft: '3px solid #667eea'
-                          }
-                        }
-                      }}
-                    />
-                  </Box>
-                  
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Adres</Typography>
-                    <TextField
-                      fullWidth
-                      value={newBusiness.address}
-                      onChange={(e) => setNewBusiness(prev => ({ ...prev, address: e.target.value }))}
-                      required
-                      variant="outlined"
-                      multiline
-                      rows={4}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          '&:focus-within': {
-                            borderLeft: '3px solid #667eea'
-                          }
-                        }
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-          </Grid>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              fullWidth
+              label="İşletme Adı"
+              value={newBusiness.name}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, name: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              value={newBusiness.email}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, email: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Telefon"
+              value={newBusiness.phone}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, phone: e.target.value }))}
+              required
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              label="Adres"
+              value={newBusiness.address}
+              onChange={(e) => setNewBusiness(prev => ({ ...prev, address: e.target.value }))}
+              required
+              variant="outlined"
+              multiline
+              rows={4}
+            />
+          </Box>
         </DialogContent>
-        <DialogActions sx={{
-          p: 3,
-          backgroundColor: '#f8fafc',
-          borderTop: '1px solid #e2e8f0',
-          gap: 1
-        }}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
           <Button 
             onClick={() => setEditDialogOpen(false)} 
             disabled={loading}
             variant="outlined"
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '500',
-              px: 3
-            }}
           >
             İptal
           </Button>
@@ -1067,13 +948,6 @@ function BusinessManagementView() {
             onClick={handleUpdateBusiness} 
             variant="contained"
             disabled={!newBusiness.name || !newBusiness.email || !newBusiness.phone || !newBusiness.address || loading}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '600',
-              px: 3,
-              background: '#6366f1'
-            }}
           >
             {loading ? 'Güncelleniyor...' : 'Güncelle'}
           </Button>
@@ -1081,63 +955,35 @@ function BusinessManagementView() {
       </Dialog>
 
       {/* İşletme Silme Onay Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={deleteDialogOpen} 
+        onClose={() => setDeleteDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           İşletmeyi Sil
         </DialogTitle>
-        <DialogContent sx={{ p: 3, backgroundColor: '#f8fafc' }}>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
-              <Card sx={{ 
-                p: 3,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                border: '1px solid #fecaca',
-                background: '#fef2f2',
-                borderLeft: '4px solid #ef4444'
-              }}>
-                <Box sx={{ textAlign: 'center', mb: 2 }}>
-                  <Typography variant="h6" sx={{ 
-                    fontWeight: 'bold',
-                    color: '#dc2626',
-                    mb: 2
-                  }}>
-                    ⚠️ Dikkat!
-                  </Typography>
-                  <Typography variant="body1" gutterBottom sx={{ fontSize: '1.1rem' }}>
-                    <strong>{selectedBusiness?.name}</strong> işletmesini silmek istediğinizden emin misiniz?
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 2, fontStyle: 'italic' }}>
-                    Bu işlem geri alınamaz. İşletmeye ait tüm veriler kalıcı olarak silinecektir.
-                  </Typography>
-                </Box>
-              </Card>
-            </Grid>
-          </Grid>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
+          <Typography variant="body1" gutterBottom>
+            <strong>{selectedBusiness?.name}</strong> işletmesini silmek istediğinizden emin misiniz?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Bu işlem geri alınamaz. İşletmeye ait tüm veriler kalıcı olarak silinecektir.
+          </Typography>
         </DialogContent>
-        <DialogActions sx={{
-          p: 3,
-          backgroundColor: '#f8fafc',
-          borderTop: '1px solid #e2e8f0',
-          gap: 1
-        }}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
           <Button 
             onClick={() => setDeleteDialogOpen(false)} 
             disabled={loading}
             variant="outlined"
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '500',
-              px: 3
-            }}
           >
             İptal
           </Button>
@@ -1146,13 +992,6 @@ function BusinessManagementView() {
             variant="contained" 
             color="error"
             disabled={loading}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: '600',
-              px: 3,
-              background: '#6366f1'
-            }}
           >
             {loading ? 'Siliniyor...' : 'Sil'}
           </Button>

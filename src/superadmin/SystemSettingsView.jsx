@@ -25,6 +25,7 @@ import {
   Chip,
   Switch,
   FormControlLabel,
+  Divider,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -376,11 +377,25 @@ function SystemSettingsView() {
       </Card>
 
       {/* Abonelik Paketi Dialog */}
-      <Dialog open={planDialogOpen} onClose={() => setPlanDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={planDialogOpen} 
+        onClose={() => setPlanDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           {editingPlan ? 'Abonelik Paketini Düzenle' : 'Yeni Abonelik Paketi'}
         </DialogTitle>
-        <DialogContent>
+        
+        <Divider />
+        
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
               <TextField
@@ -431,8 +446,9 @@ function SystemSettingsView() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPlanDialogOpen(false)}>İptal</Button>
+        
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button onClick={() => setPlanDialogOpen(false)} variant="outlined">İptal</Button>
           <Button variant="contained" onClick={handleSavePlan}>
             Kaydet
           </Button>
@@ -440,11 +456,25 @@ function SystemSettingsView() {
       </Dialog>
 
       {/* Email Şablon Dialog */}
-      <Dialog open={templateDialogOpen} onClose={() => setTemplateDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={templateDialogOpen} 
+        onClose={() => setTemplateDialogOpen(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           {editingTemplate ? 'Email Şablonunu Düzenle' : 'Yeni Email Şablonu'}
         </DialogTitle>
-        <DialogContent>
+        
+        <Divider />
+        
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
               <TextField
@@ -486,8 +516,9 @@ function SystemSettingsView() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setTemplateDialogOpen(false)}>İptal</Button>
+        
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button onClick={() => setTemplateDialogOpen(false)} variant="outlined">İptal</Button>
           <Button variant="contained" onClick={handleSaveTemplate}>
             Kaydet
           </Button>

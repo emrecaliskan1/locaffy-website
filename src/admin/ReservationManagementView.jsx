@@ -22,6 +22,7 @@ import {
   TextField,
   Alert,
   CircularProgress,
+  Divider,
 } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,
@@ -801,57 +802,50 @@ function ReservationManagementView() {
       </Card>
 
       {/* Rezervasyon Detay Dialog */}
-      <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          py: 3
-        }}>
+      <Dialog 
+        open={detailDialogOpen} 
+        onClose={() => setDetailDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>
           Rezervasyon Detayları
         </DialogTitle>
-        <DialogContent>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           {selectedReservation && (
-            <Box sx={{ mt: 2 }}>
+            <Box>
               {/* Müşteri Bilgileri - En Üstte */}
-              <Box sx={{ 
-                display: 'flex', 
-                gap: 3, 
-                flexWrap: 'wrap', 
-                p: 2,
-                backgroundColor: '#f8f9fa',
-                borderRadius: 1,
-                mb: 3 
-              }}>
+              <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                   <PersonIcon sx={{ mr: 1, verticalAlign: 'middle', fontSize: '18px' }} />
                   <strong>Müşteri:</strong> {selectedReservation.userName}
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', mt: 1 }}>
                   <strong>Müşteri ID:</strong> {selectedReservation.userId}
                 </Typography>
               </Box>
 
               {/* Rezervasyon Bilgileri */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                   Rezervasyon Bilgileri
                 </Typography>
-                <Box sx={{ 
-                  p: 3,
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: 1,
-                  borderLeft: '4px solid #667eea'
-                }}>
+                <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <AccessTimeIcon sx={{ mr: 1, color: '#667eea' }} />
+                    <AccessTimeIcon sx={{ mr: 1 }} />
                     <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
                       {formatDate(selectedReservation.reservationTime)}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PeopleIcon sx={{ mr: 1, color: '#667eea' }} />
+                    <PeopleIcon sx={{ mr: 1 }} />
                     <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
                       {selectedReservation.numberOfPeople} kişi
                     </Typography>
@@ -868,8 +862,8 @@ function ReservationManagementView() {
                     />
                   </Box>
                   {selectedReservation.rejectionReason && (
-                    <Box sx={{ mt: 2, p: 2, backgroundColor: '#ffebee', borderRadius: 1 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 0.5, color: '#d32f2f' }}>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
                         Red Sebebi:
                       </Typography>
                       <Typography variant="body2" color="error">
@@ -883,7 +877,7 @@ function ReservationManagementView() {
               {/* Not Bilgisi */}
               {selectedReservation.note && (
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                     <NoteIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Not
                   </Typography>
@@ -891,10 +885,6 @@ function ReservationManagementView() {
                     variant="body1" 
                     sx={{ 
                       whiteSpace: 'pre-wrap',
-                      p: 3,
-                      backgroundColor: '#fff8e1',
-                      borderRadius: 1,
-                      borderLeft: '4px solid #ffa726',
                       fontSize: '16px',
                       lineHeight: 1.6
                     }}
@@ -907,29 +897,19 @@ function ReservationManagementView() {
               {/* Zaman Bilgileri - En Altta */}
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
                     Oluşturulma
                   </Typography>
-                  <Typography variant="body1" sx={{ 
-                    p: 2,
-                    backgroundColor: '#e8f5e8',
-                    borderRadius: 1,
-                    fontWeight: 'medium'
-                  }}>
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
                     {formatDate(selectedReservation.createdAt)}
                   </Typography>
                 </Grid>
                 
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: '#333' }}>
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
                     Son Güncelleme
                   </Typography>
-                  <Typography variant="body1" sx={{ 
-                    p: 2,
-                    backgroundColor: '#fff3cd',
-                    borderRadius: 1,
-                    fontWeight: 'medium'
-                  }}>
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
                     {formatDate(selectedReservation.updatedAt)}
                   </Typography>
                 </Grid>
@@ -937,8 +917,13 @@ function ReservationManagementView() {
             </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDetailDialogOpen(false)}>Kapat</Button>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
+          <Button 
+            onClick={() => setDetailDialogOpen(false)}
+            variant="outlined"
+          >
+            Kapat
+          </Button>
           {selectedReservation?.status === 'PENDING' && (
             <>
               <Button
@@ -969,9 +954,19 @@ function ReservationManagementView() {
       </Dialog>
 
       {/* Onay Dialog */}
-      <Dialog open={approvalDialogOpen} onClose={() => setApprovalDialogOpen(false)}>
-        <DialogTitle>Rezervasyonu Onayla</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={approvalDialogOpen} 
+        onClose={() => setApprovalDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>Rezervasyonu Onayla</DialogTitle>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <Typography variant="body1" gutterBottom>
             <strong>{selectedReservation?.userName}</strong> tarafından yapılan rezervasyonu onaylamak istediğinizden emin misiniz?
           </Typography>
@@ -982,20 +977,41 @@ function ReservationManagementView() {
             Kişi Sayısı: <strong>{selectedReservation?.numberOfPeople}</strong>
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setApprovalDialogOpen(false)} disabled={loading}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
+          <Button 
+            onClick={() => setApprovalDialogOpen(false)} 
+            disabled={loading}
+            variant="outlined"
+          >
             İptal
           </Button>
-          <Button onClick={confirmApproval} variant="contained" color="success" disabled={loading}>
+          <Button 
+            onClick={confirmApproval} 
+            variant="contained" 
+            color="success" 
+            disabled={loading}
+          >
             Onayla
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Red Dialog */}
-      <Dialog open={rejectionDialogOpen} onClose={() => setRejectionDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Rezervasyonu Reddet</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={rejectionDialogOpen} 
+        onClose={() => setRejectionDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>Rezervasyonu Reddet</DialogTitle>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <Typography variant="body1" gutterBottom>
             <strong>{selectedReservation?.userName}</strong> tarafından yapılan rezervasyonu reddetmek istediğinizden emin misiniz?
           </Typography>
@@ -1012,8 +1028,12 @@ function ReservationManagementView() {
             disabled={loading}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setRejectionDialogOpen(false)} disabled={loading}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
+          <Button 
+            onClick={() => setRejectionDialogOpen(false)} 
+            disabled={loading}
+            variant="outlined"
+          >
             İptal
           </Button>
           <Button
@@ -1028,9 +1048,19 @@ function ReservationManagementView() {
       </Dialog>
 
       {/* İptal Dialog */}
-      <Dialog open={cancelDialogOpen} onClose={() => setCancelDialogOpen(false)}>
-        <DialogTitle>Rezervasyonu İptal Et</DialogTitle>
-        <DialogContent>
+      <Dialog 
+        open={cancelDialogOpen} 
+        onClose={() => setCancelDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 2 }}>Rezervasyonu İptal Et</DialogTitle>
+        <Divider />
+        <DialogContent sx={{ px: 3, py: 2 }}>
           <Typography variant="body1" gutterBottom>
             <strong>{selectedReservation?.userName}</strong> tarafından yapılan rezervasyonu iptal etmek istediğinizden emin misiniz?
           </Typography>
@@ -1041,11 +1071,20 @@ function ReservationManagementView() {
             Kişi Sayısı: <strong>{selectedReservation?.numberOfPeople}</strong>
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCancelDialogOpen(false)} disabled={loading}>
+        <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
+          <Button 
+            onClick={() => setCancelDialogOpen(false)} 
+            disabled={loading}
+            variant="outlined"
+          >
             İptal
           </Button>
-          <Button onClick={confirmCancel} variant="contained" color="default" disabled={loading}>
+          <Button 
+            onClick={confirmCancel} 
+            variant="contained" 
+            color="default" 
+            disabled={loading}
+          >
             İptal Et
           </Button>
         </DialogActions>
