@@ -99,7 +99,7 @@ function ReviewsView() {
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedReview, setSelectedReview] = useState(null);
 
-    const [uniquePlaces, setUniquePlaces] = useState([]);
+    const [uniquePlaces, setUniquePlaces] = useState([]); 
 
     useEffect(() => {
         loadReviews();
@@ -142,7 +142,16 @@ function ReviewsView() {
             }
 
             const allReviews = data.content || (Array.isArray(data) ? data : []);
-            const places = [...new Set(allReviews.map((r) => r.placeId))];
+            const placesMap = new Map();
+            allReviews.forEach(r => {
+                if (r.placeId && !placesMap.has(r.placeId)) {
+                    placesMap.set(r.placeId, {
+                        id: r.placeId,
+                        name: r.placeName || `Mekan #${r.placeId}`
+                    });
+                }
+            });
+            const places = Array.from(placesMap.values());
 
             setUniquePlaces(places);
         } catch (error) {
@@ -493,9 +502,9 @@ function ReviewsView() {
                             onChange={(e) => setPlaceFilter(e.target.value)}
                         >
                             <MenuItem value="all">Tümü</MenuItem>
-                            {uniquePlaces.map((placeId) => (
-                                <MenuItem key={placeId} value={placeId.toString()}>
-                                    Mekan #{placeId}
+                            {uniquePlaces.map((place) => (
+                                <MenuItem key={place.id} value={place.id.toString()}>
+                                    {place.name}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -628,7 +637,7 @@ function ReviewsView() {
                                                 }}
                                                 onClick={() => handlePlaceClick(review.placeId)}
                                             >
-                                                Mekan #{review.placeId}
+                                                {review.placeName || `Mekan #${review.placeId}`}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>

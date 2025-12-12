@@ -26,6 +26,7 @@ import SuperAdminDashboard from './superadmin/SuperAdminDashboard';
 import BusinessManagementView from './superadmin/BusinessManagementView';
 import ApplicationManagementView from './superadmin/ApplicationManagementView';
 import UserManagementView from './superadmin/UserManagementView';
+import SystemSettingsView from './superadmin/SystemSettingsView';
 import ReviewsView from './admin/ReviewsView';
 
 function AppContent() {
@@ -63,6 +64,11 @@ function AppContent() {
         <Route path="/admin/super-reviews" element={
           <SuperAdminLayout>
             <ReviewsView />
+          </SuperAdminLayout>
+        } />
+        <Route path="/admin/system-settings" element={
+          <SuperAdminLayout>
+            <SystemSettingsView />
           </SuperAdminLayout>
         } />
         <Route path="/admin/dashboard" element={

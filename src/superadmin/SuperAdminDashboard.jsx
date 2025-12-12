@@ -22,7 +22,7 @@ import {
   Business as BusinessIcon,
   People as PeopleIcon,
   Restaurant as RestaurantIcon,
-  CheckCircle as CheckCircleIcon,
+  Assignment as AssignmentIcon,
   Schedule as ScheduleIcon,
   MonetizationOn as MonetizationOnIcon,
 } from '@mui/icons-material';
@@ -405,7 +405,7 @@ function SuperAdminDashboard() {
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', ml: 'auto', mr: 8 }}>
           <Button 
             variant="outlined" 
-            startIcon={<CheckCircleIcon />}
+            startIcon={<AssignmentIcon />}
             onClick={() => navigate('/admin/application-management')}
             size="small"
           >
@@ -421,10 +421,11 @@ function SuperAdminDashboard() {
           </Button>
           <Button 
             variant="outlined" 
-            startIcon={<TrendingUpIcon />}
+            startIcon={<PeopleIcon />}
+            onClick={() => navigate('/admin/user-management')}
             size="small"
           >
-            Raporları Görüntüle
+            Kullanıcı Yönetimi
           </Button>
         </Box>
       </Box>
@@ -457,7 +458,7 @@ function SuperAdminDashboard() {
             <StatCard
               title="Aktif İşletme"
               value={stats.activeBusinesses.toLocaleString()}
-              icon={<CheckCircleIcon />}
+              icon={<BusinessIcon />}
               color="success"
               subtitle="Çalışan işletmeler"
             />
