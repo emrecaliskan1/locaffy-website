@@ -278,5 +278,41 @@ export const adminService = {
 
             throw new Error(backendMessage);
         }
+    },
+
+    getAllUsers: async () => {
+        try {
+            const response = await api.get('/admin/users');
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                `Kullanıcılar yüklenirken bir hata oluştu (Status: ${error.response?.status})`;
+
+            throw new Error(errorMessage);
+        }
+    },
+
+    getUserReviews: async (userId) => {
+        try {
+            const response = await api.get(`/admin/users/${userId}/reviews`);
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                `Yorumlar yüklenirken bir hata oluştu (Status: ${error.response?.status})`;
+
+            throw new Error(errorMessage);
+        }
     }
 };

@@ -25,6 +25,7 @@ import BusinessSettingsView from './admin/BusinessSettingsView';
 import SuperAdminDashboard from './superadmin/SuperAdminDashboard';
 import BusinessManagementView from './superadmin/BusinessManagementView';
 import ApplicationManagementView from './superadmin/ApplicationManagementView';
+import UserManagementView from './superadmin/UserManagementView';
 import ReviewsView from './admin/ReviewsView';
 
 function AppContent() {
@@ -52,6 +53,11 @@ function AppContent() {
         <Route path="/admin/business-management" element={
           <SuperAdminLayout>
             <BusinessManagementView />
+          </SuperAdminLayout>
+        } />
+        <Route path="/admin/user-management" element={
+          <SuperAdminLayout>
+            <UserManagementView />
           </SuperAdminLayout>
         } />
         <Route path="/admin/super-reviews" element={

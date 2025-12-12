@@ -61,7 +61,6 @@ const menuItems = [
   { text: 'İşletme Yönetimi', icon: <BusinessIcon />, path: '/admin/business-management' },
   { text: 'Kullanıcı Yönetimi', icon: <PeopleIcon />, path: '/admin/user-management' },
   { text: 'Yorumlar', icon: <RateReviewIcon />, path: '/admin/super-reviews' },
-  { text: 'Raporlar', icon: <AssessmentIcon />, path: '/admin/reports' },
   { text: 'Sistem Ayarları', icon: <SettingsIcon />, path: '/admin/system-settings' },
 ];
 
