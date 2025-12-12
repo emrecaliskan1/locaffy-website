@@ -213,7 +213,10 @@ export const adminService = {
                 }
             }
             
-            return { openingTime, closingTime, workingDays };
+            // Rezervasyon kapasitesi
+            const reservationCapacity = data.reservationCapacity || 10;
+            
+            return { openingTime, closingTime, workingDays, reservationCapacity };
         } catch (error) {
             if (!error.response) {
                 throw new Error('İnternet bağlantınızı kontrol edin');
@@ -238,11 +241,22 @@ export const adminService = {
 
     updateBusinessSettings: async (settings) => {
         try {
-            const response = await api.put('/business/place/settings', {
-                openingTime: settings.openingTime,
-                closingTime: settings.closingTime,
-                workingDays: settings.workingDays
-            });
+            const payload = {};
+            
+            if (settings.openingTime !== undefined && settings.closingTime !== undefined) {
+                payload.openingTime = settings.openingTime;
+                payload.closingTime = settings.closingTime;
+            }
+            
+            if (settings.workingDays !== undefined) {
+                payload.workingDays = settings.workingDays;
+            }
+            
+            if (settings.reservationCapacity !== undefined) {
+                payload.reservationCapacity = settings.reservationCapacity;
+            }
+            
+            const response = await api.put('/business/place/settings', payload);
             return response.data;
         } catch (error) {
             if (!error.response) {

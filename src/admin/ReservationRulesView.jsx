@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -14,6 +14,7 @@ import {
   Paper,
   InputAdornment,
   Slider,
+  CircularProgress,
 } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -23,12 +24,13 @@ import {
   AttachMoney as AttachMoneyIcon,
   Rule as RuleIcon,
 } from '@mui/icons-material';
+import { adminService } from '../services/adminService';
 
 // Mock data - gerçek uygulamada API'den gelecek
 const initialRules = {
   lateCancellationMinutes: 15,
   depositDeductionPercentage: 20,
-  maxPersonCount: 20,
+  reservationCapacity: 10,
   advanceBookingDays: 30,
   minBookingHours: 2,
   autoConfirmReservations: true,
@@ -44,8 +46,30 @@ const initialRules = {
 function ReservationRulesView() {
   const [rules, setRules] = useState(initialRules);
   const [hasChanges, setHasChanges] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    setLoading(true);
+    try {
+      const data = await adminService.getBusinessSettings();
+      setRules(prev => ({
+        ...prev,
+        reservationCapacity: data.reservationCapacity || 10
+      }));
+    } catch (error) {
+      console.error('Ayarlar yüklenirken hata:', error);
+      setErrorMessage(error.message || 'Ayarlar yüklenirken bir hata oluştu');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setRules(prev => ({
@@ -63,12 +87,23 @@ function ReservationRulesView() {
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    // TODO: API call to save rules
-    console.log('Saving rules:', rules);
-    setHasChanges(false);
-    setSuccessMessage('Rezervasyon kuralları başarıyla kaydedildi!');
-    setTimeout(() => setSuccessMessage(''), 3000);
+  const handleSave = async () => {
+    setSaving(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+    
+    try {
+      await adminService.updateBusinessSettings({
+        reservationCapacity: rules.reservationCapacity
+      });
+      setHasChanges(false);
+      setSuccessMessage('Rezervasyon kuralları başarıyla kaydedildi!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      setErrorMessage(error.message || 'Kurallar kaydedilirken bir hata oluştu');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleReset = () => {
@@ -105,6 +140,14 @@ function ReservationRulesView() {
     </Card>
   );
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
@@ -116,17 +159,17 @@ function ReservationRulesView() {
             variant="outlined"
             startIcon={<RestoreIcon />}
             onClick={handleReset}
-            disabled={!hasChanges}
+            disabled={!hasChanges || saving}
           >
             Sıfırla
           </Button>
           <Button
             variant="contained"
-            startIcon={<SaveIcon />}
+            startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
             onClick={handleSave}
-            disabled={!hasChanges}
+            disabled={!hasChanges || saving}
           >
-            Kaydet
+            {saving ? 'Kaydediliyor...' : 'Kaydet'}
           </Button>
         </Box>
       </Box>
@@ -168,16 +211,16 @@ function ReservationRulesView() {
           <RuleCard title="Kapasite ve Rezervasyon Kuralları" icon={<PeopleIcon />}>
             <TextField
               fullWidth
-              label="Maksimum Kişi Sayısı"
+              label="Rezervasyon Kapasitesi"
               type="number"
-              value={rules.maxPersonCount}
-              onChange={(e) => handleInputChange('maxPersonCount', parseInt(e.target.value))}
+              value={rules.reservationCapacity}
+              onChange={(e) => handleInputChange('reservationCapacity', parseInt(e.target.value))}
               margin="normal"
               InputProps={{
-                endAdornment: <InputAdornment position="end">kişi</InputAdornment>,
+                endAdornment: <InputAdornment position="end">rezervasyon</InputAdornment>,
               }}
-              inputProps={{ min: 1, max: 50 }}
-              helperText="Tek bir rezervasyonda kabul edilecek maksimum kişi sayısı"
+              inputProps={{ min: 1, max: 100 }}
+              helperText="Aynı anda kabul edilebilecek maksimum rezervasyon sayısı"
             />
           </RuleCard>
         </Grid>
@@ -253,7 +296,7 @@ function ReservationRulesView() {
                         mb: 1,
                         fontSize: '2rem'
                       }}>
-                        {rules.maxPersonCount} kişi
+                        {rules.reservationCapacity} rez.
                       </Typography>
                       <Typography variant="body2" sx={{
                         fontSize: '0.875rem',

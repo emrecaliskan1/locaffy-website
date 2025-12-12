@@ -34,6 +34,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { reservationService } from '../services/reservationService';
+import SetupGuideModal from './components/SetupGuideModal';
 
 const drawerWidth = 200;
 
@@ -66,8 +67,9 @@ function AdminLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [businessName, setBusinessName] = useState('İşletme');
+  const [showSetupModal, setShowSetupModal] = useState(false);
 
-  // Business name db'den çekilir.
+  // Business name db'den çekilir ve yeni işletme kontrolü yapılır
   useEffect(() => {
     const loadBusinessName = async () => {
       try {
@@ -76,6 +78,16 @@ function AdminLayout({ children }) {
           const firstPlace = places[0];
           const name = firstPlace.name || firstPlace.placeName || 'İşletme';
           setBusinessName(name);
+
+          // Yeni işletme kontrolü: mainImageUrl veya reservationCapacity yoksa modal göster
+          const isNewBusiness = !firstPlace.mainImageUrl || !firstPlace.reservationCapacity;
+          
+          // Modal'ı sadece bir kez göster (localStorage ile kontrol)
+          const setupCompleted = localStorage.getItem(`setup_completed_${firstPlace.id}`);
+          
+          if (isNewBusiness && !setupCompleted) {
+            setShowSetupModal(true);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -111,6 +123,20 @@ function AdminLayout({ children }) {
   const handleLogout = () => {
     // TODO: Implement logout logic
     navigate('/login');
+  };
+
+  const handleCloseSetupModal = () => {
+    setShowSetupModal(false);
+    // Modal kapatıldığında artık gösterme
+    reservationService.getMyPlaces().then(places => {
+      if (places && places.length > 0) {
+        localStorage.setItem(`setup_completed_${places[0].id}`, 'true');
+      }
+    });
+  };
+
+  const handleNavigateFromModal = (path) => {
+    navigate(path);
   };
 
   const drawer = (
@@ -273,6 +299,13 @@ function AdminLayout({ children }) {
         <Toolbar />
         {children}
       </Box>
+
+      {/* Setup Guide Modal */}
+      <SetupGuideModal
+        open={showSetupModal}
+        onClose={handleCloseSetupModal}
+        onNavigate={handleNavigateFromModal}
+      />
     </Box>
   );
 }

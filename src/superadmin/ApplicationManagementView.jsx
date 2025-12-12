@@ -1014,19 +1014,83 @@ function ApplicationManagementView() {
       </Dialog>
 
       {/* Onay Dialog */}
-      <Dialog open={approvalDialogOpen} onClose={() => setApprovalDialogOpen(false)}>
-        <DialogTitle>Başvuruyu Onayla</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            <strong>{selectedApplication?.businessName}</strong> başvurusunu onaylamak istediğinizden emin misiniz?
+      <Dialog 
+        open={approvalDialogOpen} 
+        onClose={() => setApprovalDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      >
+        <DialogTitle sx={{ textAlign: 'center', pt: 4, pb: 2 }}>
+          <Box
+            sx={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+              boxShadow: '0 4px 20px rgba(34, 197, 94, 0.4)',
+            }}
+          >
+            <CheckCircleIcon sx={{ fontSize: 48, color: 'white' }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+            Başvuruyu Onayla
           </Typography>
+        </DialogTitle>
+        <DialogContent sx={{ px: 4, pb: 3, textAlign: 'center' }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 2,
+              bgcolor: '#f0fdf4',
+              borderLeft: '4px solid #22c55e',
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+              {selectedApplication?.businessName}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Mekan başvurusu başarıyla onaylanacaktır
+            </Typography>
+          </Paper>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            Onaylandığında işletme için hesap oluşturulacak ve giriş bilgileri email ile gönderilecektir.
+            İşletme için hesap oluşturulacak ve giriş bilgileri email ile gönderilecektir.
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setApprovalDialogOpen(false)}>İptal</Button>
-          <Button onClick={confirmApproval} variant="contained" color="success">
+        <DialogActions sx={{ px: 4, pb: 3, justifyContent: 'center', gap: 2 }}>
+          <Button 
+            onClick={() => setApprovalDialogOpen(false)}
+            variant="outlined"
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              px: 4,
+            }}
+          >
+            İptal
+          </Button>
+          <Button 
+            onClick={confirmApproval} 
+            variant="contained" 
+            color="success"
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              px: 4,
+              boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
+            }}
+          >
             Onayla
           </Button>
         </DialogActions>
