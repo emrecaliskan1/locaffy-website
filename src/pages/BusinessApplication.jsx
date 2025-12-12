@@ -32,14 +32,18 @@ const businessTypes = [
   'Kafe',
   'Restoran', 
   'Bar',
-  'Bistro'
+  'Bistro',
+  'Tatlıcı',
+  'Fast Food'
 ];
 
 const businessTypeMapping = {
   'Kafe': 'CAFE',
   'Restoran': 'RESTAURANT',
   'Bar': 'BAR',
-  'Bistro': 'BISTRO'
+  'Bistro': 'BISTRO',
+  'Tatlıcı': 'DESSERT',
+  'Fast Food': 'FASTFOOD'
 };
 
 const weekDays = [

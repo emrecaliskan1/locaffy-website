@@ -72,6 +72,18 @@ const getStatusLabel = (status) => {
   }
 };
 
+const getBusinessTypeLabel = (type) => {
+  const typeMap = {
+    'CAFE': 'Kafe',
+    'RESTAURANT': 'Restoran',
+    'BAR': 'Bar',
+    'BISTRO': 'Bistro',
+    'DESSERT': 'Tatlıcı',
+    'FASTFOOD': 'Fast Food',
+  };
+  return typeMap[type] || type;
+};
+
 const getDayLabel = (day) => {
   const dayMap = {
     'MONDAY': 'Pazartesi',
@@ -180,8 +192,9 @@ function ApplicationManagementView() {
       ));
 
       setApprovalDialogOpen(false);
+      setDetailDialogOpen(false);
       setSelectedApplication(null);
-      setSuccessMessage('Başvuru başarıyla onaylandı! İşletme hesabı oluşturuldu.');
+      setSuccessMessage('Mekan başvurusu başarıyla onaylanmıştır. İşletme hesabı oluşturuldu.');
       setTimeout(() => setSuccessMessage(''), 3000);
 
       loadStats();
@@ -246,6 +259,7 @@ function ApplicationManagementView() {
       ));
 
       setRejectionDialogOpen(false);
+      setDetailDialogOpen(false);
       setSelectedApplication(null);
       setRejectionReason('');
       setSuccessMessage('Başvuru reddedildi!');
@@ -799,7 +813,7 @@ function ApplicationManagementView() {
                     <Box>
                       <Typography variant="body2" color="text.secondary">İşletme Türü</Typography>
                       <Typography variant="body1" sx={{ fontWeight: '600' }}>
-                        {selectedApplication.businessType}
+                        {getBusinessTypeLabel(selectedApplication.businessType)}
                       </Typography>
                     </Box>
                     
