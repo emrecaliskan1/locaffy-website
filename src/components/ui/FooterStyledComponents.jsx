@@ -116,11 +116,11 @@ export const StyledSocialIcon = styled(Link)(({ theme, variant = 'default' }) =>
     },
     gradient: {
       color: 'white',
-      background: 'linear-gradient(135deg, #ff8a50 0%, #ff6b35 100%)',
+      background: '#ff6b35',
       '&:hover': {
         transform: 'translateY(-4px) scale(1.1)',
-        background: 'linear-gradient(135deg, #ff7043 0%, #ff5722 100%)',
-        boxShadow: '0 6px 16px rgba(255, 138, 80, 0.4)',
+        background: '#ff8a50',
+        boxShadow: '0 6px 16px rgba(255, 107, 53, 0.4)',
       },
     },
     minimal: {

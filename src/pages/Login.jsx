@@ -185,22 +185,17 @@ function Login() {
                 transition={{ delay: 0.2, duration: 0.5 }}
               >
                 <Box
+                  component="img"
+                  src="/locaffy%20icon.png"
+                  alt="Locaffy Icon"
                   sx={{
                     width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #ff8a50 0%, #ff6b35 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    height: 110,
                     margin: '0 auto 20px',
-                    color: 'white',
-                    fontSize: '2rem',
-                    fontWeight: 'bold'
+                    display: 'block',
+                    objectFit: 'contain'
                   }}
-                >
-                  <Restaurant sx={{ fontSize: 40 }} />
-                </Box>
+                />
               </motion.div>
               
               <Typography

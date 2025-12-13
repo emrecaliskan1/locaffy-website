@@ -58,24 +58,24 @@ export const GradientButton = styled(Button)(({ theme, variant }) => ({
   minWidth: '80px',
   transition: 'all 0.3s ease',
   ...(variant === 'secondary' ? {
-    background: `linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)`,
-    color: '#ea580c',
+    background: '#ff6b35',
+    color: 'white',
     border: '2px solid transparent',
     '&:hover': {
-      background: `linear-gradient(135deg, #fdba74 0%, #fb923c 100%)`,
+      background: '#ff8a50',
       color: 'white',
       transform: 'translateY(-2px)',
-      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+      boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
     },
   } : {
-    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+    background: '#ff6b35',
     color: 'white',
-    border: `2px solid ${theme.palette.primary.main}`,
+    border: '2px solid #ff6b35',
     '&:hover': {
-      background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.main} 100%)`,
-      borderColor: theme.palette.primary.dark,
+      background: '#ff8a50',
+      borderColor: '#ff8a50',
       transform: 'translateY(-2px)',
-      boxShadow: '0 4px 12px rgba(234, 88, 12, 0.4)',
+      boxShadow: '0 4px 12px rgba(255, 107, 53, 0.4)',
     },
   }),
 }));

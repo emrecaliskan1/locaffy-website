@@ -38,26 +38,19 @@ import SetupGuideModal from './components/SetupGuideModal';
 
 const drawerWidth = 200;
 
-const LogoIcon = ({ children, ...props }) => (
+const LogoIcon = ({ ...props }) => (
   <Box
+    component="img"
+    src="/locaffy%20icon.png"
+    alt="Locaffy Icon"
     {...props}
     sx={{
       width: 40,
       height: 40,
-      borderRadius: '12px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '1.2rem',
-      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+      objectFit: 'contain',
       ...props.sx
     }}
-  >
-    {children}
-  </Box>
+  />
 );
 
 function AdminLayout({ children }) {
@@ -142,7 +135,7 @@ function AdminLayout({ children }) {
   const drawer = (
     <div>
       <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2 }}>
-        <LogoIcon>L</LogoIcon>
+        <LogoIcon />
         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
           {isSuperAdmin ? 'Super Admin' : 'Locaffy'}
         </Typography>

@@ -34,25 +34,19 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const drawerWidth = 200;
 
 // Logo component 
-const LogoIcon = ({ children, ...props }) => (
+const LogoIcon = ({ ...props }) => (
   <Box
+    component="img"
+    src="/locaffy%20icon.png"
+    alt="Locaffy Icon"
     {...props}
     sx={{
       width: 40,
       height: 40,
-      borderRadius: '12px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '18px',
-      ...props.sx,
+      objectFit: 'contain',
+      ...props.sx
     }}
-  >
-    {children || 'L'}
-  </Box>
+  />
 );
 
 const menuItems = [
@@ -84,7 +78,7 @@ function SuperAdminLayout({ children }) {
   const drawer = (
     <div>
       <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2 }}>
-        <LogoIcon>L</LogoIcon>
+        <LogoIcon />
         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
           Locaffy
         </Typography>

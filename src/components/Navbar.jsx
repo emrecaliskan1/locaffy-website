@@ -11,7 +11,7 @@ import {
   ButtonBase,
   Stack
 } from '@mui/material';
-import {LogoIcon,NavLink,GradientButton } from './ui/NavbarStyledComponents'
+import {NavLink,GradientButton } from './ui/NavbarStyledComponents'
 
 const HideOnScroll = ({ children }) => {
   const trigger = useScrollTrigger({
@@ -76,7 +76,16 @@ const Navbar = () => {
               onClick={() => scrollToSection('home')}
               sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
             >
-              <LogoIcon>L</LogoIcon>
+              <Box
+                component="img"
+                src="/locaffy%20icon.png"
+                alt="Locaffy Icon"
+                sx={{
+                  width: 40,
+                  height: 40,
+                  objectFit: 'contain'
+                }}
+              />
               <Typography
                 variant="h5"
                 sx={{
