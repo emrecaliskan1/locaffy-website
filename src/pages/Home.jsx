@@ -23,8 +23,8 @@ import { appFeatures } from '../data/HomePage/appFeatures';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.6, ease: "easeOut" }
   }
@@ -43,8 +43,8 @@ const staggerContainer = {
 
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.8 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     transition: { duration: 0.5, ease: "easeOut" }
   }
@@ -106,7 +106,7 @@ const Home = () => {
         variants={fadeInUp}
       >
         <Box sx={{ py: 8, background: 'white', m: { xs: 2, md: 3 }, borderRadius: 2 }}>
-          <Container maxWidth={false} sx={{ px: 10 }}>
+          <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4, md: 10 } }}>
             <motion.div variants={fadeInUp}>
               <Typography
                 variant="h3"
@@ -115,7 +115,8 @@ const Home = () => {
                   fontWeight: 'bold',
                   textAlign: 'center',
                   mb: 2,
-                  color: 'grey.800'
+                  color: 'grey.800',
+                  fontSize: { xs: '1.75rem', md: '3rem' }
                 }}
               >
                 Locaffy'nin Sunduğu Avantajlar
@@ -127,7 +128,8 @@ const Home = () => {
                   color: 'grey.600',
                   mb: 6,
                   maxWidth: '48rem',
-                  mx: 'auto'
+                  mx: 'auto',
+                  fontSize: { xs: '1rem', md: '1.25rem' }
                 }}
               >
                 Locaffy ile sosyal hayatınız hiç bu kadar kolay olmamıştı. İşte uygulamamızın sunduğu bazı avantajlar:
@@ -142,19 +144,15 @@ const Home = () => {
               <Box
                 sx={{
                   display: 'flex',
-                  justifyContent: 'space-between',
+                  justifyContent: 'center',
                   alignItems: 'stretch',
-                  gap: 4,
-                  '@media (max-width: 1200px)': {
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    gap: 3
-                  }
+                  gap: { xs: 2, md: 4 },
+                  flexWrap: 'wrap'
                 }}
               >
                 {features.map((feature, index) => (
-                  <motion.div key={index} variants={scaleIn} sx={{display: 'flex', justifyContent: 'center' }}>
-                    <Box sx={{display: 'flex', justifyContent: 'center' }}>
+                  <motion.div key={index} variants={scaleIn} style={{ display: 'flex', justifyContent: 'center', width: '100%', maxWidth: { xs: '100%', sm: '45%', md: '30%' } }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                       <FeatureCard>
                         <FeatureIcon>{feature.icon}</FeatureIcon>
                         <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
@@ -213,33 +211,27 @@ const Home = () => {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
             >
-              <Grid 
-                container 
-                spacing={3}
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
                 sx={{
                   justifyContent: 'center',
-                  alignItems: 'stretch',
-                  flexWrap: 'nowrap',
-                  '@media (max-width: 768px)': {
-                    flexWrap: 'wrap',
-                    spacing: 2
-                  }
+                  alignItems: 'stretch'
                 }}
               >
                 {appFeatures.map((feature, index) => (
-                  <Grid 
-                    item 
-                    key={index} 
-                    sx={{ 
-                      flex: '1 1 0',
-                      minWidth: 0,
-                      maxWidth: { xs: '100%', sm: '380px' },
+                  <Grid
+                    item
+                    key={index}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    sx={{
                       display: 'flex',
-                      justifyContent: 'center',
-                      mx: 3
+                      justifyContent: 'center'
                     }}
                   >
-                    <motion.div variants={scaleIn} style={{ width: '100%' }}>
+                    <motion.div variants={scaleIn} style={{ width: '100%', maxWidth: '380px' }}>
                       <AppFeatureCard>
                         {feature.image ? (
                           <Box

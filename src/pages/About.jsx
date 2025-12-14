@@ -5,11 +5,11 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-import { 
-  AboutHeroSection, 
-  AboutCard, 
-  AboutCardIcon, 
-  TeamCard 
+import {
+  AboutHeroSection,
+  AboutCard,
+  AboutCardIcon,
+  TeamCard
 } from '../components/ui';
 
 const About = () => {
@@ -41,56 +41,49 @@ const About = () => {
           </Typography>
         </Container>
       </AboutHeroSection>
-      
+
       <Box sx={{ py: 8, background: '#f9fafb' }}>
         <Container maxWidth="lg">
-          <Grid 
-            container 
-            spacing={4}
-            sx={{
-              display: 'flex',
-              flexWrap: 'nowrap',
-              '@media (max-width: 1200px)': {
-                flexWrap: 'wrap'
-              }
-            }}
+          <Grid
+            container
+            spacing={{ xs: 2, md: 4 }}
           >
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+            <Grid item xs={12} md={4}>
               <AboutCard>
                 <AboutCardIcon>🎯</AboutCardIcon>
                 <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Misyonumuz
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  İnsanları bir araya getiren, anlamlı bağlantılar kurmalarını sağlayan ve sosyal deneyimlerini zenginleştiren 
-                  teknolojiler geliştirmek için varız. Locaffy ile dünyanın her yerinden insanlar, ortak ilgi alanları 
+                  İnsanları bir araya getiren, anlamlı bağlantılar kurmalarını sağlayan ve sosyal deneyimlerini zenginleştiren
+                  teknolojiler geliştirmek için varız. Locaffy ile dünyanın her yerinden insanlar, ortak ilgi alanları
                   etrafında buluşup yeni dostluklar kurabiliyor.
                 </Typography>
               </AboutCard>
             </Grid>
-            
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+
+            <Grid item xs={12} md={4}>
               <AboutCard>
                 <AboutCardIcon>🔭</AboutCardIcon>
                 <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Vizyonumuz
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  Dünyanın en kullanıcı dostu sosyal keşif platformu olmak ve her bireyin kendine uygun toplulukları 
-                  bulmasına yardımcı olmak vizyonumuzun merkezinde yer alıyor. Teknoloji ile insan ilişkilerini 
+                  Dünyanın en kullanıcı dostu sosyal keşif platformu olmak ve her bireyin kendine uygun toplulukları
+                  bulmasına yardımcı olmak vizyonumuzun merkezinde yer alıyor. Teknoloji ile insan ilişkilerini
                   güçlendirmeyi amaçlıyoruz.
                 </Typography>
               </AboutCard>
             </Grid>
-            
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+
+            <Grid item xs={12} md={4}>
               <AboutCard>
                 <AboutCardIcon>💎</AboutCardIcon>
                 <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Değerlerimiz
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  Güvenlik, şeffaflık, kullanıcı odaklılık ve yenilikçilik temel değerlerimizdir. Her kullanıcımızın 
+                  Güvenlik, şeffaflık, kullanıcı odaklılık ve yenilikçilik temel değerlerimizdir. Her kullanıcımızın
                   güvenli bir ortamda, kendi hızında sosyal bağlantılar kurabilmesi için çalışıyoruz.
                 </Typography>
               </AboutCard>
@@ -125,8 +118,8 @@ const About = () => {
           >
             Deneyimli ve tutkulu ekibimizle, kullanıcılarımız için en iyi deneyimi sunmaya odaklanıyoruz.
           </Typography>
-          <Grid 
-            container 
+          <Grid
+            container
             spacing={4}
             sx={{
               display: 'flex',
@@ -136,40 +129,40 @@ const About = () => {
               }
             }}
           >
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+            <Grid item xs={12} md={4}>
               <TeamCard>
                 <AboutCardIcon>👨‍💻</AboutCardIcon>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Geliştirme Ekibi
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Yazılım geliştirme ekibimiz, en son teknolojilerle güvenli ve 
+                  Yazılım geliştirme ekibimiz, en son teknolojilerle güvenli ve
                   kullanışlı çözümler üretir.
                 </Typography>
               </TeamCard>
             </Grid>
-            
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+
+            <Grid item xs={12} md={4}>
               <TeamCard>
                 <AboutCardIcon>🎨</AboutCardIcon>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Tasarım Ekibi
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Tasarımcılarımız, kullanıcı deneyimini ön planda tutarak 
+                  Tasarımcılarımız, kullanıcı deneyimini ön planda tutarak
                   kullanışlı ve modern arayüzler tasarlar.
                 </Typography>
               </TeamCard>
             </Grid>
-            
-            <Grid item xs={12} md={4} sx={{ minWidth: 0, flex: '1 1 33.33%' }}>
+
+            <Grid item xs={12} md={4}>
               <TeamCard>
                 <AboutCardIcon>📊</AboutCardIcon>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
                   Analitik Ekibi
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Veri analisti uzmanlarımız, kullanıcı davranışlarını analiz ederek 
+                  Veri analisti uzmanlarımız, kullanıcı davranışlarını analiz ederek
                   platformumuzu sürekli iyileştirir.
                 </Typography>
               </TeamCard>
