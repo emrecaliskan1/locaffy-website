@@ -162,6 +162,16 @@ export const reservationService = {
                 error.message ||
                 'Rezervasyon oluşturulurken bir hata oluştu';
 
+            // Engellenen kullanıcı hatası kontrolü
+            if (error.response?.status === 400 && 
+                (errorMessage.includes('Locafy ekibiyle iletişime geçin') || 
+                 errorMessage.includes('rezervasyon oluşturamıyorsunuz') ||
+                 errorMessage.includes('iptal oranınız'))) {
+                const blockedError = new Error(errorMessage);
+                blockedError.isBlockedUserError = true;
+                throw blockedError;
+            }
+
             throw new Error(errorMessage);
         }
     }

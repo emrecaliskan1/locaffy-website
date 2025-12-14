@@ -314,5 +314,59 @@ export const adminService = {
 
             throw new Error(errorMessage);
         }
+    },
+
+    // Engellenen kullanıcıları getir
+    getBlockedUsers: async () => {
+        try {
+            const response = await api.get('/admin/users/blocked');
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            if (error.response?.status === 403) {
+                throw new Error('Bu işlem için Admin yetkisi gereklidir.');
+            } else if (error.response?.status === 404) {
+                throw new Error('Endpoint bulunamadı. Backend\'i kontrol edin.');
+            } else if (error.response?.status === 500) {
+                throw new Error('Sunucu hatası. Lütfen daha sonra tekrar deneyin.');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                `Engellenen kullanıcılar yüklenirken bir hata oluştu (Status: ${error.response?.status})`;
+
+            throw new Error(errorMessage);
+        }
+    },
+
+    // Kullanıcının engelini kaldır
+    unblockUser: async (userId) => {
+        try {
+            const response = await api.post(`/admin/users/${userId}/unblock`);
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                throw new Error('İnternet bağlantınızı kontrol edin');
+            }
+
+            if (error.response?.status === 403) {
+                throw new Error('Bu işlem için Admin yetkisi gereklidir.');
+            } else if (error.response?.status === 404) {
+                throw new Error('Kullanıcı bulunamadı.');
+            } else if (error.response?.status === 500) {
+                throw new Error('Sunucu hatası. Lütfen daha sonra tekrar deneyin.');
+            }
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                `Kullanıcı engeli kaldırılırken bir hata oluştu (Status: ${error.response?.status})`;
+
+            throw new Error(errorMessage);
+        }
     }
 };

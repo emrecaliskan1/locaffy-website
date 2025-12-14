@@ -28,6 +28,7 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   RateReview as RateReviewIcon,
+  Block as BlockIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -54,6 +55,7 @@ const menuItems = [
   { text: 'Başvuru Yönetimi', icon: <AssignmentIcon />, path: '/admin/application-management' },
   { text: 'İşletme Yönetimi', icon: <BusinessIcon />, path: '/admin/business-management' },
   { text: 'Kullanıcı Yönetimi', icon: <PeopleIcon />, path: '/admin/user-management' },
+  { text: 'Engellenen Kullanıcılar', icon: <BlockIcon />, path: '/admin/blocked-users' },
   { text: 'Yorumlar', icon: <RateReviewIcon />, path: '/admin/super-reviews' },
   { text: 'Sistem Ayarları', icon: <SettingsIcon />, path: '/admin/system-settings' },
 ];

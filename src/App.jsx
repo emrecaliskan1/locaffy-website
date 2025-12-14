@@ -28,6 +28,7 @@ import ApplicationManagementView from './superadmin/ApplicationManagementView';
 import UserManagementView from './superadmin/UserManagementView';
 import SystemSettingsView from './superadmin/SystemSettingsView';
 import ReviewsView from './admin/ReviewsView';
+import BlockedUsersView from './superadmin/BlockedUsersView';
 
 function AppContent() {
   const location = useLocation();
@@ -105,6 +106,11 @@ function AppContent() {
           <AdminLayout>
             <ReviewsView />
           </AdminLayout>
+        } />
+        <Route path="/admin/blocked-users" element={
+          <SuperAdminLayout>
+            <BlockedUsersView />
+          </SuperAdminLayout>
         } />
       </Routes>
     );

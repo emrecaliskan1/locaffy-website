@@ -16,6 +16,7 @@ export const ROUTES = {
   ADMIN_RESERVATION_RULES: '/admin/reservation-rules',
   ADMIN_PROMOTIONS: '/admin/promotions',
   ADMIN_BUSINESS_SETTINGS: '/admin/business-settings',
+  ADMIN_BLOCKED_USERS: '/admin/blocked-users',
 };
 
 export const ROUTE_NAMES = {
@@ -37,4 +38,5 @@ export const ROUTE_NAMES = {
   ADMIN_RESERVATION_RULES: 'Rezervasyon Kuralları',
   ADMIN_PROMOTIONS: 'Promosyonlar',
   ADMIN_BUSINESS_SETTINGS: 'İşletme Ayarları',
+  ADMIN_BLOCKED_USERS: 'Engellenen Kullanıcılar',
 };
