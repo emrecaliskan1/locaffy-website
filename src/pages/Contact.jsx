@@ -5,7 +5,7 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-import { ContactHeroSection, ContactForm, SubmitButton  } from '../components/ui';
+import { ContactHeroSection, ContactForm, SubmitButton } from '../components/ui';
 import { TextField } from '@mui/material';
 
 const Contact = () => {
@@ -62,7 +62,7 @@ const Contact = () => {
           </Typography>
         </Container>
       </ContactHeroSection>
-      
+
       <Box sx={{ py: 8, background: '#f9fafb' }}>
         <Container maxWidth="lg">
           <ContactForm>
@@ -78,7 +78,7 @@ const Contact = () => {
             >
               Bize Ulaşın
             </Typography>
-            
+
             <Box component="form" onSubmit={handleSubmit}>
               <Grid container spacing={4} direction="column">
                 <Grid item xs={12}>

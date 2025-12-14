@@ -271,7 +271,7 @@ const Home = () => {
         viewport={{ once: true, amount: 0.5 }}
         variants={fadeInUp}
       >
-        <Box sx={{ py: 10, background: 'white', textAlign: 'center' }}>
+        <Box sx={{ py: { xs: 6, md: 10 }, background: 'white', textAlign: 'center' }}>
           <Container maxWidth="lg">
             <motion.div variants={fadeInUp}>
               <Typography
@@ -307,35 +307,26 @@ const Home = () => {
         </Box>
       </motion.div>
 
-      <motion.div
+      <Box
         id="about"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUp}
+        sx={{ scrollMarginTop: '80px' }}
       >
-        <About />
-      </motion.div>
+        <About isEmbedded={true} />
+      </Box>
 
-      <motion.div
+      <Box
         id="contact"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUp}
+        sx={{ scrollMarginTop: '80px' }}
       >
-        <Contact />
-      </motion.div>
+        <Contact isEmbedded={true} />
+      </Box>
 
-      <motion.div
+      <Box
         id="joinus"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUp}
+        sx={{ scrollMarginTop: '80px' }}
       >
-        <JoinUs />
-      </motion.div>
+        <JoinUs isEmbedded={true} />
+      </Box>
     </Box>
   );
 };
