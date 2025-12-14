@@ -12,15 +12,25 @@ export const HeroSection = styled(Box)(({ theme, variant = 'default' }) => {
   const variants = {
     default: {
       padding: theme.spacing(12, 0),
+      [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(8, 0),
+      }
     },
     compact: {
       padding: theme.spacing(10, 0),
+      [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(6, 0),
+      }
     },
     fullHeight: {
       padding: theme.spacing(15, 0),
       minHeight: '80vh',
       display: 'flex',
       alignItems: 'center',
+      [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(8, 0),
+        minHeight: 'auto',
+      }
     }
   };
 
