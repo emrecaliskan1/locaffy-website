@@ -216,7 +216,10 @@ export const adminService = {
             // Rezervasyon kapasitesi
             const reservationCapacity = data.reservationCapacity || 10;
             
-            return { openingTime, closingTime, workingDays, reservationCapacity };
+            // Geç gelme iptali süresi (dakika)
+            const lateCancellationMinutes = data.lateCancellationMinutes || 15;
+            
+            return { openingTime, closingTime, workingDays, reservationCapacity, lateCancellationMinutes };
         } catch (error) {
             if (!error.response) {
                 throw new Error('İnternet bağlantınızı kontrol edin');
@@ -254,6 +257,10 @@ export const adminService = {
             
             if (settings.reservationCapacity !== undefined) {
                 payload.reservationCapacity = settings.reservationCapacity;
+            }
+            
+            if (settings.lateCancellationMinutes !== undefined) {
+                payload.lateCancellationMinutes = settings.lateCancellationMinutes;
             }
             
             const response = await api.put('/business/place/settings', payload);

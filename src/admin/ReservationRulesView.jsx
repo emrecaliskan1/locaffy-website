@@ -61,7 +61,8 @@ function ReservationRulesView() {
       const data = await adminService.getBusinessSettings();
       setRules(prev => ({
         ...prev,
-        reservationCapacity: data.reservationCapacity || 10
+        reservationCapacity: data.reservationCapacity || 10,
+        lateCancellationMinutes: data.lateCancellationMinutes || 15
       }));
     } catch (error) {
       console.error('Ayarlar yüklenirken hata:', error);
@@ -94,7 +95,8 @@ function ReservationRulesView() {
     
     try {
       await adminService.updateBusinessSettings({
-        reservationCapacity: rules.reservationCapacity
+        reservationCapacity: rules.reservationCapacity,
+        lateCancellationMinutes: rules.lateCancellationMinutes
       });
       setHasChanges(false);
       setSuccessMessage('Rezervasyon kuralları başarıyla kaydedildi!');
