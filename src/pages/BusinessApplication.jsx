@@ -168,7 +168,44 @@ function BusinessApplication() {
 
   if (submitSuccess) {
     return (
-      <Box sx={{ py: 10, background: '#f9fafb' }}>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 4,
+          pt: 0,
+          mt: '-80px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '200px',
+            height: '200px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            top: '10%',
+            left: '10%',
+            animation: 'float 6s ease-in-out infinite'
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '150px',
+            height: '150px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '50%',
+            bottom: '15%',
+            right: '15%',
+            animation: 'float 8s ease-in-out infinite reverse'
+          }}
+        />
         <Container maxWidth="md">
           <Card sx={{ textAlign: 'center', p: 4 }}>
             <CardContent>
@@ -203,45 +240,82 @@ function BusinessApplication() {
   }
 
   return (
-    <>
-      <HeroSection variant="compact">
-        <Container maxWidth="lg">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeInUp}
-          >
-            <Typography
-              variant="h3"
-              component="h2"
-              sx={{
-                fontWeight: 'bold',
-                textAlign: 'center',
-                mb: 2,
-                color: 'white'
-              }}
-            >
-              İşletmenizi Locaffy'ye Katın
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                textAlign: 'center',
-                color: 'rgba(255, 255, 255, 0.9)',
-                mb: 2,
-                maxWidth: '48rem',
-                mx: 'auto'
-              }}
-            >
-              Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın. 
-              Müşterileriniz kolayca rezervasyon yapabilsin, QR kod ile sipariş versin.
-            </Typography>
-          </motion.div>
-        </Container>
-      </HeroSection>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        py: 4,
+        pt: 0,
+        mt: '-80px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50%',
+          top: '10%',
+          left: '10%',
+          animation: 'float 6s ease-in-out infinite'
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: '50%',
+          bottom: '15%',
+          right: '15%',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }}
+      />
 
-      <Box sx={{ py: 6, background: '#f9fafb' }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, mt: 12 }}>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeInUp}
+        >
+          <Typography
+            variant="h3"
+            component="h2"
+            sx={{
+              fontWeight: 'bold',
+              textAlign: 'center',
+              mb: 2,
+              color: 'white'
+            }}
+          >
+            İşletmenizi Locaffy'ye Katın
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              textAlign: 'center',
+              color: 'rgba(255, 255, 255, 0.9)',
+              mb: 4,
+              maxWidth: '48rem',
+              mx: 'auto'
+            }}
+          >
+            Restoranınızı, kafenizi veya barınızı dijital dünyaya taşıyın. 
+            Müşterileriniz kolayca rezervasyon yapabilsin, menünüzü inceleyebilsin ve sizi diğer kullanıcılara önerebilsin.
+          </Typography>
+        </motion.div>
+      </Container>
+
+      <Box sx={{ py: 6, width: '100%', position: 'relative', zIndex: 1 }}>
         <Container maxWidth="lg">
 
         <Card sx={{ maxWidth: 700, mx: 'auto' }}>
@@ -543,7 +617,7 @@ function BusinessApplication() {
         </Card>
         </Container>
       </Box>
-    </>
+    </Box>
   );
 }
 
