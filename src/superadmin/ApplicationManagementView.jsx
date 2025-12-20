@@ -99,7 +99,7 @@ const getDayLabel = (day) => {
 
 function ApplicationManagementView() {
   const navigate = useNavigate();
-  const [allApplications, setAllApplications] = useState([]); // Tüm başvurular
+  const [allApplications, setAllApplications] = useState([]); 
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
@@ -110,7 +110,7 @@ function ApplicationManagementView() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
+  const [size, setSize] = useState(10); ı
   const [statusFilter, setStatusFilter] = useState(null);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -119,6 +119,7 @@ function ApplicationManagementView() {
   const applications = allApplications.slice(page * paginatedSize, (page + 1) * paginatedSize);
   const totalPages = Math.ceil(allApplications.length / paginatedSize) || 1;
   
+
   // Sayfa değiştiğinde veya size değiştiğinde, geçersiz sayfadaysak ilk sayfaya dön
   useEffect(() => {
     if (page >= totalPages && totalPages > 0) {
@@ -126,11 +127,11 @@ function ApplicationManagementView() {
     }
   }, [totalPages, page]);
 
+
   // Role kontrolü
   React.useEffect(() => {
     const user = authService.getCurrentUser();
     
-    // Eğer user'da role yoksa, token'dan decode et
     let userRole = user?.role;
     if (!userRole) {
       const token = localStorage.getItem('accessToken');
@@ -152,7 +153,6 @@ function ApplicationManagementView() {
     if (!user || (userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN')) {
       setErrorMessage('Bu sayfaya erişim için Super Admin yetkisi gereklidir.');
       setIsAuthorized(false);
-      // 3 saniye sonra ana sayfaya yönlendir
       setTimeout(() => {
         navigate('/');
       }, 3000);
@@ -198,7 +198,6 @@ function ApplicationManagementView() {
       setTimeout(() => setSuccessMessage(''), 3000);
 
       loadStats();
-      // Başvuru listesini yeniden yükle (loading state'i karıştırmamak için await kullanmıyoruz)
       setTimeout(() => {
         loadApplications();
       }, 500);
@@ -215,12 +214,10 @@ function ApplicationManagementView() {
       // 409 Conflict - Başvuru zaten işleme alınmış
       if (error.message?.includes('zaten işleme alınmış') || error.message?.includes('Sadece bekleyen')) {
         setErrorMessage(error.message);
-        // Başvuru listesini yeniden yükle
         setTimeout(() => {
           loadApplications();
         }, 500);
       } else if (error.response?.status === 500) {
-        // Backend'den gelen detaylı mesajı göster
         const backendMessage = error.response?.data?.message || 
                               error.response?.data?.error ||
                               error.response?.data?.detail ||
@@ -266,7 +263,6 @@ function ApplicationManagementView() {
       setTimeout(() => setSuccessMessage(''), 3000);
 
       loadStats();
-      // Başvuru listesini yeniden yükle (loading state'i karıştırmamak için await kullanmıyoruz)
       setTimeout(() => {
         loadApplications();
       }, 500);
@@ -274,7 +270,6 @@ function ApplicationManagementView() {
       // 409 Conflict - Başvuru zaten işleme alınmış
       if (error.message?.includes('zaten işleme alınmış') || error.message?.includes('Sadece bekleyen')) {
         setErrorMessage(error.message);
-        // Başvuru listesini yeniden yükle
         setTimeout(() => {
           loadApplications();
         }, 500);
@@ -293,7 +288,7 @@ function ApplicationManagementView() {
       loadApplications();
       loadStats();
     }
-  }, [statusFilter, isAuthorized]); // page ve size kaldırıldı - client-side pagination için
+  }, [statusFilter, isAuthorized]); 
 
   const loadApplications = async () => {
     if (!isAuthorized) return;
@@ -302,7 +297,6 @@ function ApplicationManagementView() {
     setErrorMessage('');
 
     try {
-      // Tüm başvuruları yükle (client-side pagination için)
       const response = await businessService.getAllApplications(statusFilter, 0, 1000);
 
       const mappedApplications = (response.content || []).map(app => ({
@@ -318,7 +312,6 @@ function ApplicationManagementView() {
       }));
       setAllApplications(mappedApplications);
     } catch (error) {
-      // 500 hatası için özel mesaj
       if (error.response?.status === 500) {
         setErrorMessage('Bu işlem için Super Admin yetkisi gereklidir. Lütfen Super Admin olarak giriş yapın.');
       } else {
@@ -336,21 +329,13 @@ function ApplicationManagementView() {
       const statsData = await businessService.getApplicationStats();
       setStats(statsData);
     } catch (error) {
-      // Hata mesajını console'a yazdır
       console.error('İstatistikler yüklenirken hata:', error);
-      
-      // Eğer kritik bir hata değilse (403, 404 gibi), sessizce geç
-      // Sadece 500 gibi sunucu hatalarında kullanıcıya bilgi ver
       if (error.message?.includes('Super Admin yetkisi')) {
-        // Yetki hatası - zaten yetki kontrolü yapılıyor
         console.warn('İstatistikler için yetki yetersiz');
       } else if (error.message?.includes('404') || error.message?.includes('bulunamadı')) {
-        // Endpoint bulunamadı - backend'de endpoint olmayabilir
         console.warn('İstatistik endpoint\'i bulunamadı. Backend\'i kontrol edin.');
-        // Varsayılan değerlerle devam et
         setStats({ total: 0, pending: 0, approved: 0, rejected: 0 });
       } else {
-        // Diğer hatalar için varsayılan değerlerle devam et
         console.warn('İstatistikler yüklenemedi, varsayılan değerler kullanılıyor');
         setStats({ total: 0, pending: 0, approved: 0, rejected: 0 });
       }

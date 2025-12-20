@@ -62,7 +62,6 @@ function AdminLayout({ children }) {
   const [businessName, setBusinessName] = useState('İşletme');
   const [showSetupModal, setShowSetupModal] = useState(false);
 
-  // Business name db'den çekilir ve yeni işletme kontrolü yapılır
   useEffect(() => {
     const loadBusinessName = async () => {
       try {
@@ -75,7 +74,6 @@ function AdminLayout({ children }) {
           // Yeni işletme kontrolü: mainImageUrl veya reservationCapacity yoksa modal göster
           const isNewBusiness = !firstPlace.mainImageUrl || !firstPlace.reservationCapacity;
           
-          // Modal'ı sadece bir kez göster (localStorage ile kontrol)
           const setupCompleted = localStorage.getItem(`setup_completed_${firstPlace.id}`);
           
           if (isNewBusiness && !setupCompleted) {

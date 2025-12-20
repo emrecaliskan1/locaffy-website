@@ -37,7 +37,6 @@ function AdminAuth() {
 
     // İşletme yöneticisi authentication
     if (credentials.email === 'isletme@locaffy.com' && credentials.password === 'isletme123') {
-      // Store business auth token
       localStorage.setItem('businessAuth', 'true');
       navigate('/admin/dashboard');
     } else {

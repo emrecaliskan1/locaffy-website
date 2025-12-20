@@ -75,14 +75,11 @@ function SuperAdminAuth() {
       
       if (!user || (userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN')) {
         console.log('Access denied - not Super Admin');
-        // Super Admin değilse logout yap ve hata göster
         await authService.logout();
         setError(`Bu sayfaya erişim için Super Admin yetkisi gereklidir. Mevcut rol: ${userRole || 'bulunamadı'}`);
         setLoading(false);
         return;
       }
-
-      // Super Admin ise dashboard'a yönlendir
       console.log('Access granted - redirecting to dashboard');
       navigate('/admin/super-dashboard');
     } catch (error) {

@@ -72,7 +72,7 @@ const mapBackendStatusToFrontend = (status) => {
 const statusOptions = ['Aktif', 'Beklemede', 'Pasif'];
 
 function BusinessManagementView() {
-  const [allBusinesses, setAllBusinesses] = useState([]); // Backend'den gelen tüm işletmeler
+  const [allBusinesses, setAllBusinesses] = useState([]); 
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -88,7 +88,7 @@ function BusinessManagementView() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10); // Client-side pagination için sayfa başına gösterilecek kayıt sayısı
+  const [size, setSize] = useState(10); 
   
   // Client-side pagination: allBusinesses'dan mevcut sayfadaki işletmeleri al
   const paginatedSize = size === allBusinesses.length ? allBusinesses.length : size;
@@ -129,7 +129,7 @@ function BusinessManagementView() {
       email: business.email,
       phone: business.phone,
       address: business.address,
-      status: business.status, // Status artık dialog'da kullanılmıyor ama state'te tutuluyor
+      status: business.status, 
     });
     setEditDialogOpen(true);
   };
@@ -142,7 +142,6 @@ function BusinessManagementView() {
     setSuccessMessage('');
 
     try {
-      // Mevcut durumu backend formatına çevir
       let backendStatus = 'PENDING';
       const currentStatus = selectedBusiness.status?.toUpperCase();
       if (currentStatus === 'ACTIVE' || currentStatus === 'AKTIF') {
@@ -158,7 +157,7 @@ function BusinessManagementView() {
         email: newBusiness.email,
         phone: newBusiness.phone,
         address: newBusiness.address,
-        status: backendStatus // Mevcut durumu koru, toggle ile değiştirilecek
+        status: backendStatus 
       });
 
       // Başarılı olursa listeyi yeniden yükle
@@ -224,22 +223,19 @@ function BusinessManagementView() {
   // Sayfa yüklendiğinde işletmeleri yükle
   useEffect(() => {
     loadBusinesses();
-  }, []); // Sadece component mount olduğunda yükle
+  }, []);
 
   const loadBusinesses = async () => {
     setLoading(true);
     setErrorMessage('');
 
     try {
-      // Backend pagination desteklemiyor, direkt List<PlaceResponse> döndürüyor
       const response = await adminService.getAllBusinesses();
       
-      // Backend direkt array döndürüyor (pagination yok)
       let businessesData = [];
       if (Array.isArray(response)) {
         businessesData = response;
       } else if (response.content && Array.isArray(response.content)) {
-        // Eğer gelecekte pagination eklerse, bu kısım hazır
         businessesData = response.content;
       } else {
         businessesData = [];
@@ -247,8 +243,8 @@ function BusinessManagementView() {
 
       // Backend'den gelen status değerlerini frontend formatına çevir
       // Email ve tarih bilgisini business application'lardan almak için onaylanmış başvuruları yükle
-      let emailMap = new Map(); // businessName -> email mapping
-      let dateMap = new Map(); // businessName -> onay tarihi (updatedAt) mapping
+      let emailMap = new Map(); 
+      let dateMap = new Map(); 
       try {
         const applicationsResult = await businessService.getAllApplications('APPROVED', 0, 1000);
         if (applicationsResult && applicationsResult.content) {
@@ -258,7 +254,7 @@ function BusinessManagementView() {
               if (app.email) {
                 emailMap.set(businessNameKey, app.email);
               }
-              // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt, createdAt (son çare)
+              // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt, createdAt 
               const approvalDate = app.updatedAt || app.approvedAt || app.updated_at || app.approved_at;
               if (approvalDate) {
                 dateMap.set(businessNameKey, approvalDate);
@@ -272,7 +268,6 @@ function BusinessManagementView() {
               if (app.email) {
                 emailMap.set(businessNameKey, app.email);
               }
-              // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt, createdAt (son çare)
               const approvalDate = app.updatedAt || app.approvedAt || app.updated_at || app.approved_at;
               if (approvalDate) {
                 dateMap.set(businessNameKey, approvalDate);
@@ -281,7 +276,7 @@ function BusinessManagementView() {
           });
         }
       } catch (error) {
-        // Business application'lar yüklenirken hata - sessizce geç
+        console.error('Başvurular yüklenirken hata:', error);
       }
       
       // Backend'den gelen rezervasyon sayılarını map'e al

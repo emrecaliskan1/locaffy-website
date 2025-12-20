@@ -100,17 +100,6 @@ const formatTime = (dateString) => {
 };
 
 
-
-// Mock data - gerçek uygulamada API'den gelecek
-const mockStats = {
-  monthlyReservations: 1247,
-  occupancyRate: 78.5,
-  cancellationCount: 23,
-  estimatedRevenue: 45680,
-  groupReservations: 89,
-  averageWaitTime: 12,
-};
-
 const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = false }) => (
   <Card sx={{ 
     height: '180px', 
@@ -183,7 +172,6 @@ function DashboardView() {
           const firstPlace = places[0];
           const placeId = firstPlace.id;
           const placeName = firstPlace.name || firstPlace.placeName || '';
-          // Backend'den mainImageUrl dönüyor (banner ve logo aynı alanı kullanıyor)
           const mainImageUrl = firstPlace.mainImageUrl || null;
 
           setPlaceId(placeId);
@@ -224,7 +212,7 @@ function DashboardView() {
         if (reservation.status !== 'PENDING') return false;
         
         const reservationTime = new Date(reservation.reservationTime);
-        return reservationTime < now; // Rezervasyon tarihi geçmiş
+        return reservationTime < now; 
       });
 
       // Tarihi geçmiş PENDING rezervasyonları iptal et
@@ -232,7 +220,7 @@ function DashboardView() {
         const cancelPromises = expiredPendingReservations.map(reservation =>
           reservationService.cancelReservation(reservation.id).catch(error => {
             console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
-            return null; // Hata olsa bile devam et
+            return null; 
           })
         );
         
@@ -266,16 +254,13 @@ function DashboardView() {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    // Bu ayki rezervasyonlar
     const monthlyReservations = allReservations.filter(r => {
       const resDate = new Date(r.createdAt || r.reservationTime);
       return resDate >= startOfMonth;
     });
 
-    // İptal sayısı
     const cancellationCount = monthlyReservations.filter(r => r.status === 'CANCELLED').length;
 
-    // Grup rezervasyonları (8+ kişi)
     const groupReservations = monthlyReservations.filter(r => r.numberOfPeople >= 8).length;
 
     return {
@@ -283,7 +268,7 @@ function DashboardView() {
       cancellationCount,
       groupReservations,
     };
-  };
+  };s
 
   const tempStats = calculateTempStats();
 

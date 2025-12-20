@@ -107,20 +107,17 @@ const isWithinTwoHourWindow = (reservationTime) => {
   if (!reservationTime) return false;
   const now = new Date();
   const resTime = new Date(reservationTime);
-  const twoHoursLater = new Date(resTime.getTime() + 2 * 60 * 60 * 1000); // 2 saat ekle
+  const twoHoursLater = new Date(resTime.getTime() + 2 * 60 * 60 * 1000);
   return now <= twoHoursLater;
 };
 
 // Rezervasyonun tamamlanabilir olup olmadığını kontrol et
 const canMarkAsCompleted = (reservation) => {
-  // Sadece APPROVED veya NO_SHOW durumlarında
   const validStatuses = ['APPROVED', 'NO_SHOW'];
   if (!validStatuses.includes(reservation.status)) return false;
   
-  // Rezervasyon saati geçmiş olmalı
   if (!isReservationTimePassed(reservation.reservationTime)) return false;
   
-  // NO_SHOW ise 2 saat içinde olmalı
   if (reservation.status === 'NO_SHOW') {
     return isWithinTwoHourWindow(reservation.reservationTime);
   }
@@ -159,11 +156,9 @@ function ReservationManagementView() {
       setErrorMessage('');
 
       try {
-        // Backend'den kullanıcının place'lerini getir
         const places = await reservationService.getMyPlaces();
         
         if (places && Array.isArray(places) && places.length > 0) {
-          // İlk place'i kullan (ileride kullanıcı seçim yapabilir)
           const firstPlace = places[0];
           const placeId = firstPlace.id;
           const placeName = firstPlace.name || firstPlace.placeName || '';
@@ -217,7 +212,7 @@ function ReservationManagementView() {
         if (reservation.status !== 'PENDING') return false;
         
         const reservationTime = new Date(reservation.reservationTime);
-        return reservationTime < now; // Rezervasyon tarihi geçmiş
+        return reservationTime < now;
       });
 
       // Tarihi geçmiş PENDING rezervasyonları iptal et
@@ -225,15 +220,13 @@ function ReservationManagementView() {
         const cancelPromises = expiredPendingReservations.map(reservation =>
           reservationService.cancelReservation(reservation.id).catch(error => {
             console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
-            return null; // Hata olsa bile devam et
+            return null; 
           })
         );
         
         await Promise.all(cancelPromises);
         
-        // Rezervasyonları yeniden yükle
         const updatedData = await reservationService.getPlaceReservations(placeId);
-        // En yeni rezervasyonları üstte göster
         const sortedData = updatedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setReservations(sortedData);
         
@@ -252,7 +245,6 @@ function ReservationManagementView() {
         const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setReservations(sortedData);
         
-        // İstatistikleri hesapla
         const statsData = {
           total: data.length,
           pending: data.filter(r => r.status === 'PENDING').length,
@@ -271,14 +263,12 @@ function ReservationManagementView() {
     }
   };
 
-  // URL parametresinden reservationId varsa modal aç
   useEffect(() => {
     const reservationId = searchParams.get('reservationId');
     if (reservationId && reservations.length > 0) {
       const targetReservation = reservations.find(r => r.id.toString() === reservationId);
       if (targetReservation) {
         handleViewDetails(targetReservation);
-        // URL'den parametreyi temizle
         const newUrl = new URL(window.location);
         newUrl.searchParams.delete('reservationId');
         window.history.replaceState({}, '', newUrl);
@@ -320,7 +310,6 @@ function ReservationManagementView() {
       setSuccessMessage('Rezervasyon başarıyla onaylandı!');
       setTimeout(() => setSuccessMessage(''), 3000);
 
-      // Listeyi yenile
       setTimeout(() => {
         loadReservations();
       }, 500);
@@ -352,7 +341,6 @@ function ReservationManagementView() {
       setSuccessMessage('Rezervasyon reddedildi!');
       setTimeout(() => setSuccessMessage(''), 3000);
 
-      // Listeyi yenile
       setTimeout(() => {
         loadReservations();
       }, 500);
@@ -376,8 +364,6 @@ function ReservationManagementView() {
       setSelectedReservation(null);
       setSuccessMessage('Rezervasyon iptal edildi!');
       setTimeout(() => setSuccessMessage(''), 3000);
-
-      // Listeyi yenile
       setTimeout(() => {
         loadReservations();
       }, 500);
@@ -398,7 +384,6 @@ function ReservationManagementView() {
       setSuccessMessage('✓ Rezervasyon gerçekleşti olarak işaretlendi');
       setTimeout(() => setSuccessMessage(''), 3000);
 
-      // Listeyi yenile
       setTimeout(() => {
         loadReservations();
       }, 500);

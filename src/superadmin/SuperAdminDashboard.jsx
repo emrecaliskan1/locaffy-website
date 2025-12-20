@@ -47,7 +47,6 @@ const getStatusColor = (status) => {
 };
 
 const getStatusLabel = (status) => {
-  // Backend'den gelen status değerlerini Türkçe'ye çevir
   const statusUpper = status?.toUpperCase();
   
   switch (statusUpper) {
@@ -137,28 +136,23 @@ function SuperAdminDashboard() {
 
     try {
       // İstatistikleri ve işletme listesini ayrı ayrı yükle
-      // Çünkü stats endpoint'i henüz backend'de yok
       const [statsResult, businessesResult] = await Promise.allSettled([
         adminService.getDashboardStats(),
         adminService.getAllBusinesses() // Backend pagination desteklemiyor
       ]);
 
-      // İstatistikler - endpoint henüz yoksa hata göster ama devam et
       if (statsResult.status === 'fulfilled') {
         setStats(statsResult.value);
       } else {
-        // Stats endpoint'i henüz backend'de yok (403 veya 404 hatası)
         if (statsResult.reason.message === 'DASHBOARD_STATS_NOT_IMPLEMENTED' || 
             statsResult.reason.response?.status === 404 ||
             statsResult.reason.response?.status === 403) {
-          // Endpoint henüz oluşturulmadı - kullanıcıya bilgi ver ama devam et
           const warningMsg = 'İstatistik endpoint\'i (/api/admin/dashboard/stats) henüz backend\'de oluşturulmadı. Backend geliştiricisiyle iletişime geçin.';
           if (!errorMessage) {
             setErrorMessage(warningMsg);
           } else {
             setErrorMessage(errorMessage + ' ' + warningMsg);
           }
-          // Boş istatistikler göster
           setStats({
             totalBusinesses: 0,
             activeBusinesses: 0,
@@ -169,16 +163,12 @@ function SuperAdminDashboard() {
             totalReservations: 0,
           });
         } else {
-          // Diğer hatalar için throw et
           throw statsResult.reason;
         }
       }
-
-      // İşletme listesi - /api/admin/places endpoint'i mevcut
       if (businessesResult.status === 'fulfilled') {
         const businessesData = businessesResult.value;
         
-        // Backend direkt array döndürüyor (pagination yok)
         let businessesArray = [];
         if (Array.isArray(businessesData)) {
           businessesArray = businessesData;
@@ -190,8 +180,8 @@ function SuperAdminDashboard() {
 
         // Backend'den gelen verileri frontend formatına map et
         // Email ve tarih bilgisini business application'lardan almak için onaylanmış başvuruları yükle
-        let emailMap = new Map(); // businessName -> email mapping
-        let dateMap = new Map(); // businessName -> onay tarihi (updatedAt) mapping
+        let emailMap = new Map(); 
+        let dateMap = new Map();
         try {
           const applicationsResult = await businessService.getAllApplications('APPROVED', 0, 1000);
           if (applicationsResult && applicationsResult.content) {
@@ -215,7 +205,6 @@ function SuperAdminDashboard() {
                 if (app.email) {
                   emailMap.set(businessNameKey, app.email);
                 }
-                // Onay tarihini al - öncelik sırası: updatedAt (onay tarihi), approvedAt
                 const approvalDate = app.updatedAt || app.approvedAt || app.updated_at || app.approved_at;
                 if (approvalDate) {
                   dateMap.set(businessNameKey, approvalDate);
@@ -224,7 +213,7 @@ function SuperAdminDashboard() {
             });
           }
         } catch (error) {
-          // Business application'lar yüklenirken hata - sessizce geç
+          // Business application'lar yüklenirken hata 
         }
         
         const mappedBusinesses = businessesArray.map(business => {
@@ -237,7 +226,6 @@ function SuperAdminDashboard() {
             statusValue = 'INACTIVE';
           }
           
-          // Email alanını nested yapıları da kontrol ederek bul
           let emailValue = business.email || 
                           business.ownerEmail || 
                           business.userEmail || 
@@ -262,12 +250,11 @@ function SuperAdminDashboard() {
             emailValue = '-';
           }
           
-          // Tarih formatlaması - önce backend'den gelen alanları kontrol et, sonra business application'lardan al
+         
           let joinDate = '';
-          // Backend'den gelebilecek tüm olası tarih alanlarını kontrol et (camelCase ve snake_case)
           const dateFields = [
             business.createdAt,
-            business.created_at, // snake_case variant
+            business.created_at,
             business.joinDate,
             business.join_date,
             business.registrationDate,
@@ -288,7 +275,6 @@ function SuperAdminDashboard() {
               try {
                 const date = new Date(dateField);
                 if (!isNaN(date.getTime())) {
-                  // Geçerli bir tarih
                   joinDate = date.toLocaleDateString('tr-TR', {
                     year: 'numeric',
                     month: '2-digit',
@@ -297,7 +283,7 @@ function SuperAdminDashboard() {
                   break;
                 }
               } catch (e) {
-                // Tarih formatlama hatası - sessizce geç
+                // Tarih formatlama hatası 
               }
             }
           }
@@ -317,7 +303,7 @@ function SuperAdminDashboard() {
                   });
                 }
               } catch (e) {
-                // Business application tarih formatlama hatası - sessizce geç
+                // Business application tarih formatlama hatası
               }
             }
           }
@@ -333,7 +319,7 @@ function SuperAdminDashboard() {
                   break;
                 }
               } catch (e) {
-                // Tarih formatlama hatası - sessizce geç
+                // Tarih formatlama hatası 
               }
             }
           }
@@ -349,7 +335,7 @@ function SuperAdminDashboard() {
                   sortDate = null;
                 }
               } catch (e) {
-                // Business application tarih formatlama hatası - sessizce geç
+                // Business application tarih formatlama hatası
               }
             }
           }
@@ -367,11 +353,8 @@ function SuperAdminDashboard() {
 
         // Son eklenen 10 işletmeyi göster - tarihe göre sırala (en yeni önce)
         const sortedBusinesses = mappedBusinesses.sort((a, b) => {
-          // En yeni önce (azalan sıra)
           return b.sortDate.getTime() - a.sortDate.getTime();
         });
-        
-        // Son 10 işletmeyi al
         setBusinesses(sortedBusinesses.slice(0, 10));
       } else {
         setErrorMessage(
@@ -383,7 +366,6 @@ function SuperAdminDashboard() {
     } catch (error) {
       setErrorMessage(error.message || 'Dashboard verileri yüklenirken bir hata oluştu');
       
-      // 403 hatası durumunda ana sayfaya yönlendir (sadece yetki hatası için)
       if (error.message?.includes('Admin yetkisi') && error.response?.status !== 404) {
         setTimeout(() => {
           navigate('/');

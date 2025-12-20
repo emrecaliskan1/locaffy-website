@@ -109,27 +109,22 @@ function MenuManagementView() {
     try {
       const items = await menuService.getMyItems();
       
-      // Backend'den gelen veriyi normalize et (backend 'available' kullanıyor, frontend 'isAvailable' bekliyor)
       const normalizedItems = items.map(item => {
-        // Backend 'available' alanını kullanıyor, 'isAvailable' değil
         let isAvailableValue = item.available !== undefined ? item.available : 
                               (item.isAvailable !== undefined ? item.isAvailable : 
                               (item.isActive !== undefined ? item.isActive : true));
-        
-        // String değerleri boolean'a çevir
+
         if (typeof isAvailableValue === 'string') {
           isAvailableValue = isAvailableValue === 'true' || isAvailableValue === '1';
         }
         
-        // Boolean'a çevir (null, undefined için true - default aktif)
         if (isAvailableValue === null || isAvailableValue === undefined) {
-          isAvailableValue = true; // Default olarak aktif
+          isAvailableValue = true; 
         }
         
         return {
           ...item,
           isAvailable: Boolean(isAvailableValue),
-          // 'available' alanını da koru (geriye dönük uyumluluk için)
           available: Boolean(isAvailableValue)
         };
       });
@@ -177,12 +172,10 @@ function MenuManagementView() {
       // Önce ürünü oluştur
       const createdItem = await menuService.createMenuItem(itemData);
 
-      // Eğer fotoğraf seçildiyse, fotoğrafı yükle
       if (selectedFile) {
         try {
           await menuService.uploadMenuItemImage(createdItem.id, selectedFile);
         } catch (imageError) {
-          // Fotoğraf yükleme hatası - ürün oluşturuldu ama fotoğraf yüklenemedi
           console.warn('Fotoğraf yüklenirken hata:', imageError);
           setErrorMessage('Ürün oluşturuldu ancak fotoğraf yüklenirken bir hata oluştu: ' + imageError.message);
         }
@@ -222,7 +215,6 @@ function MenuManagementView() {
       tags: item.tags || '',
       displayOrder: item.displayOrder || 0
     });
-    // Mevcut fotoğraf varsa preview olarak göster
     if (item.imageUrl) {
       setImagePreview(item.imageUrl);
     } else {
@@ -259,12 +251,10 @@ function MenuManagementView() {
       // Önce ürünü güncelle
       await menuService.updateMenuItem(selectedItem.id, itemData);
 
-      // Eğer yeni fotoğraf seçildiyse, fotoğrafı yükle
       if (selectedFile) {
         try {
           await menuService.uploadMenuItemImage(selectedItem.id, selectedFile);
         } catch (imageError) {
-          // Fotoğraf yükleme hatası - ürün güncellendi ama fotoğraf yüklenemedi
           console.warn('Fotoğraf yüklenirken hata:', imageError);
           setErrorMessage('Ürün güncellendi ancak fotoğraf yüklenirken bir hata oluştu: ' + imageError.message);
         }
@@ -327,7 +317,6 @@ function MenuManagementView() {
     setErrorMessage('');
 
     try {
-      // Mevcut durumu al (normalize edilmiş isAvailable veya available)
       const currentStatus = item.isAvailable !== undefined ? item.isAvailable : 
                            (item.available !== undefined ? item.available : true);
       const newStatus = !currentStatus;
@@ -372,7 +361,7 @@ function MenuManagementView() {
 
     // Dosyayı state'e kaydet
     setSelectedFile(file);
-    setErrorMessage(''); // Hata mesajını temizle
+    setErrorMessage(''); 
 
     // Önizleme için
     const reader = new FileReader();
