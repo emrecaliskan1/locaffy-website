@@ -101,18 +101,18 @@ const formatTime = (dateString) => {
 
 
 const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = false }) => (
-  <Card sx={{ 
-    height: '180px', 
-    display: 'flex', 
+  <Card sx={{
+    height: '180px',
+    display: 'flex',
     flexDirection: 'column',
     width: '100%',
     minWidth: '250px',
     opacity: disabled ? 0.6 : 1
   }}>
-    <CardContent sx={{ 
-      flex: 1, 
-      display: 'flex', 
-      flexDirection: 'column', 
+    <CardContent sx={{
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'space-between',
       padding: '16px !important'
     }}>
@@ -120,7 +120,7 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = 
         <Box sx={{ mr: 2, color: `${color}.main`, fontSize: '1.5rem' }}>
           {icon}
         </Box>
-        <Typography variant="h6" component="div" sx={{ 
+        <Typography variant="h6" component="div" sx={{
           fontWeight: 'bold',
           fontSize: '1rem',
           lineHeight: 1.2
@@ -128,8 +128,8 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, disabled = 
           {title}
         </Typography>
       </Box>
-      <Typography variant="h3" component="div" sx={{ 
-        fontWeight: 'bold', 
+      <Typography variant="h3" component="div" sx={{
+        fontWeight: 'bold',
         mb: 1,
         fontSize: '2rem',
         textAlign: 'center'
@@ -205,14 +205,14 @@ function DashboardView() {
 
     try {
       const data = await reservationService.getPlaceReservations(placeId);
-      
+
       // Tarihi geçmiş ve hala PENDING olan rezervasyonları otomatik iptal et
       const now = new Date();
       const expiredPendingReservations = data.filter(reservation => {
         if (reservation.status !== 'PENDING') return false;
-        
+
         const reservationTime = new Date(reservation.reservationTime);
-        return reservationTime < now; 
+        return reservationTime < now;
       });
 
       // Tarihi geçmiş PENDING rezervasyonları iptal et
@@ -220,12 +220,12 @@ function DashboardView() {
         const cancelPromises = expiredPendingReservations.map(reservation =>
           reservationService.cancelReservation(reservation.id).catch(error => {
             console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
-            return null; 
+            return null;
           })
         );
-        
+
         await Promise.all(cancelPromises);
-        
+
         // Rezervasyonları yeniden yükle
         const updatedData = await reservationService.getPlaceReservations(placeId);
         setAllReservations(updatedData);
@@ -253,7 +253,7 @@ function DashboardView() {
   const calculateTempStats = () => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     const monthlyReservations = allReservations.filter(r => {
       const resDate = new Date(r.createdAt || r.reservationTime);
       return resDate >= startOfMonth;
@@ -268,7 +268,7 @@ function DashboardView() {
       cancellationCount,
       groupReservations,
     };
-  };s
+  };
 
   const tempStats = calculateTempStats();
 
@@ -334,25 +334,25 @@ function DashboardView() {
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             Hızlı Eylemler
           </Typography>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              variant="contained" 
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
               startIcon={<CheckCircleIcon />}
               disabled={true}
               title="Backend endpoint bekleniyor"
             >
               Toplu Onaylama
             </Button>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               startIcon={<RestaurantIcon />}
               disabled={true}
               title="Backend endpoint bekleniyor"
             >
               Masa Durumu Güncelle
             </Button>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               startIcon={<PeopleIcon />}
               disabled={true}
               title="Yakında eklenecek"
@@ -369,7 +369,7 @@ function DashboardView() {
           <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
             Son Rezervasyonlar
           </Typography>
-          
+
           {loading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress />
@@ -409,8 +409,8 @@ function DashboardView() {
                       </TableCell>
                       <TableCell align="center">
                         {reservation.status === 'PENDING' ? (
-                          <Button 
-                            size="small" 
+                          <Button
+                            size="small"
                             variant="outlined"
                             startIcon={<ScheduleIcon />}
                             onClick={() => {

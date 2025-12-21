@@ -207,7 +207,7 @@ const Home = () => {
                           variant="caption"
                           sx={{
                             color: 'white',
-                            fontWeight: 500,
+                            fontWeight: 700,
                             textAlign: 'center',
                             fontSize: '0.75rem'
                           }}

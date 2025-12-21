@@ -23,7 +23,7 @@ const About = () => {
             sx={{
               fontWeight: 'bold',
               mb: 3,
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
+              fontSize: { xs: '2.5rem', md: '3rem' }
             }}
           >
             Hakkımızda
@@ -35,8 +35,7 @@ const About = () => {
               mx: 'auto',
               opacity: 0.9,
               lineHeight: 1.8,
-              mb: 2,
-              fontSize: { xs: '1rem', md: '1.25rem' }
+              mb: 2
             }}
           >
             Biz Locaffy ekibiyiz.
@@ -48,8 +47,7 @@ const About = () => {
               mx: 'auto',
               opacity: 0.9,
               lineHeight: 1.8,
-              mb: 2,
-              fontSize: { xs: '1rem', md: '1.25rem' }
+              mb: 2
             }}
           >
             Günlük hayatta sıkça yaşanan "Nereye gidelim?" kararsızlığını daha az yaşamak için yola çıktık.
@@ -61,8 +59,7 @@ const About = () => {
               mx: 'auto',
               opacity: 0.9,
               lineHeight: 1.8,
-              mb: 2,
-              fontSize: { xs: '1rem', md: '1.25rem' }
+              mb: 2
             }}
           >
             Locaffy'yi; bulunduğun konuma göre kafe ve restoranları kolayca keşfedebileceğin, menülere göz atabileceğin ve gitmeden önce yerini ayırt edebileceğin bir deneyim olarak tasarladık.
@@ -73,8 +70,7 @@ const About = () => {
               maxWidth: '56rem',
               mx: 'auto',
               opacity: 0.9,
-              lineHeight: 1.8,
-              fontSize: { xs: '1rem', md: '1.25rem' }
+              lineHeight: 1.8
             }}
           >
             Amacımız, keşfetmeyi kolaylaştıran ve karar vermeyi hızlandıran bir platform sunmak.
