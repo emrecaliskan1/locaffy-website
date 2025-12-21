@@ -18,7 +18,7 @@ import {
   AppFeatureImage,
   PrimaryButton
 } from '../components/ui';
-import { features } from '../data/HomePage/features';
+import { features, compactFeatures } from '../data/HomePage/features';
 import { appFeatures } from '../data/HomePage/appFeatures';
 
 const fadeInUp = {
@@ -51,51 +51,255 @@ const scaleIn = {
 };
 
 const Home = () => {
+  const handleDownload = () => {
+    // APK dosyasını indirme linki - public klasörüne locaffy.apk dosyasını koyun
+    const link = document.createElement('a');
+    link.href = '/locaffy.apk';
+    link.download = 'Locaffy.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <Box component="main">
       <HeroSection id="home">
-        <Container maxWidth="lg">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
-            <motion.div variants={fadeInUp}>
-              <Typography
-                variant="h2"
-                component="h1"
-                sx={{
-                  fontWeight: 'bold',
-                  mb: 3,
-                  lineHeight: 1.2,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' }
-                }}
+        <Container maxWidth="xl">
+          <Grid container spacing={4} alignItems="center">
+            {/* Left Column - Text Content */}
+            <Grid item xs={12} md={6}>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}
               >
-                Locaffy ile Mükemmel Sosyal Deneyimi Keşfedin
-              </Typography>
-            </motion.div>
-            <motion.div variants={fadeInUp}>
-              <Typography
-                variant="h6"
-                sx={{
-                  maxWidth: '48rem',
-                  mx: 'auto',
-                  mb: 4,
-                  opacity: 0.9,
-                  lineHeight: 1.6
-                }}
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Typography
+                    variant="h2"
+                    component="h1"
+                    sx={{
+                      fontWeight: 'bold',
+                      mb: 3,
+                      lineHeight: 1.2,
+                      fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
+                      textAlign: { xs: 'center', md: 'left' },
+                      background: 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #ffffff 100%)',
+                      backgroundSize: '200% auto',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      animation: 'gradient-shift 3s ease infinite',
+                      '@keyframes gradient-shift': {
+                        '0%, 100%': {
+                          backgroundPosition: '0% center'
+                        },
+                        '50%': {
+                          backgroundPosition: '100% center'
+                        }
+                      }
+                    }}
+                  >
+                    ŞEHRİNİZİ KEŞFETMEYE HAZIR MISINIZ ?
+                  </Typography>
+                </motion.div>
+                <motion.div
+                  variants={fadeInUp}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      delay: 0.3,
+                      duration: 0.8
+                    }
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 2,
+                      opacity: 0.95,
+                      lineHeight: 1.6,
+                      textAlign: { xs: 'center', md: 'left' },
+                      fontWeight: 500,
+                      textShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        display: 'inline-block',
+                        background: 'linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        fontWeight: 'bold',
+                        animation: 'pulse 2s ease-in-out infinite',
+                        '@keyframes pulse': {
+                          '0%, 100%': {
+                            opacity: 1
+                          },
+                          '50%': {
+                            opacity: 0.8
+                          }
+                        }
+                      }}
+                    >
+                      "Nereye gidelim?"
+                    </Box>
+                    {' '}sorusunun resmi cevabı.
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 4,
+                      opacity: 0.9,
+                      lineHeight: 1.6,
+                      textAlign: { xs: 'center', md: 'left' }
+                    }}
+                  >
+                    Locaffy, yakındaki kafe ve restoranları senin yerine bulur.
+                  </Typography>
+                </motion.div>
+                <motion.div
+                  variants={scaleIn}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                    <HeroButton variant="primary" size="large" onClick={handleDownload}>
+                      Uygulamayı İndir
+                    </HeroButton>
+                  </Box>
+                </motion.div>
+
+                {/* Compact Features */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
+                >
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(6, 1fr)' },
+                      gap: { xs: 2, md: 3 },
+                      mt: { xs: 3, md: 4 },
+                      justifyContent: { xs: 'center', md: 'flex-start' }
+                    }}
+                  >
+                    {compactFeatures.map((feature, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 0.5
+                        }}
+                      >
+                        <Box sx={{ fontSize: { xs: '1.75rem', md: '2rem' } }}>{feature.icon}</Box>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'white',
+                            fontWeight: 500,
+                            textAlign: 'center',
+                            fontSize: '0.75rem'
+                          }}
+                        >
+                          {feature.title}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'rgba(255,255,255,0.8)',
+                            fontSize: '0.65rem',
+                            textAlign: 'center'
+                          }}
+                        >
+                          {feature.description}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </motion.div>
+              </motion.div>
+            </Grid>
+
+            {/* Right Column - Visual Content */}
+            <Grid item xs={12} md={6}>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                Locaffy, arkadaşlarınızla plan yapmanızı kolaylaştırır, sosyal etkinliklerinizi düzenlemenizi sağlar,
-                yakınınızdaki mekanları keşfetmenizi ve menülerini incelemenizi sağlar.
-              </Typography>
-            </motion.div>
-            <motion.div variants={scaleIn}>
-              <HeroButton variant="primary" size="large">
-                Uygulamayı İndir
-              </HeroButton>
-            </motion.div>
-          </motion.div>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '500px',
+                    mx: { xs: 'auto', md: 0 },
+                    ml: { md: 'auto' },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: { xs: '300px', sm: '400px', md: '450px' }
+                  }}
+                >
+                  {/* Phone Mockup Container */}
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: { xs: '240px', sm: '280px', md: '300px' },
+                      height: { xs: '480px', sm: '560px', md: '600px' },
+                      background: '#1a1a1a',
+                      borderRadius: '45px',
+                      padding: '8px',
+                      boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.1)',
+                      animation: 'float 3s ease-in-out infinite',
+                      '@keyframes float': {
+                        '0%, 100%': {
+                          transform: 'translateY(0px)'
+                        },
+                        '50%': {
+                          transform: 'translateY(-20px)'
+                        }
+                      }
+                    }}
+                  >
+                    {/* Phone Screen */}
+                    <Box
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        background: 'white',
+                        borderRadius: '38px',
+                        overflow: 'hidden',
+                        position: 'relative'
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src="/Ekran Görüntüsü (421).png"
+                        alt="Locaffy App"
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block'
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              </motion.div>
+            </Grid>
+          </Grid>
         </Container>
       </HeroSection>
 
@@ -105,7 +309,7 @@ const Home = () => {
         viewport={{ once: true, amount: 0.3 }}
         variants={fadeInUp}
       >
-        <Box sx={{ py: 8, background: 'white', m: { xs: 2, md: 3 }, borderRadius: 2 }}>
+        <Box sx={{ py: { xs: 6, md: 8 }, background: '#f9fafb' }}>
           <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4, md: 10 } }}>
             <motion.div variants={fadeInUp}>
               <Typography
@@ -116,7 +320,7 @@ const Home = () => {
                   textAlign: 'center',
                   mb: 2,
                   color: 'grey.800',
-                  fontSize: { xs: '1.75rem', md: '3rem' }
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' }
                 }}
               >
                 Locaffy'nin Sunduğu Avantajlar
@@ -129,10 +333,12 @@ const Home = () => {
                   mb: 6,
                   maxWidth: '48rem',
                   mx: 'auto',
-                  fontSize: { xs: '1rem', md: '1.25rem' }
+                  fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' },
+                  lineHeight: 1.8
                 }}
               >
-                Locaffy ile sosyal hayatınız hiç bu kadar kolay olmamıştı. İşte uygulamamızın sunduğu bazı avantajlar:
+                Locaffy ile "Nereye gidelim?" sorusu tarih oluyor.<br />
+                Karar vermek kolaylaşıyor, kahveye ulaşmak hızlanıyor ☕
               </Typography>
             </motion.div>
             <motion.div
@@ -141,30 +347,63 @@ const Home = () => {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'stretch',
-                  gap: { xs: 2, md: 4 },
-                  flexWrap: 'wrap'
-                }}
-              >
-                {features.map((feature, index) => (
-                  <motion.div key={index} variants={scaleIn} style={{ display: 'flex', justifyContent: 'center', width: '100%', maxWidth: { xs: '100%', sm: '45%', md: '30%' } }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                      <FeatureCard>
-                        <FeatureIcon>{feature.icon}</FeatureIcon>
-                        <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                          {feature.title}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: 'grey.600', flexGrow: 1 }}>
-                          {feature.description}
-                        </Typography>
-                      </FeatureCard>
-                    </Box>
-                  </motion.div>
-                ))}
+              <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+                <Grid container spacing={2.5} justifyContent="center">
+                  {features.map((feature, index) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                      <motion.div variants={scaleIn} style={{ height: '100%' }}>
+                        <Box
+                          sx={{
+                            textAlign: 'center',
+                            p: { xs: 2.5, md: 3 },
+                            background: 'white',
+                            borderRadius: 2.5,
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                            transition: 'all 0.3s ease',
+                            height: '100%',
+                            minHeight: '200px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            '&:hover': {
+                              transform: 'translateY(-6px)',
+                              boxShadow: '0 10px 25px rgba(139, 92, 246, 0.2)',
+                              borderColor: 'rgba(139, 92, 246, 0.4)',
+                            }
+                          }}
+                        >
+                          <Box sx={{ fontSize: { xs: '2.5rem', md: '3rem' }, mb: 1.5 }}>
+                            {feature.icon}
+                          </Box>
+                          <Typography
+                            variant="h6"
+                            component="h3"
+                            sx={{
+                              fontWeight: 'bold',
+                              mb: 1,
+                              color: 'grey.800',
+                              fontSize: { xs: '1rem', md: '1.1rem' }
+                            }}
+                          >
+                            {feature.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'grey.600',
+                              fontSize: '0.9rem',
+                              lineHeight: 1.5
+                            }}
+                          >
+                            {feature.description}
+                          </Typography>
+                        </Box>
+                      </motion.div>
+                    </Grid>
+                  ))}
+                </Grid>
               </Box>
             </motion.div>
           </Container>
@@ -299,6 +538,7 @@ const Home = () => {
               <PrimaryButton
                 variant="primary"
                 size="large"
+                onClick={handleDownload}
               >
                 Uygulamayı İndir
               </PrimaryButton>

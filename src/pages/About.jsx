@@ -23,7 +23,7 @@ const About = () => {
             sx={{
               fontWeight: 'bold',
               mb: 3,
-              fontSize: { xs: '2.5rem', md: '3rem' }
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
             }}
           >
             Hakkımızda
@@ -31,64 +31,141 @@ const About = () => {
           <Typography
             variant="h6"
             sx={{
-              maxWidth: '48rem',
+              maxWidth: '56rem',
               mx: 'auto',
               opacity: 0.9,
-              lineHeight: 1.6
+              lineHeight: 1.8,
+              mb: 2,
+              fontSize: { xs: '1rem', md: '1.25rem' }
             }}
           >
-            Locaffy ekibi olarak, sosyal bağlantıları güçlendiren teknolojiler geliştiriyoruz.
+            Biz Locaffy ekibiyiz.
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              maxWidth: '56rem',
+              mx: 'auto',
+              opacity: 0.9,
+              lineHeight: 1.8,
+              mb: 2,
+              fontSize: { xs: '1rem', md: '1.25rem' }
+            }}
+          >
+            Günlük hayatta sıkça yaşanan "Nereye gidelim?" kararsızlığını daha az yaşamak için yola çıktık.
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              maxWidth: '56rem',
+              mx: 'auto',
+              opacity: 0.9,
+              lineHeight: 1.8,
+              mb: 2,
+              fontSize: { xs: '1rem', md: '1.25rem' }
+            }}
+          >
+            Locaffy'yi; bulunduğun konuma göre kafe ve restoranları kolayca keşfedebileceğin, menülere göz atabileceğin ve gitmeden önce yerini ayırt edebileceğin bir deneyim olarak tasarladık.
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              maxWidth: '56rem',
+              mx: 'auto',
+              opacity: 0.9,
+              lineHeight: 1.8,
+              fontSize: { xs: '1rem', md: '1.25rem' }
+            }}
+          >
+            Amacımız, keşfetmeyi kolaylaştıran ve karar vermeyi hızlandıran bir platform sunmak.
           </Typography>
         </Container>
       </AboutHeroSection>
 
-      <Box sx={{ py: 8, background: '#f9fafb' }}>
-        <Container maxWidth="lg">
-          <Grid
-            container
-            spacing={{ xs: 2, md: 4 }}
-          >
-            <Grid item xs={12} md={4}>
-              <AboutCard>
-                <AboutCardIcon>🎯</AboutCardIcon>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Misyonumuz
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  İnsanları bir araya getiren, anlamlı bağlantılar kurmalarını sağlayan ve sosyal deneyimlerini zenginleştiren
-                  teknolojiler geliştirmek için varız. Locaffy ile dünyanın her yerinden insanlar, ortak ilgi alanları
-                  etrafında buluşup yeni dostluklar kurabiliyor.
-                </Typography>
-              </AboutCard>
-            </Grid>
+      <Box sx={{ py: 10, background: 'white' }}>
+        <Container maxWidth="md">
+          {/* Mission */}
+          <Box sx={{ mb: 8 }}>
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{
+                fontWeight: 'bold',
+                mb: 3,
+                color: 'grey.800',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              <span style={{ fontSize: '2rem' }}>🎯</span>
+              Misyonumuz
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.9, mb: 2, fontSize: '1.1rem' }}>
+              İnsanların bulundukları konuma en uygun mekanları hızlı ve zahmetsiz şekilde keşfetmesini sağlamak.
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.9, fontSize: '1.1rem' }}>
+              Karar verme sürecini basitleştirerek, daha keyifli sosyal deneyimlerin önünü açmak.
+            </Typography>
+          </Box>
 
-            <Grid item xs={12} md={4}>
-              <AboutCard>
-                <AboutCardIcon>🔭</AboutCardIcon>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Vizyonumuz
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  Dünyanın en kullanıcı dostu sosyal keşif platformu olmak ve her bireyin kendine uygun toplulukları
-                  bulmasına yardımcı olmak vizyonumuzun merkezinde yer alıyor. Teknoloji ile insan ilişkilerini
-                  güçlendirmeyi amaçlıyoruz.
-                </Typography>
-              </AboutCard>
-            </Grid>
+          {/* Vision */}
+          <Box sx={{ mb: 8 }}>
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{
+                fontWeight: 'bold',
+                mb: 3,
+                color: 'grey.800',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              <span style={{ fontSize: '2rem' }}>🔭</span>
+              Vizyonumuz
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.9, mb: 2, fontSize: '1.1rem' }}>
+              Kafe ve restoran keşfini herkes için kolay, hızlı ve erişilebilir hale getiren,
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.9, fontSize: '1.1rem' }}>
+              konum tabanlı deneyimde kullanıcıların ilk tercihi olan bir platform olmak.
+            </Typography>
+          </Box>
 
-            <Grid item xs={12} md={4}>
-              <AboutCard>
-                <AboutCardIcon>💎</AboutCardIcon>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Değerlerimiz
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.7, flexGrow: 1 }}>
-                  Güvenlik, şeffaflık, kullanıcı odaklılık ve yenilikçilik temel değerlerimizdir. Her kullanıcımızın
-                  güvenli bir ortamda, kendi hızında sosyal bağlantılar kurabilmesi için çalışıyoruz.
-                </Typography>
-              </AboutCard>
-            </Grid>
-          </Grid>
+          {/* Values */}
+          <Box>
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{
+                fontWeight: 'bold',
+                mb: 3,
+                color: 'grey.800',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              <span style={{ fontSize: '2rem' }}>💎</span>
+              Değerlerimiz
+            </Typography>
+            <Box sx={{ color: 'grey.700', lineHeight: 1.9, fontSize: '1.1rem' }}>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Kullanıcı Odaklılık</strong> – Gerçek ihtiyaçlara odaklanırız.
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Sadelik</strong> – Karmaşık değil, anlaşılır çözümler üretiriz.
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <strong>Güven</strong> – Kullanıcı verilerinin güvenliğini ön planda tutarız.
+              </Typography>
+              <Typography variant="body1">
+                <strong>Sürekli Gelişim</strong> – Deneyimi her zaman daha iyi hale getirmeyi hedefleriz.
+              </Typography>
+            </Box>
+          </Box>
         </Container>
       </Box>
 
@@ -121,49 +198,36 @@ const About = () => {
           <Grid
             container
             spacing={4}
-            sx={{
-              display: 'flex',
-              flexWrap: 'nowrap',
-              '@media (max-width: 1200px)': {
-                flexWrap: 'wrap'
-              }
-            }}
+            justifyContent="center"
           >
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} sm={6} md={3}>
               <TeamCard>
-                <AboutCardIcon>👨‍💻</AboutCardIcon>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Geliştirme Ekibi
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Yazılım geliştirme ekibimiz, en son teknolojilerle güvenli ve
-                  kullanışlı çözümler üretir.
+                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
+                  Mehmet Enes Varım
                 </Typography>
               </TeamCard>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} sm={6} md={3}>
               <TeamCard>
-                <AboutCardIcon>🎨</AboutCardIcon>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Tasarım Ekibi
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Tasarımcılarımız, kullanıcı deneyimini ön planda tutarak
-                  kullanışlı ve modern arayüzler tasarlar.
+                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
+                  Emre Çalışkan
                 </Typography>
               </TeamCard>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} sm={6} md={3}>
               <TeamCard>
-                <AboutCardIcon>📊</AboutCardIcon>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2, color: 'grey.800' }}>
-                  Analitik Ekibi
+                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
+                  Esra Yıldırım
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.600', lineHeight: 1.6, flexGrow: 1 }}>
-                  Veri analisti uzmanlarımız, kullanıcı davranışlarını analiz ederek
-                  platformumuzu sürekli iyileştirir.
+              </TeamCard>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <TeamCard>
+                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
+                  Berna Yeşilyurt
                 </Typography>
               </TeamCard>
             </Grid>

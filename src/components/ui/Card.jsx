@@ -17,14 +17,16 @@ export const StyledCard = styled(Card)(({ theme, variant = 'feature' }) => {
 
   const variants = {
     feature: {
-      background: '#f9fafb',
-      padding: theme.spacing(3),
-      borderRadius: theme.spacing(2),
-      boxShadow: 'none',
+      background: 'white',
+      padding: theme.spacing(4),
+      borderRadius: theme.spacing(3),
+      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
       minHeight: '260px',
+      border: '1px solid rgba(139, 92, 246, 0.1)',
       '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+        transform: 'translateY(-8px)',
+        boxShadow: '0 12px 30px rgba(139, 92, 246, 0.2)',
+        borderColor: 'rgba(139, 92, 246, 0.3)',
       },
     },
     app: {
