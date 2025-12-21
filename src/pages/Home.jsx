@@ -199,10 +199,29 @@ const Home = () => {
                           display: 'flex',
                           flexDirection: 'column',
                           alignItems: 'center',
-                          gap: 0.5
+                          gap: 0.5,
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          padding: 1.5,
+                          borderRadius: 2,
+                          '&:hover': {
+                            transform: 'translateY(-5px) scale(1.05)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            '& .feature-icon': {
+                              transform: 'scale(1.2) rotate(5deg)',
+                            }
+                          }
                         }}
                       >
-                        <Box sx={{ fontSize: { xs: '1.75rem', md: '2rem' } }}>{feature.icon}</Box>
+                        <Box
+                          className="feature-icon"
+                          sx={{
+                            fontSize: { xs: '1.75rem', md: '2rem' },
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          {feature.icon}
+                        </Box>
                         <Typography
                           variant="caption"
                           sx={{
