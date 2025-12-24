@@ -82,12 +82,13 @@ const formatDate = (dateString) => {
   if (!dateString) return '-';
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString('tr-TR', {
+    return date.toLocaleString('tr-TR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Europe/Istanbul'
     });
   } catch (error) {
     return dateString;

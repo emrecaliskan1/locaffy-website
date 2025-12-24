@@ -196,10 +196,11 @@ const Home = () => {
                   <Box
                     sx={{
                       display: 'grid',
-                      gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(6, 1fr)' },
-                      gap: { xs: 2, md: 3 },
+                      gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(6, 1fr)' },
+                      gap: { xs: 1.5, sm: 2, md: 2.5 },
                       mt: { xs: 3, md: 4 },
-                      justifyContent: { xs: 'center', md: 'flex-start' }
+                      maxWidth: { xs: '100%', md: '900px' },
+                      mx: 'auto'
                     }}
                   >
                     {compactFeatures.map((feature, index) => (
@@ -209,10 +210,10 @@ const Home = () => {
                           display: 'flex',
                           flexDirection: 'column',
                           alignItems: 'center',
-                          gap: 0.5,
+                          gap: { xs: 0.3, sm: 0.5 },
                           cursor: 'pointer',
                           transition: 'all 0.3s ease',
-                          padding: 1.5,
+                          padding: { xs: 1, sm: 1.5 },
                           borderRadius: 2,
                           '&:hover': {
                             transform: 'translateY(-5px) scale(1.05)',
@@ -226,7 +227,7 @@ const Home = () => {
                         <Box
                           className="feature-icon"
                           sx={{
-                            fontSize: { xs: '1.75rem', md: '2rem' },
+                            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
                             transition: 'all 0.3s ease'
                           }}
                         >
@@ -261,23 +262,23 @@ const Home = () => {
             </Grid>
 
             {/* Right Column - Visual Content */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
+                style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
               >
                 <Box
                   sx={{
                     position: 'relative',
                     width: '100%',
-                    maxWidth: '500px',
-                    mx: { xs: 'auto', md: 0 },
-                    ml: { md: '80px' },
+                    maxWidth: { xs: '320px', sm: '400px', md: '500px' },
+                    mx: 'auto',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: { xs: '300px', sm: '400px', md: '450px' }
+                    minHeight: { xs: '350px', sm: '450px', md: '500px' }
                   }}
                 >
                   {/* Phone Mockup Container */}
