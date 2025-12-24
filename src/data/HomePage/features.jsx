@@ -1,32 +1,41 @@
+import React from 'react';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MapIcon from '@mui/icons-material/Map';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+
 // Compact features for hero section
 export const compactFeatures = [
   {
-    icon: '📍',
+    icon: <LocationOnIcon />,
     title: 'Yakınındakiler',
     description: 'En yakın, en mantıklı'
   },
   {
-    icon: '🗺️',
+    icon: <MapIcon />,
     title: 'Harita',
     description: 'Kaybolmadan keşfet'
   },
   {
-    icon: '📖',
+    icon: <MenuBookIcon />,
     title: 'Menüler',
     description: 'Önceden gör'
   },
   {
-    icon: '🎟️',
+    icon: <EventAvailableIcon />,
     title: 'Rezervasyon',
     description: 'Gitmeden yerini ayırt'
   },
   {
-    icon: '❤️',
+    icon: <FavoriteIcon />,
     title: 'Favoriler',
     description: 'Sonra lazım olur'
   },
   {
-    icon: '🔍',
+    icon: <FilterListIcon />,
     title: 'Filtreler',
     description: 'Kararsızlara özel'
   }
@@ -35,43 +44,43 @@ export const compactFeatures = [
 // Detailed features for advantages section
 export const features = [
   {
-    icon: '📍',
+    icon: <LocationOnIcon />,
     title: 'Yakınındaki Mekanlar',
-    description: 'Yürüme mesafesindeki kafe ve restoranları gösterir. Daha uzağa gitmek isteyene karışmıyoruz 😄'
+    description: 'Konumuna en yakın kafeleri, restoranları ve pubları bul. Zaman kaybetmeden, hızlıca karar ver.'
   },
   {
-    icon: '🗺️',
+    icon: <MapIcon />,
     title: 'Haritada Keşfet',
     description: 'Mekanlar harita üzerinde, sen ortadasın. Kaybolmadan keşfetmenin yolu.'
   },
   {
-    icon: '📖',
+    icon: <MenuBookIcon />,
     title: 'Menüye Önceden Bak',
-    description: 'Gitmeden bak, sürprizlere yer bırakma. "Aaa bunda da yokmuş" cümlesine son.'
+    description: 'Gitmeden menüyü incele. Ne yiyeceğine önceden karar ver, zaman kaybetme.'
   },
   {
-    icon: '🎟️',
+    icon: <EventAvailableIcon />,
     title: 'Rezervasyon Oluştur',
     description: 'Gitmeden önce yerini ayırt. Kapıya değil, masaya yönel.'
   },
   {
-    icon: '❤️',
+    icon: <FavoriteIcon />,
     title: 'Favorilere Ekle',
     description: 'Beğendiğin mekanları kaydet. Hepsini aklında tutmak zorunda değilsin.'
   },
   {
-    icon: '🔍',
+    icon: <FilterListIcon />,
     title: 'Akıllı Filtreler',
     description: 'Kafe mi, restoran mı, açık mı, yakın mı? Soruyu sor, cevabı al.'
   },
   {
-    icon: '📱',
+    icon: <PhoneIphoneIcon />,
     title: 'Hızlı & Basit Kullanım',
     description: 'Karmaşık değil. Kimsenin buna enerjisi yok zaten.'
   },
   {
     icon: '🔐',
     title: 'Güvenli Kullanım',
-    description: 'Hesabın güvende. Kahveni çalmıyoruz, merak etme ☕😉'
+    description: 'Hesabın güvende. Verilerin senin, biz sadece koruyoruz.'
   }
 ];

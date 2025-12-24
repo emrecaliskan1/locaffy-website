@@ -57,25 +57,13 @@ export const GradientButton = styled(Button)(({ theme, variant }) => ({
   textTransform: 'none',
   minWidth: '80px',
   transition: 'all 0.3s ease',
-  ...(variant === 'secondary' ? {
-    background: '#ff6b35',
+  background: '#667eea',
+  color: 'white',
+  border: '2px solid transparent',
+  '&:hover': {
+    background: '#8093f1',
     color: 'white',
-    border: '2px solid transparent',
-    '&:hover': {
-      background: '#ff8a50',
-      color: 'white',
-      transform: 'translateY(-2px)',
-      boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
-    },
-  } : {
-    background: '#ff6b35',
-    color: 'white',
-    border: '2px solid #ff6b35',
-    '&:hover': {
-      background: '#ff8a50',
-      borderColor: '#ff8a50',
-      transform: 'translateY(-2px)',
-      boxShadow: '0 4px 12px rgba(255, 107, 53, 0.4)',
-    },
-  }),
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+  },
 }));

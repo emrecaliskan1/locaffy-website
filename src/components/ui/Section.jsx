@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 export const HeroSection = styled(Box)(({ theme, variant = 'default' }) => {
   const baseStyles = {
     background: `
-      linear-gradient(rgba(139, 92, 246, 0.85), rgba(124, 58, 237, 0.85)),
+      linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%),
       url('/hero-map-bg.png')
     `,
     backgroundSize: 'cover',

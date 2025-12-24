@@ -3,9 +3,12 @@ import {
   Box,
   Container,
   Typography,
-  Grid
+  Grid,
+  IconButton
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import About from './About';
 import Contact from './Contact';
 import JoinUs from './JoinUs';
@@ -20,6 +23,11 @@ import {
 } from '../components/ui';
 import { features, compactFeatures } from '../data/HomePage/features';
 import { appFeatures } from '../data/HomePage/appFeatures';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Pagination, Navigation } from 'swiper/modules';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
@@ -63,6 +71,7 @@ const Home = () => {
 
   return (
     <Box component="main">
+      {/* Hero Section - Başlık ve Buton */}
       <HeroSection id="home">
         <Container maxWidth="xl">
           <Grid container spacing={4} alignItems="center">
@@ -74,36 +83,37 @@ const Home = () => {
                 variants={staggerContainer}
               >
                 <motion.div
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  initial={{ opacity: 0, scale: 0.5, rotateX: -15 }}
+                  animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                  transition={{ 
+                    duration: 1, 
+                    ease: [0.6, -0.05, 0.01, 0.99],
+                    scale: {
+                      type: "spring",
+                      damping: 10,
+                      stiffness: 100
+                    }
+                  }}
+                  whileHover={{ 
+                    scale: 1.03,
+                    transition: { duration: 0.3 }
+                  }}
                 >
                   <Typography
                     variant="h2"
                     component="h1"
                     sx={{
                       fontWeight: 'bold',
-                      mb: 3,
+                      mb: 2,
                       lineHeight: 1.2,
                       fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                       textAlign: { xs: 'center', md: 'left' },
-                      background: 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #ffffff 100%)',
-                      backgroundSize: '200% auto',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                      animation: 'gradient-shift 3s ease infinite',
-                      '@keyframes gradient-shift': {
-                        '0%, 100%': {
-                          backgroundPosition: '0% center'
-                        },
-                        '50%': {
-                          backgroundPosition: '100% center'
-                        }
-                      }
+                      color: 'white',
+                      cursor: 'pointer',
+                      textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                     }}
                   >
-                    ŞEHRİNİZİ KEŞFETMEYE HAZIR MISINIZ ?
+                    ŞEHRİNİ KEŞFETMEYE HAZIR MISIN?
                   </Typography>
                 </motion.div>
                 <motion.div
@@ -151,7 +161,7 @@ const Home = () => {
                     >
                       "Nereye gidelim?"
                     </Box>
-                    {' '}sorusunun resmi cevabı.
+                    {' '}Sorusunun Resmi Cevabı.
                   </Typography>
                   <Typography
                     variant="h6"
@@ -162,7 +172,7 @@ const Home = () => {
                       textAlign: { xs: 'center', md: 'left' }
                     }}
                   >
-                    Locaffy, yakındaki kafe ve restoranları senin yerine bulur.
+                    En İyi Mekanlara Kolay Rezervasyon Artık Parmaklarınızın Ucunda!
                   </Typography>
                 </motion.div>
                 <motion.div
@@ -170,7 +180,7 @@ const Home = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <HeroButton variant="primary" size="large" onClick={handleDownload}>
                       Uygulamayı İndir
                     </HeroButton>
@@ -228,7 +238,7 @@ const Home = () => {
                             color: 'white',
                             fontWeight: 700,
                             textAlign: 'center',
-                            fontSize: '0.75rem'
+                            fontSize: { xs: '0.8rem', md: '0.9rem' }
                           }}
                         >
                           {feature.title}
@@ -237,7 +247,7 @@ const Home = () => {
                           variant="caption"
                           sx={{
                             color: 'rgba(255,255,255,0.8)',
-                            fontSize: '0.65rem',
+                            fontSize: { xs: '0.7rem', md: '0.8rem' },
                             textAlign: 'center'
                           }}
                         >
@@ -255,7 +265,7 @@ const Home = () => {
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
               >
                 <Box
                   sx={{
@@ -263,7 +273,7 @@ const Home = () => {
                     width: '100%',
                     maxWidth: '500px',
                     mx: { xs: 'auto', md: 0 },
-                    ml: { md: 'auto' },
+                    ml: { md: '80px' },
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -339,7 +349,8 @@ const Home = () => {
                   textAlign: 'center',
                   mb: 2,
                   color: 'grey.800',
-                  fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' }
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
+                  cursor: 'pointer'
                 }}
               >
                 Locaffy'nin Sunduğu Avantajlar
@@ -360,71 +371,108 @@ const Home = () => {
                 Karar vermek kolaylaşıyor, kahveye ulaşmak hızlanıyor ☕
               </Typography>
             </motion.div>
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+            <Swiper
+              modules={[Pagination, Navigation]}
+              pagination={{ 
+                clickable: true,
+                dynamicBullets: true
+              }}
+              navigation={true}
+              spaceBetween={30}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                768: { slidesPerView: 3, spaceBetween: 25 },
+                1024: { slidesPerView: 4, spaceBetween: 30 }
+              }}
+              style={{ 
+                paddingTop: '20px',
+                paddingBottom: '50px',
+                paddingLeft: '50px',
+                paddingRight: '50px'
+              }}
+              className="advantages-swiper"
             >
-              <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
-                <Grid container spacing={2.5} justifyContent="center">
-                  {features.map((feature, index) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                      <motion.div variants={scaleIn} style={{ height: '100%' }}>
-                        <Box
-                          sx={{
-                            textAlign: 'center',
-                            p: { xs: 2.5, md: 3 },
-                            background: 'white',
-                            borderRadius: 2.5,
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                            border: '1px solid rgba(139, 92, 246, 0.2)',
-                            transition: 'all 0.3s ease',
-                            height: '100%',
-                            minHeight: '200px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            '&:hover': {
-                              transform: 'translateY(-6px)',
-                              boxShadow: '0 10px 25px rgba(139, 92, 246, 0.2)',
-                              borderColor: 'rgba(139, 92, 246, 0.4)',
-                            }
-                          }}
-                        >
-                          <Box sx={{ fontSize: { xs: '2.5rem', md: '3rem' }, mb: 1.5 }}>
-                            {feature.icon}
-                          </Box>
-                          <Typography
-                            variant="h6"
-                            component="h3"
-                            sx={{
-                              fontWeight: 'bold',
-                              mb: 1,
-                              color: 'grey.800',
-                              fontSize: { xs: '1rem', md: '1.1rem' }
-                            }}
-                          >
-                            {feature.title}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: 'grey.600',
-                              fontSize: '0.9rem',
-                              lineHeight: 1.5
-                            }}
-                          >
-                            {feature.description}
-                          </Typography>
-                        </Box>
-                      </motion.div>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </motion.div>
+              {features.map((feature, index) => (
+                <SwiperSlide key={index}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: { xs: 3, md: 3.5 },
+                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                      borderRadius: 3,
+                      border: '2px solid transparent',
+                      backgroundClip: 'padding-box',
+                      position: 'relative',
+                      height: { xs: '200px', md: '220px' },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 15px rgba(139, 92, 246, 0.15)',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        inset: 0,
+                        borderRadius: 3,
+                        padding: '2px',
+                        background: 'linear-gradient(135deg, #8b5cf6, #6366f1, #8b5cf6)',
+                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                        WebkitMaskComposite: 'xor',
+                        maskComposite: 'exclude',
+                        opacity: 0,
+                        transition: 'opacity 0.4s ease'
+                      },
+                      '&:hover': {
+                        transform: 'translateY(-8px) scale(1.02)',
+                        boxShadow: '0 20px 40px rgba(139, 92, 246, 0.25)',
+                        '&::before': {
+                          opacity: 1
+                        },
+                        '& .feature-icon': {
+                          transform: 'scale(1.15) rotateY(180deg)',
+                        }
+                      }
+                    }}
+                  >
+                    <Box 
+                      className="feature-icon"
+                      sx={{ 
+                        fontSize: { xs: '2.5rem', md: '3rem' }, 
+                        mb: 1.5,
+                        transition: 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+                      }}
+                    >
+                      {feature.icon}
+                    </Box>
+                    <Typography
+                      variant="h6"
+                      component="h3"
+                      sx={{
+                        fontWeight: 'bold',
+                        mb: 1,
+                        color: 'grey.800',
+                        fontSize: { xs: '1rem', md: '1.1rem' }
+                      }}
+                    >
+                      {feature.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'grey.600',
+                        fontSize: { xs: '0.85rem', md: '0.9rem' },
+                        lineHeight: 1.5,
+                        px: 1
+                      }}
+                    >
+                      {feature.description}
+                    </Typography>
+                  </Box>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </Container>
         </Box>
       </motion.div>
@@ -445,7 +493,8 @@ const Home = () => {
                   fontWeight: 'bold',
                   textAlign: 'center',
                   mb: 2,
-                  color: 'grey.800'
+                  color: 'grey.800',
+                  cursor: 'pointer'
                 }}
               >
                 Uygulama Özellikleri
@@ -471,7 +520,7 @@ const Home = () => {
             >
               <Grid
                 container
-                spacing={{ xs: 2, md: 3 }}
+                spacing={{ xs: 3, md: 4 }}
                 sx={{
                   justifyContent: 'center',
                   alignItems: 'stretch'
@@ -538,7 +587,8 @@ const Home = () => {
                 sx={{
                   fontWeight: 'bold',
                   mb: 2,
-                  color: 'grey.800'
+                  color: 'grey.800',
+                  cursor: 'pointer'
                 }}
               >
                 Sosyal Deneyiminizi Yeniden Tanımlayın

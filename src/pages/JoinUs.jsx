@@ -24,7 +24,8 @@ function JoinUs() {
             sx={{
               fontWeight: 'bold',
               mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' }
+              fontSize: { xs: '2.5rem', md: '3.5rem' },
+              cursor: 'pointer'
             }}
           >
             Locaffy Ailesine Katılın
