@@ -28,7 +28,6 @@ import {
   SupervisorAccount as SuperAdminIcon,
   Business as BusinessIcon,
   Rule as RuleIcon,
-  Campaign as CampaignIcon,
   Settings as SettingsIcon,
   RateReview as RateReviewIcon,
 } from '@mui/icons-material';
@@ -96,7 +95,6 @@ function AdminLayout({ children }) {
     { text: 'Yorumlar', icon: <RateReviewIcon />, path: '/admin/reviews' },
     { text: 'Menü', icon: <RestaurantIcon />, path: '/admin/menu-management' },
     { text: 'Rezervasyon Kuralları', icon: <RuleIcon />, path: '/admin/reservation-rules' },
-    { text: 'Promosyonlar', icon: <CampaignIcon />, path: '/admin/promotions' },
     { text: 'Ayarlar', icon: <SettingsIcon />, path: '/admin/business-settings' },
   ];
 

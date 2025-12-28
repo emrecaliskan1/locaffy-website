@@ -142,17 +142,29 @@ const Navbar = () => {
             <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
               <ButtonBase
                 onClick={() => scrollToSection('home')}
-                sx={{ display: 'flex', alignItems: 'center' }}
+                sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}
               >
                 <Box
                   component="img"
-                  src="/darklocaffyicon%20(0_0).png"
-                  alt="Locaffy"
+                  src="/locaffy%20icon.png"
+                  alt="Locaffy Icon"
                   sx={{
-                    height: 50,
+                    width: 40,
+                    height: 40,
                     objectFit: 'contain'
                   }}
                 />
+                <Typography 
+                  variant="h6" 
+                  noWrap 
+                  component="div" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    color: 'grey.800'
+                  }}
+                >
+                  Locaffy
+                </Typography>
               </ButtonBase>
 
               {/* Desktop Navigation */}

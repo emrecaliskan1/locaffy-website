@@ -19,7 +19,6 @@ import SuperAdminLayout from './superadmin/SuperAdminLayout';
 import DashboardView from './admin/DashboardView';
 import MenuManagementView from './admin/MenuManagementView';
 import ReservationRulesView from './admin/ReservationRulesView';
-import PromotionsView from './admin/PromotionsView';
 import ReservationManagementView from './admin/ReservationManagementView';
 import BusinessSettingsView from './admin/BusinessSettingsView';
 import SuperAdminDashboard from './superadmin/SuperAdminDashboard';
@@ -85,11 +84,6 @@ function AppContent() {
         <Route path="/admin/reservation-rules" element={
           <AdminLayout>
             <ReservationRulesView />
-          </AdminLayout>
-        } />
-        <Route path="/admin/promotions" element={
-          <AdminLayout>
-            <PromotionsView />
           </AdminLayout>
         } />
         <Route path="/admin/reservations" element={
