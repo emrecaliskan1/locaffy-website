@@ -10,7 +10,6 @@ import { motion } from 'framer-motion';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import About from './About';
-import Contact from './Contact';
 import JoinUs from './JoinUs';
 import {
   HeroSection,
@@ -369,7 +368,7 @@ const Home = () => {
                 }}
               >
                 Locaffy ile "Nereye gidelim?" sorusu tarih oluyor.<br />
-                Karar vermek kolaylaşıyor, kahveye ulaşmak hızlanıyor ☕
+                Karar vermek hiç bu kadar kolay ve keyifli olmamıştı!
               </Typography>
             </motion.div>
             <Swiper
@@ -573,62 +572,11 @@ const Home = () => {
         </Box>
       </motion.div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
-        variants={fadeInUp}
-      >
-        <Box sx={{ py: { xs: 6, md: 10 }, background: 'white', textAlign: 'center' }}>
-          <Container maxWidth="lg">
-            <motion.div variants={fadeInUp}>
-              <Typography
-                variant="h3"
-                component="h2"
-                sx={{
-                  fontWeight: 'bold',
-                  mb: 2,
-                  color: 'grey.800',
-                  cursor: 'pointer'
-                }}
-              >
-                Sosyal Deneyiminizi Yeniden Tanımlayın
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: 'grey.600',
-                  mb: 4
-                }}
-              >
-                Locaffy uygulamasını indirin ve sosyal hayatınızı daha keyifli hale getirin.
-              </Typography>
-            </motion.div>
-            <motion.div variants={scaleIn}>
-              <PrimaryButton
-                variant="primary"
-                size="large"
-                onClick={handleDownload}
-              >
-                Uygulamayı İndir
-              </PrimaryButton>
-            </motion.div>
-          </Container>
-        </Box>
-      </motion.div>
-
       <Box
         id="about"
         sx={{ scrollMarginTop: '80px' }}
       >
         <About isEmbedded={true} />
-      </Box>
-
-      <Box
-        id="contact"
-        sx={{ scrollMarginTop: '80px' }}
-      >
-        <Contact isEmbedded={true} />
       </Box>
 
       <Box

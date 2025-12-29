@@ -43,9 +43,6 @@ const Footer = () => {
               <PrimaryFooterLink component={RouterLink} to="/features">
                 Fiyatlandırma
               </PrimaryFooterLink>
-              <PrimaryFooterLink component={RouterLink} to="/contact">
-                İletişim
-              </PrimaryFooterLink>
             </Stack>
           </Grid>
 
@@ -84,6 +81,9 @@ const Footer = () => {
 
         <Divider sx={{ my: 3, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
 
+        <Typography variant="body2" sx={{ textAlign: 'center', color: '#d1d5db', fontSize: '0.875rem', mb: 1 }}>
+          İletişim için : destek@locaffy.com
+        </Typography>
         <Typography variant="body2" sx={{ textAlign: 'center', color: '#d1d5db', fontSize: '0.875rem' }}>
           © 2025 Locaffy. Tüm hakları saklıdır.
         </Typography>

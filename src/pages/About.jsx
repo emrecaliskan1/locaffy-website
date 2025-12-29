@@ -5,10 +5,6 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DiamondIcon from '@mui/icons-material/Diamond';
@@ -88,75 +84,25 @@ const About = () => {
 
       <Box sx={{ py: 10, background: 'white' }}>
         <Container maxWidth="lg">
-          <Box
-            sx={{
-              position: 'relative',
-              '& .swiper': {
-                paddingBottom: '50px'
-              },
-              '& .swiper-button-prev, & .swiper-button-next': {
-                color: '#667eea',
-                width: '50px',
-                height: '50px',
-                background: 'rgba(102, 126, 234, 0.1)',
-                borderRadius: '50%',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  background: 'rgba(102, 126, 234, 0.2)',
-                  color: '#8093f1',
-                },
-                '&::after': {
-                  fontSize: { xs: '20px', md: '24px' },
-                  fontWeight: 'bold'
-                }
-              },
-              '& .swiper-pagination': {
-                bottom: '10px'
-              },
-              '& .swiper-pagination-bullet': {
-                background: 'rgba(102, 126, 234, 0.3)',
-                opacity: 1,
-                width: '8px',
-                height: '8px',
-                transition: 'all 0.3s ease'
-              },
-              '& .swiper-pagination-bullet-active': {
-                background: '#667eea',
-                width: '28px',
-                borderRadius: '4px'
-              }
-            }}
-          >
-            <Swiper
-              modules={[Pagination, Autoplay]}
-              spaceBetween={30}
-              slidesPerView={1}
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 4000, disableOnInteraction: false }}
-              breakpoints={{
-                768: {
-                  slidesPerView: 2,
-                  spaceBetween: 30
-                },
-                1024: {
-                  slidesPerView: 3,
-                  spaceBetween: 30
-                }
-              }}
-            >
+          <Grid container spacing={5} sx={{ justifyContent: 'center' }}>
             {/* Mission Card */}
-            <SwiperSlide>
+            <Grid item xs={12} sm={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
                 sx={{
                   height: '100%',
-                  minHeight: '380px',
+                  minHeight: '340px',
+                  maxWidth: '350px',
                   width: '100%',
-                  p: 4,
+                  p: 3,
                   cursor: 'pointer',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflow: 'hidden',
+                  background: 'white',
+                  borderRadius: '16px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   '&::after': {
                     content: '""',
                     position: 'absolute',
@@ -171,6 +117,7 @@ const About = () => {
                   },
                   '&:hover': {
                     transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
                     '&::after': {
                       opacity: 1,
                       transform: 'scaleX(1)'
@@ -215,28 +162,33 @@ const About = () => {
                 >
                   Misyonumuz
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.8, mb: 2, fontSize: '1rem' }}>
+                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.7, mb: 2, fontSize: { xs: '0.95rem', md: '1rem' }, whiteSpace: 'normal', overflowWrap: 'break-word' }}>
                   İnsanların bulundukları konuma en uygun mekanları hızlı ve zahmetsiz şekilde keşfetmesini sağlamak.
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.8, fontSize: '1rem' }}>
+                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.7, fontSize: { xs: '0.95rem', md: '1rem' }, whiteSpace: 'normal', overflowWrap: 'break-word' }}>
                   Karar verme sürecini basitleştirerek, daha keyifli sosyal deneyimlerin önünü açmak.
                 </Typography>
               </Box>
-            </SwiperSlide>
+            </Grid>
 
             {/* Vision Card */}
-            <SwiperSlide>
+            <Grid item xs={12} sm={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
                 sx={{
                   height: '100%',
-                  minHeight: '380px',
+                  minHeight: '340px',
+                  maxWidth: '350px',
                   width: '100%',
-                  p: 4,
+                  p: 3,
                   cursor: 'pointer',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflow: 'hidden',
+                  background: 'white',
+                  borderRadius: '16px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   '&::after': {
                     content: '""',
                     position: 'absolute',
@@ -251,6 +203,7 @@ const About = () => {
                   },
                   '&:hover': {
                     transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
                     '&::after': {
                       opacity: 1,
                       transform: 'scaleX(1)'
@@ -295,28 +248,33 @@ const About = () => {
                 >
                   Vizyonumuz
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.8, mb: 2, fontSize: '1rem' }}>
+                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.7, mb: 2, fontSize: { xs: '0.95rem', md: '1rem' }, whiteSpace: 'normal', overflowWrap: 'break-word' }}>
                   Kafe ve restoran keşfini herkes için kolay, hızlı ve erişilebilir hale getiren,
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.8, fontSize: '1rem' }}>
-                  konum tabanlı deneyimde kullanıcıların ilk tercihi olan bir platform olmak.
+                <Typography variant="body1" sx={{ color: 'grey.700', lineHeight: 1.7, fontSize: { xs: '0.95rem', md: '1rem' }, whiteSpace: 'normal', overflowWrap: 'break-word' }}>
+                  Konum tabanlı deneyimde kullanıcıların ilk tercihi olan bir platform olmak.
                 </Typography>
               </Box>
-            </SwiperSlide>
+            </Grid>
 
             {/* Values Card */}
-            <SwiperSlide>
+            <Grid item xs={12} sm={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Box
                 sx={{
                   height: '100%',
-                  minHeight: '380px',
+                  minHeight: '340px',
+                  maxWidth: '350px',
                   width: '100%',
-                  p: 4,
+                  p: 3,
                   cursor: 'pointer',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflow: 'hidden',
+                  background: 'white',
+                  borderRadius: '16px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   '&::after': {
                     content: '""',
                     position: 'absolute',
@@ -331,6 +289,7 @@ const About = () => {
                   },
                   '&:hover': {
                     transform: 'translateY(-8px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
                     '&::after': {
                       opacity: 1,
                       transform: 'scaleX(1)'
@@ -375,24 +334,23 @@ const About = () => {
                 >
                   Değerlerimiz
                 </Typography>
-                <Box sx={{ color: 'grey.700', lineHeight: 1.8, fontSize: '1rem' }}>
-                  <Typography variant="body1" sx={{ mb: 1.5 }}>
+                <Box sx={{ color: 'grey.700', lineHeight: 1.8, fontSize: { xs: '0.9rem', md: '1rem' } }}>
+                  <Typography variant="body1" sx={{ mb: 1.5, wordBreak: 'break-word' }}>
                     <strong style={{ color: '#667eea' }}>Kullanıcı Odaklılık</strong> – Gerçek ihtiyaçlara odaklanırız.
                   </Typography>
-                  <Typography variant="body1" sx={{ mb: 1.5 }}>
+                  <Typography variant="body1" sx={{ mb: 1.5, wordBreak: 'break-word' }}>
                     <strong style={{ color: '#667eea' }}>Sadelik</strong> – Karmaşık değil, anlaşılır çözümler üretiriz.
                   </Typography>
-                  <Typography variant="body1" sx={{ mb: 1.5 }}>
+                  <Typography variant="body1" sx={{ mb: 1.5, wordBreak: 'break-word' }}>
                     <strong style={{ color: '#667eea' }}>Güven</strong> – Kullanıcı verilerinin güvenliğini ön planda tutarız.
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
                     <strong style={{ color: '#667eea' }}>Sürekli Gelişim</strong> – Deneyimi her zaman daha iyi hale getirmeyi hedefleriz.
                   </Typography>
                 </Box>
               </Box>
-            </SwiperSlide>
-            </Swiper>
-          </Box>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 
@@ -423,43 +381,96 @@ const About = () => {
           >
             Deneyimli ve tutkulu ekibimizle, kullanıcılarımız için en iyi deneyimi sunmaya odaklanıyoruz.
           </Typography>
-          <Grid
-            container
-            spacing={4}
-            justifyContent="center"
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 8,
+              maxWidth: '1200px',
+              mx: 'auto'
+            }}
           >
-            <Grid item xs={12} sm={6} md={3}>
-              <TeamCard>
+            <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
+              <TeamCard sx={{ width: '100%', height: '100%' }}>
+                <Box sx={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '50%', 
+                  overflow: 'hidden',
+                  mb: 2,
+                  mx: 'auto',
+                  backgroundColor: '#e5e7eb',
+                  flexShrink: 0
+                }}>
+                </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Mehmet Enes Varım
                 </Typography>
               </TeamCard>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} sm={6} md={3}>
-              <TeamCard>
+            <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
+              <TeamCard sx={{ width: '100%', height: '100%' }}>
+                <Box sx={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '50%', 
+                  overflow: 'hidden',
+                  mb: 2,
+                  mx: 'auto',
+                  flexShrink: 0
+                }}>
+                  <img 
+                    src="/team/emre-caliskan.jpg" 
+                    alt="Emre Çalışkan"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Emre Çalışkan
                 </Typography>
               </TeamCard>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} sm={6} md={3}>
-              <TeamCard>
+            <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
+              <TeamCard sx={{ width: '100%', height: '100%' }}>
+                <Box sx={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '50%', 
+                  overflow: 'hidden',
+                  mb: 2,
+                  mx: 'auto',
+                  backgroundColor: '#e5e7eb',
+                  flexShrink: 0
+                }}>
+                </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Esra Yıldırım
                 </Typography>
               </TeamCard>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} sm={6} md={3}>
-              <TeamCard>
+            <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
+              <TeamCard sx={{ width: '100%', height: '100%' }}>
+                <Box sx={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '50%', 
+                  overflow: 'hidden',
+                  mb: 2,
+                  mx: 'auto',
+                  backgroundColor: '#e5e7eb',
+                  flexShrink: 0
+                }}>
+                </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Berna Yeşilyurt
                 </Typography>
               </TeamCard>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
       </Box>
     </Box>

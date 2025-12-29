@@ -69,7 +69,6 @@ const Navbar = () => {
   const navItems = [
     { path: '/', sectionId: 'home', name: 'Ana Sayfa' },
     { path: '/about', sectionId: 'about', name: 'Hakkımızda' },
-    { path: '/contact', sectionId: 'contact', name: 'İletişim' },
     { path: '/business-application', sectionId: 'business-application', name: 'İşletme Başvurusu' },
     { path: '/joinus', sectionId: 'joinus', name: 'Bize Katıl' }
   ];
@@ -120,7 +119,7 @@ const Navbar = () => {
           }}
           fullWidth
         >
-          Kaydol
+          Kayıt Ol
         </GradientButton>
       </Box>
     </Box>
@@ -194,7 +193,7 @@ const Navbar = () => {
                   onClick={() => navigate('/register')}
                   sx={{ cursor: 'pointer' }}
                 >
-                  Kaydol
+                  Kayıt Ol
                 </GradientButton>
               </Stack>
 

@@ -55,10 +55,15 @@ export const StyledCard = styled(Card)(({ theme, variant = 'feature' }) => {
     },
     team: {
       background: '#f9fafb',
-      padding: theme.spacing(5),
+      padding: theme.spacing(4),
       borderRadius: theme.spacing(2.5),
       boxShadow: 'none',
-      minHeight: '300px',
+      minHeight: '320px',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
       '&:hover': {
         transform: 'translateY(-4px)',
         boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',

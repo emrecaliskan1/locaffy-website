@@ -28,10 +28,6 @@ export const router = createBrowserRouter([
         element: <About />
       },
       {
-        path: 'contact',
-        element: <Contact />
-      },
-      {
         path: 'joinus',
         element: <JoinUs />
       },
