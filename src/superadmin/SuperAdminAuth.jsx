@@ -84,7 +84,17 @@ function SuperAdminAuth() {
       navigate('/admin/super-dashboard');
     } catch (error) {
       console.error('Login error:', error);
-      setError(error.message || 'Giriş işlemi başarısız oldu');
+      
+      let errorMessage;
+      if (error.message && error.message !== 'Network Error') {
+        errorMessage = error.message;
+      } else if (!navigator.onLine) {
+        errorMessage = 'İnternet bağlantınızı kontrol edin';
+      } else {
+        errorMessage = 'Giriş işlemi başarısız oldu. Lütfen tekrar deneyin.';
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

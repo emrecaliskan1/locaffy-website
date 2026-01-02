@@ -71,15 +71,23 @@ export const authService = {
             if(!error.response) {
                 throw new Error('İnternet bağlantısını kontrol edin');
             }
-            const errorMessage =
-                error.response.data?.message ||
-                error.response.data?.error ||
-                error.response?.data?.errors?.message ||
-                error.response?.data?.errors?.[0]?.message ||
-                error.message ||
-                'Kayıt işlemi başarısız oldu';
             
-                throw new Error(errorMessage);
+            // Detaylı hata mesajları
+            let errorMessage;
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.status === 409) {
+                errorMessage = 'Bu e-posta adresi veya kullanıcı adı zaten kullanımda';
+            } else if (error.response?.status === 400) {
+                errorMessage = 'Girdiğiniz bilgileri kontrol edin';
+            } else if (error.response?.status >= 500) {
+                errorMessage = 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.';
+            } else {
+                errorMessage = 'Kayıt işlemi başarısız oldu';
+            }
+            
+            throw new Error(errorMessage);
         }
     },
 
@@ -134,16 +142,29 @@ export const authService = {
             if(!error.response) {
                 throw new Error('İnternet bağlantısını kontrol edin');
             }
-
-            const errorMessage = 
-            error.response?.data?.message ||           
-            error.response?.data?.error ||         
-            error.response?.data?.errors?.message ||   
-            error.response?.data?.errors?.[0]?.message || 
-            error.message ||                           
-            'Giriş işlemi başarısız oldu';            
+            
+            // Detaylı hata mesajları
+            let errorMessage;
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.status === 401) {
+                errorMessage = 'E-posta adresi veya şifre hatalı';
+            } else if (error.response?.status === 403) {
+                errorMessage = 'Hesabınız engellenmiş. Lütfen destek ekibiyle iletişime geçin.';
+            } else if (error.response?.status === 404) {
+                errorMessage = 'Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı';
+            } else if (error.response?.status === 409) {
+                errorMessage = 'Bu e-posta adresi veya kullanıcı adı zaten kullanımda';
+            } else if (error.response?.status === 400) {
+                errorMessage = 'Girdiğiniz bilgileri kontrol edin';
+            } else if (error.response?.status >= 500) {
+                errorMessage = 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.';
+            } else {
+                errorMessage = 'Giriş işlemi başarısız oldu';
+            }
         
-        throw new Error(errorMessage);
+            throw new Error(errorMessage);
         }
     },
 
