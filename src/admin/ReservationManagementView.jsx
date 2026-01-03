@@ -852,6 +852,11 @@ function ReservationManagementView() {
                 <Typography variant="body2" sx={{ fontWeight: 'medium', mt: 1 }}>
                   <strong>Müşteri ID:</strong> {selectedReservation.userId}
                 </Typography>
+                {selectedReservation.userPhoneNumber && (
+                  <Typography variant="body2" sx={{ fontWeight: 'medium', mt: 1 }}>
+                    <strong>Telefon:</strong> {selectedReservation.userPhoneNumber}
+                  </Typography>
+                )}
               </Box>
 
               {/* Rezervasyon Bilgileri */}

@@ -33,6 +33,7 @@ import {
     CardContent,
     Rating,
     Divider,
+    Avatar,
 } from '@mui/material';
 import {
     Search as SearchIcon,
@@ -617,17 +618,25 @@ function ReviewsView() {
                                     <TableRow key={review.id} hover>
                                         <TableCell>{review.id}</TableCell>
                                         <TableCell>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{
-                                                    fontWeight: 'bold',
-                                                    cursor: 'pointer',
-                                                    '&:hover': { textDecoration: 'underline' },
-                                                }}
-                                                onClick={() => handleUserClick(review.userId)}
-                                            >
-                                                {review.username || `Kullanıcı #${review.userId}`}
-                                            </Typography>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Avatar 
+                                                    src={review.userProfileImageUrl}
+                                                    sx={{ width: 32, height: 32, bgcolor: '#667eea' }}
+                                                >
+                                                    {review.username?.charAt(0).toUpperCase()}
+                                                </Avatar>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        fontWeight: 'bold',
+                                                        cursor: 'pointer',
+                                                        '&:hover': { textDecoration: 'underline' },
+                                                    }}
+                                                    onClick={() => handleUserClick(review.userId)}
+                                                >
+                                                    {review.username || `Kullanıcı #${review.userId}`}
+                                                </Typography>
+                                            </Box>
                                         </TableCell>
                                         <TableCell>
                                             <Typography
