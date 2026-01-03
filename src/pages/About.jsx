@@ -393,16 +393,20 @@ const About = () => {
           >
             <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
               <TeamCard sx={{ width: '100%', height: '100%' }}>
-                <Box sx={{ 
-                  width: '120px', 
-                  height: '120px', 
-                  borderRadius: '50%', 
+                <Box sx={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
                   overflow: 'hidden',
                   mb: 2,
                   mx: 'auto',
-                  backgroundColor: '#e5e7eb',
                   flexShrink: 0
                 }}>
+                  <img
+                    src="/team/enesvarim.jpeg"
+                    alt="Mehmet Enes Varım"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
                 </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Mehmet Enes Varım
@@ -412,17 +416,17 @@ const About = () => {
 
             <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
               <TeamCard sx={{ width: '100%', height: '100%' }}>
-                <Box sx={{ 
-                  width: '120px', 
-                  height: '120px', 
-                  borderRadius: '50%', 
+                <Box sx={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
                   overflow: 'hidden',
                   mb: 2,
                   mx: 'auto',
                   flexShrink: 0
                 }}>
-                  <img 
-                    src="/team/emre-caliskan.jpg" 
+                  <img
+                    src="/team/emre-caliskan.jpg"
                     alt="Emre Çalışkan"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
@@ -435,10 +439,10 @@ const About = () => {
 
             <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
               <TeamCard sx={{ width: '100%', height: '100%' }}>
-                <Box sx={{ 
-                  width: '120px', 
-                  height: '120px', 
-                  borderRadius: '50%', 
+                <Box sx={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
                   overflow: 'hidden',
                   mb: 2,
                   mx: 'auto',
@@ -454,10 +458,10 @@ const About = () => {
 
             <Box sx={{ width: { xs: '100%', sm: '45%', md: '220px' }, flexShrink: 0 }}>
               <TeamCard sx={{ width: '100%', height: '100%' }}>
-                <Box sx={{ 
-                  width: '120px', 
-                  height: '120px', 
-                  borderRadius: '50%', 
+                <Box sx={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
                   overflow: 'hidden',
                   mb: 2,
                   mx: 'auto',
