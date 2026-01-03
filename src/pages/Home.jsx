@@ -275,7 +275,7 @@ const Home = () => {
                   alt="Locaffy Hero"
                   sx={{
                     width: '100%',
-                    maxWidth: { xs: '300px', sm: '375px', md: '450px' },
+                    maxWidth: { xs: '300px', sm: '350px', md: '400px' },
                     height: 'auto',
                     objectFit: 'contain',
                     filter: 'drop-shadow(0 25px 60px rgba(0, 0, 0, 0.4))',
