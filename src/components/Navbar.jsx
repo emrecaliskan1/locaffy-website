@@ -109,7 +109,7 @@ const Navbar = () => {
           }}
           fullWidth
         >
-          Giriş Yap
+          İşletme Girişi Yap
         </GradientButton>
         <GradientButton
           variant="primary"
@@ -186,7 +186,7 @@ const Navbar = () => {
                   onClick={() => navigate('/login')}
                   sx={{ cursor: 'pointer' }}
                 >
-                  Giriş Yap
+                  İşletme Girişi Yap
                 </GradientButton>
                 <GradientButton
                   variant="primary"
