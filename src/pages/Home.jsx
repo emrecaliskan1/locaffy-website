@@ -27,13 +27,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Pagination, Navigation } from 'swiper/modules';
+import heroImage from '../assets/hero.png';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: 0.35, ease: "easeOut" }
   }
 };
 
@@ -42,7 +43,7 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
+      staggerChildren: 0.12,
       delayChildren: 0.1
     }
   }
@@ -269,63 +270,26 @@ const Home = () => {
                 style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
               >
                 <Box
+                  component="img"
+                  src={heroImage}
+                  alt="Locaffy Hero"
                   sx={{
-                    position: 'relative',
                     width: '100%',
-                    maxWidth: { xs: '320px', sm: '400px', md: '500px' },
-                    mx: 'auto',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: { xs: '350px', sm: '450px', md: '500px' }
-                  }}
-                >
-                  {/* Phone Mockup Container */}
-                  <Box
-                    sx={{
-                      position: 'relative',
-                      width: { xs: '240px', sm: '280px', md: '300px' },
-                      height: { xs: '480px', sm: '560px', md: '600px' },
-                      background: '#1a1a1a',
-                      borderRadius: '45px',
-                      padding: '8px',
-                      boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.1)',
-                      animation: 'float 3s ease-in-out infinite',
-                      '@keyframes float': {
-                        '0%, 100%': {
-                          transform: 'translateY(0px)'
-                        },
-                        '50%': {
-                          transform: 'translateY(-20px)'
-                        }
+                    maxWidth: { xs: '300px', sm: '375px', md: '450px' },
+                    height: 'auto',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 25px 60px rgba(0, 0, 0, 0.4))',
+                    animation: 'float 3s ease-in-out infinite',
+                    '@keyframes float': {
+                      '0%, 100%': {
+                        transform: 'translateY(0px)'
+                      },
+                      '50%': {
+                        transform: 'translateY(-20px)'
                       }
-                    }}
-                  >
-                    {/* Phone Screen */}
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        background: 'white',
-                        borderRadius: '38px',
-                        overflow: 'hidden',
-                        position: 'relative'
-                      }}
-                    >
-                      <Box
-                        component="img"
-                        src="/Ekran Görüntüsü (421).png"
-                        alt="Locaffy App"
-                        sx={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block'
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
+                    }
+                  }}
+                />
               </motion.div>
             </Grid>
           </Grid>

@@ -71,10 +71,8 @@ const Footer = () => {
             <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
               Bizi Takip Edin
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <RoundedSocialIcon href="#" aria-label="Twitter"><FontAwesomeIcon icon={faXTwitter} /></RoundedSocialIcon>
-              <RoundedSocialIcon href="#" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></RoundedSocialIcon>
-              <RoundedSocialIcon href="#" aria-label="Facebook"><FontAwesomeIcon icon={faFacebook} /></RoundedSocialIcon>
+            <Box sx={{ display: 'flex' }}>
+              <RoundedSocialIcon href="https://www.instagram.com/_locaffy_/" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></RoundedSocialIcon>
             </Box>
           </Grid>
         </Grid>
@@ -82,7 +80,7 @@ const Footer = () => {
         <Divider sx={{ my: 3, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
 
         <Typography variant="body2" sx={{ textAlign: 'center', color: '#d1d5db', fontSize: '0.875rem', mb: 1 }}>
-          İletişim için : destek@locaffy.com
+          İletişim için : locaffy2025@gmail.com
         </Typography>
         <Typography variant="body2" sx={{ textAlign: 'center', color: '#d1d5db', fontSize: '0.875rem' }}>
           © 2025 Locaffy. Tüm hakları saklıdır.

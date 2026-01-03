@@ -49,9 +49,12 @@ const Navbar = () => {
     } else {
       const element = document.getElementById(sectionId);
       if (element) {
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - 70;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
         });
       }
     }

@@ -1,3 +1,14 @@
+/* Global Smooth Scroll - Faster Animation */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Swiper Navigation Buttons - Modern & Responsive */
 .advantages-swiper .swiper-button-next,
 .advantages-swiper .swiper-button-prev {
