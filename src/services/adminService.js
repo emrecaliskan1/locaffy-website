@@ -40,24 +40,24 @@ export const adminService = {
             if (error.response?.status === 403) {
                 const token = localStorage.getItem('accessToken');
                 let tokenDebugInfo = '';
-                
+
                 if (token) {
                     try {
                         const base64Url = token.split('.')[1];
                         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
                             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                         }).join(''));
                         const decoded = JSON.parse(jsonPayload);
                         const role = decoded.role || decoded.authorities?.[0] || decoded.authority;
-                        
+
                         console.error('403 Forbidden - Token Debug Info:', {
                             role: role,
                             decodedToken: decoded,
                             endpoint: '/admin/places',
                             hasToken: !!token
                         });
-                        
+
                         tokenDebugInfo = `Token'da role: ${role || 'bulunamadı'}. `;
                     } catch (e) {
                         console.error('Token decode hatası:', e);
@@ -66,11 +66,11 @@ export const adminService = {
                 } else {
                     tokenDebugInfo = 'Token bulunamadı. ';
                 }
-                
-                const backendMessage = error.response?.data?.message || 
-                                     error.response?.data?.error ||
-                                     'Yetki hatası';
-                
+
+                const backendMessage = error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    'Yetki hatası';
+
                 throw new Error(
                     `403 Forbidden: ${backendMessage}. ` +
                     `${tokenDebugInfo}` +
@@ -188,7 +188,7 @@ export const adminService = {
         try {
             const response = await api.get('/business/place/settings');
             const data = response.data;
-            
+
             // openingHours formatı: "09:00-23:00" -> openingTime ve closingTime'a ayır
             let openingTime = '09:00';
             let closingTime = '23:00';
@@ -202,7 +202,7 @@ export const adminService = {
                 openingTime = data.openingTime;
                 closingTime = data.closingTime;
             }
-            
+
             // workingDays formatı: "PAZARTESİ,SALI,..." -> array'e çevir
             let workingDays = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA'];
             if (data.workingDays) {
@@ -212,23 +212,26 @@ export const adminService = {
                     workingDays = data.workingDays.split(',').map(day => day.trim()).filter(day => day.length > 0);
                 }
             }
-            
+
             // Rezervasyon kapasitesi
             const reservationCapacity = data.reservationCapacity || 10;
-            
+
             // Geç gelme iptali süresi (dakika)
             const lateCancellationMinutes = data.lateCancellationMinutes || 15;
-            
-            return { openingTime, closingTime, workingDays, reservationCapacity, lateCancellationMinutes };
+
+            // Rezervasyon aktiflik durumu
+            const isReservationAvailable = data.isReservationAvailable;
+
+            return { openingTime, closingTime, workingDays, reservationCapacity, lateCancellationMinutes, isReservationAvailable };
         } catch (error) {
             if (!error.response) {
                 throw new Error('İnternet bağlantınızı kontrol edin');
             }
 
-            const backendMessage = error.response?.data?.message || 
-                                 error.response?.data?.error ||
-                                 error.response?.data?.detail ||
-                                 'Bir hata oluştu';
+            const backendMessage = error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.response?.data?.detail ||
+                'Bir hata oluştu';
 
             if (error.response?.status === 403) {
                 throw new Error(`403 Forbidden: ${backendMessage}. Bu işlem için Business Owner yetkisi gereklidir.`);
@@ -245,24 +248,28 @@ export const adminService = {
     updateBusinessSettings: async (settings) => {
         try {
             const payload = {};
-            
+
             if (settings.openingTime !== undefined && settings.closingTime !== undefined) {
                 payload.openingTime = settings.openingTime;
                 payload.closingTime = settings.closingTime;
             }
-            
+
             if (settings.workingDays !== undefined) {
                 payload.workingDays = settings.workingDays;
             }
-            
+
             if (settings.reservationCapacity !== undefined) {
                 payload.reservationCapacity = settings.reservationCapacity;
             }
-            
+
             if (settings.lateCancellationMinutes !== undefined) {
                 payload.lateCancellationMinutes = settings.lateCancellationMinutes;
             }
-            
+
+            if (settings.isReservationAvailable !== undefined) {
+                payload.isReservationAvailable = settings.isReservationAvailable;
+            }
+
             const response = await api.put('/business/place/settings', payload);
             return response.data;
         } catch (error) {
@@ -270,10 +277,10 @@ export const adminService = {
                 throw new Error('İnternet bağlantınızı kontrol edin');
             }
 
-            const backendMessage = error.response?.data?.message || 
-                                 error.response?.data?.error ||
-                                 error.response?.data?.detail ||
-                                 'Bir hata oluştu';
+            const backendMessage = error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.response?.data?.detail ||
+                'Bir hata oluştu';
 
             if (error.response?.status === 403) {
                 throw new Error(`403 Forbidden: ${backendMessage}. Bu işlem için Business Owner yetkisi gereklidir.`);
