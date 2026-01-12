@@ -116,13 +116,13 @@ const isWithinTwoHourWindow = (reservationTime) => {
 const canMarkAsCompleted = (reservation) => {
   const validStatuses = ['APPROVED', 'NO_SHOW'];
   if (!validStatuses.includes(reservation.status)) return false;
-  
+
   if (!isReservationTimePassed(reservation.reservationTime)) return false;
-  
+
   if (reservation.status === 'NO_SHOW') {
     return isWithinTwoHourWindow(reservation.reservationTime);
   }
-  
+
   return true;
 };
 
@@ -135,19 +135,20 @@ function ReservationManagementView() {
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [tableName, setTableName] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [placeId, setPlaceId] = useState(null);
   const [placeName, setPlaceName] = useState('');
-  const [stats, setStats] = useState({ 
-    total: 0, 
-    pending: 0, 
-    approved: 0, 
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    approved: 0,
     completed: 0,
     noShow: 0,
-    rejected: 0, 
-    cancelled: 0 
+    rejected: 0,
+    cancelled: 0
   });
 
   // PlaceId'yi yükle - Backend'den /api/business/places endpoint'ini kullan
@@ -158,7 +159,7 @@ function ReservationManagementView() {
 
       try {
         const places = await reservationService.getMyPlaces();
-        
+
         if (places && Array.isArray(places) && places.length > 0) {
           const firstPlace = places[0];
           const placeId = firstPlace.id;
@@ -200,18 +201,18 @@ function ReservationManagementView() {
 
   const loadReservations = async () => {
     if (!placeId) return;
-    
+
     setLoading(true);
     setErrorMessage('');
 
     try {
       const data = await reservationService.getPlaceReservations(placeId);
-      
+
       // Tarihi geçmiş ve hala PENDING olan rezervasyonları otomatik iptal et
       const now = new Date();
       const expiredPendingReservations = data.filter(reservation => {
         if (reservation.status !== 'PENDING') return false;
-        
+
         const reservationTime = new Date(reservation.reservationTime);
         return reservationTime < now;
       });
@@ -221,16 +222,16 @@ function ReservationManagementView() {
         const cancelPromises = expiredPendingReservations.map(reservation =>
           reservationService.cancelReservation(reservation.id).catch(error => {
             console.error(`Rezervasyon ${reservation.id} iptal edilirken hata:`, error);
-            return null; 
+            return null;
           })
         );
-        
+
         await Promise.all(cancelPromises);
-        
+
         const updatedData = await reservationService.getPlaceReservations(placeId);
         const sortedData = updatedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setReservations(sortedData);
-        
+
         // İstatistikleri hesapla
         const statsData = {
           total: updatedData.length,
@@ -245,7 +246,7 @@ function ReservationManagementView() {
       } else {
         const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setReservations(sortedData);
-        
+
         const statsData = {
           total: data.length,
           pending: data.filter(r => r.status === 'PENDING').length,
@@ -304,10 +305,11 @@ function ReservationManagementView() {
     setErrorMessage('');
 
     try {
-      await reservationService.approveReservation(selectedReservation.id);
+      await reservationService.approveReservation(selectedReservation.id, tableName.trim() || null);
 
       setApprovalDialogOpen(false);
       setSelectedReservation(null);
+      setTableName('');
       setSuccessMessage('Rezervasyon başarıyla onaylandı!');
       setTimeout(() => setSuccessMessage(''), 3000);
 
@@ -391,8 +393,8 @@ function ReservationManagementView() {
     } catch (error) {
       // 422 Validation hatasını özel olarak yakala
       if (error.response?.status === 422) {
-        const errorMsg = error.response?.data?.message || 
-                        "Rezervasyon saatinden çok fazla zaman geçtiği için 'Geç Geldi' işlemi yapılamaz.";
+        const errorMsg = error.response?.data?.message ||
+          "Rezervasyon saatinden çok fazla zaman geçtiği için 'Geç Geldi' işlemi yapılamaz.";
         setErrorMessage(errorMsg);
         console.error('Rezervasyon tamamlama validation hatası:', error.response?.data);
       } else {
@@ -433,17 +435,17 @@ function ReservationManagementView() {
       {/* İstatistikler */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
@@ -453,8 +455,8 @@ function ReservationManagementView() {
                   <EventNoteIcon />
                 </Box>
               </Box>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center'
@@ -472,22 +474,22 @@ function ReservationManagementView() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
             }}>
-              <Typography variant="h6" component="div" sx={{ 
+              <Typography variant="h6" component="div" sx={{
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 lineHeight: 1.2,
@@ -495,8 +497,8 @@ function ReservationManagementView() {
               }}>
                 Bekleyen
               </Typography>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center',
@@ -515,22 +517,22 @@ function ReservationManagementView() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
             }}>
-              <Typography variant="h6" component="div" sx={{ 
+              <Typography variant="h6" component="div" sx={{
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 lineHeight: 1.2,
@@ -538,8 +540,8 @@ function ReservationManagementView() {
               }}>
                 Onaylı
               </Typography>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center',
@@ -558,22 +560,22 @@ function ReservationManagementView() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
             }}>
-              <Typography variant="h6" component="div" sx={{ 
+              <Typography variant="h6" component="div" sx={{
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 lineHeight: 1.2,
@@ -581,8 +583,8 @@ function ReservationManagementView() {
               }}>
                 Tamamlandı
               </Typography>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center',
@@ -601,22 +603,22 @@ function ReservationManagementView() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
             }}>
-              <Typography variant="h6" component="div" sx={{ 
+              <Typography variant="h6" component="div" sx={{
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 lineHeight: 1.2,
@@ -624,8 +626,8 @@ function ReservationManagementView() {
               }}>
                 Gelmedi
               </Typography>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center',
@@ -644,22 +646,22 @@ function ReservationManagementView() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ 
-            height: '180px', 
-            display: 'flex', 
+          <Card sx={{
+            height: '180px',
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             minWidth: '150px'
           }}>
-            <CardContent sx={{ 
-              flex: 1, 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <CardContent sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
               padding: '16px !important',
               textAlign: 'center'
             }}>
-              <Typography variant="h6" component="div" sx={{ 
+              <Typography variant="h6" component="div" sx={{
                 fontWeight: 'bold',
                 fontSize: '1rem',
                 lineHeight: 1.2,
@@ -667,8 +669,8 @@ function ReservationManagementView() {
               }}>
                 İptal
               </Typography>
-              <Typography variant="h3" component="div" sx={{ 
-                fontWeight: 'bold', 
+              <Typography variant="h3" component="div" sx={{
+                fontWeight: 'bold',
                 mb: 1,
                 fontSize: '2rem',
                 textAlign: 'center',
@@ -779,9 +781,9 @@ function ReservationManagementView() {
                             color={reservation.status === 'NO_SHOW' ? 'warning' : 'info'}
                             onClick={() => handleComplete(reservation.id)}
                             disabled={!canMarkAsCompleted(reservation)}
-                            sx={{ 
-                              mr: 1, 
-                              minWidth: 'auto', 
+                            sx={{
+                              mr: 1,
+                              minWidth: 'auto',
                               px: 1,
                               opacity: !canMarkAsCompleted(reservation) ? 0.5 : 1,
                               '&.Mui-disabled': {
@@ -794,10 +796,10 @@ function ReservationManagementView() {
                               !isReservationTimePassed(reservation.reservationTime)
                                 ? `Rezervasyon saati: ${formatDate(reservation.reservationTime)}`
                                 : reservation.status === 'NO_SHOW' && !isWithinTwoHourWindow(reservation.reservationTime)
-                                ? 'Rezervasyon saatinden çok fazla zaman geçtiği için işlem yapılamaz'
-                                : reservation.status === 'NO_SHOW'
-                                ? 'Müşteri Geç Geldi (Gerçekleşti Yap)'
-                                : 'Gerçekleşti Olarak İşaretle'
+                                  ? 'Rezervasyon saatinden çok fazla zaman geçtiği için işlem yapılamaz'
+                                  : reservation.status === 'NO_SHOW'
+                                    ? 'Müşteri Geç Geldi (Gerçekleşti Yap)'
+                                    : 'Gerçekleşti Olarak İşaretle'
                             }
                           >
                             {reservation.status === 'NO_SHOW' ? '⏰ Geç Geldi' : '✓ Gerçekleşti'}
@@ -824,10 +826,10 @@ function ReservationManagementView() {
       </Card>
 
       {/* Rezervasyon Detay Dialog */}
-      <Dialog 
-        open={detailDialogOpen} 
-        onClose={() => setDetailDialogOpen(false)} 
-        maxWidth="sm" 
+      <Dialog
+        open={detailDialogOpen}
+        onClose={() => setDetailDialogOpen(false)}
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
@@ -908,9 +910,9 @@ function ReservationManagementView() {
                     <NoteIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Not
                   </Typography>
-                  <Typography 
-                    variant="body1" 
-                    sx={{ 
+                  <Typography
+                    variant="body1"
+                    sx={{
                       whiteSpace: 'pre-wrap',
                       fontSize: '16px',
                       lineHeight: 1.6
@@ -931,7 +933,7 @@ function ReservationManagementView() {
                     {formatDate(selectedReservation.createdAt)}
                   </Typography>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
                     Son Güncelleme
@@ -945,7 +947,7 @@ function ReservationManagementView() {
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-          <Button 
+          <Button
             onClick={() => setDetailDialogOpen(false)}
             variant="outlined"
           >
@@ -981,8 +983,8 @@ function ReservationManagementView() {
       </Dialog>
 
       {/* Onay Dialog */}
-      <Dialog 
-        open={approvalDialogOpen} 
+      <Dialog
+        open={approvalDialogOpen}
         onClose={() => setApprovalDialogOpen(false)}
         PaperProps={{
           sx: {
@@ -1003,19 +1005,29 @@ function ReservationManagementView() {
           <Typography variant="body2" color="text.secondary">
             Kişi Sayısı: <strong>{selectedReservation?.numberOfPeople}</strong>
           </Typography>
+          <TextField
+            fullWidth
+            label="Masa Adı / Numarası (Opsiyonel)"
+            placeholder="Örn: Masa 5, Bahçe 3, VIP 1"
+            value={tableName}
+            onChange={(e) => setTableName(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            helperText="Müşteri onay sonrası bu bilgiyi görecektir"
+          />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-          <Button 
-            onClick={() => setApprovalDialogOpen(false)} 
+          <Button
+            onClick={() => setApprovalDialogOpen(false)}
             disabled={loading}
             variant="outlined"
           >
             İptal
           </Button>
-          <Button 
-            onClick={confirmApproval} 
-            variant="contained" 
-            color="success" 
+          <Button
+            onClick={confirmApproval}
+            variant="contained"
+            color="success"
             disabled={loading}
           >
             Onayla
@@ -1024,10 +1036,10 @@ function ReservationManagementView() {
       </Dialog>
 
       {/* Red Dialog */}
-      <Dialog 
-        open={rejectionDialogOpen} 
-        onClose={() => setRejectionDialogOpen(false)} 
-        maxWidth="sm" 
+      <Dialog
+        open={rejectionDialogOpen}
+        onClose={() => setRejectionDialogOpen(false)}
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
@@ -1056,8 +1068,8 @@ function ReservationManagementView() {
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-          <Button 
-            onClick={() => setRejectionDialogOpen(false)} 
+          <Button
+            onClick={() => setRejectionDialogOpen(false)}
             disabled={loading}
             variant="outlined"
           >
@@ -1075,8 +1087,8 @@ function ReservationManagementView() {
       </Dialog>
 
       {/* İptal Dialog */}
-      <Dialog 
-        open={cancelDialogOpen} 
+      <Dialog
+        open={cancelDialogOpen}
         onClose={() => setCancelDialogOpen(false)}
         PaperProps={{
           sx: {
@@ -1099,17 +1111,17 @@ function ReservationManagementView() {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-          <Button 
-            onClick={() => setCancelDialogOpen(false)} 
+          <Button
+            onClick={() => setCancelDialogOpen(false)}
             disabled={loading}
             variant="outlined"
           >
             İptal
           </Button>
-          <Button 
-            onClick={confirmCancel} 
-            variant="contained" 
-            color="default" 
+          <Button
+            onClick={confirmCancel}
+            variant="contained"
+            color="default"
             disabled={loading}
           >
             İptal Et

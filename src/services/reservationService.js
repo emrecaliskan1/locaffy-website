@@ -24,24 +24,24 @@ export const reservationService = {
                 // 403 hatası - Token gönderiliyor ama yetki yok
                 const token = localStorage.getItem('accessToken');
                 let tokenDebugInfo = '';
-                
+
                 if (token) {
                     try {
                         const base64Url = token.split('.')[1];
                         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
                             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                         }).join(''));
                         const decoded = JSON.parse(jsonPayload);
                         const role = decoded.role || decoded.authorities?.[0] || decoded.authority;
-                        
+
                         console.error('403 Forbidden - Token Debug Info (getMyPlaces):', {
                             role: role,
                             decodedToken: decoded,
                             endpoint: '/business/places',
                             hasToken: !!token
                         });
-                        
+
                         tokenDebugInfo = `Token'da role: ${role || 'bulunamadı'}. `;
                     } catch (e) {
                         console.error('Token decode hatası:', e);
@@ -50,11 +50,11 @@ export const reservationService = {
                 } else {
                     tokenDebugInfo = 'Token bulunamadı. ';
                 }
-                
-                const backendMessage = error.response?.data?.message || 
-                                     error.response?.data?.error ||
-                                     'Yetki hatası';
-                
+
+                const backendMessage = error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    'Yetki hatası';
+
                 throw new Error(
                     `403 Forbidden: ${backendMessage}. ` +
                     `${tokenDebugInfo}` +
@@ -111,8 +111,12 @@ export const reservationService = {
         }
     },
 
-    approveReservation: async (reservationId) => {
-        return reservationService.updateReservationStatus(reservationId, { status: ReservationStatus.APPROVED });
+    approveReservation: async (reservationId, tableName = null) => {
+        const statusUpdate = { status: ReservationStatus.APPROVED };
+        if (tableName) {
+            statusUpdate.tableName = tableName;
+        }
+        return reservationService.updateReservationStatus(reservationId, statusUpdate);
     },
 
     rejectReservation: async (reservationId, rejectionReason) => {
@@ -163,10 +167,10 @@ export const reservationService = {
                 'Rezervasyon oluşturulurken bir hata oluştu';
 
             // Engellenen kullanıcı hatası kontrolü
-            if (error.response?.status === 400 && 
-                (errorMessage.includes('Locafy ekibiyle iletişime geçin') || 
-                 errorMessage.includes('rezervasyon oluşturamıyorsunuz') ||
-                 errorMessage.includes('iptal oranınız'))) {
+            if (error.response?.status === 400 &&
+                (errorMessage.includes('Locafy ekibiyle iletişime geçin') ||
+                    errorMessage.includes('rezervasyon oluşturamıyorsunuz') ||
+                    errorMessage.includes('iptal oranınız'))) {
                 const blockedError = new Error(errorMessage);
                 blockedError.isBlockedUserError = true;
                 throw blockedError;
