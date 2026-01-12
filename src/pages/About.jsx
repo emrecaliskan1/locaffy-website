@@ -449,6 +449,11 @@ const About = () => {
                   backgroundColor: '#e5e7eb',
                   flexShrink: 0
                 }}>
+                  <img
+                    src="/team/esra.png"
+                    alt="Esra Yıldırım"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
                 </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Esra Yıldırım
@@ -468,6 +473,11 @@ const About = () => {
                   backgroundColor: '#e5e7eb',
                   flexShrink: 0
                 }}>
+                  <img
+                    src="/team/berna.jpeg"
+                    alt="Berna Yeşilyurt"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
                 </Box>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', color: 'grey.800', textAlign: 'center' }}>
                   Berna Yeşilyurt
