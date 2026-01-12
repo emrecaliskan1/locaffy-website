@@ -210,7 +210,7 @@ function ReservationRulesView() {
 
         {/* Kapasite ve Rezervasyon Kuralları */}
         <Grid item xs={12} md={6}>
-          <RuleCard title="Kapasite ve Rezervasyon Kuralları" icon={<PeopleIcon />}>
+          <RuleCard title="Rezervasyon için Masa Kapasitesi" icon={<PeopleIcon />}>
             <TextField
               fullWidth
               label="Rezervasyon Kapasitesi"
