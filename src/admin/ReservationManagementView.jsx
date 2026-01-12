@@ -900,6 +900,13 @@ function ReservationManagementView() {
                       </Typography>
                     </Box>
                   )}
+                  {selectedReservation.status === 'APPROVED' && selectedReservation.tableName && (
+                    <Box sx={{ mt: 2, p: 1.5, bgcolor: 'success.light', borderRadius: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'success.dark' }}>
+                        🍽️ Masa: {selectedReservation.tableName}
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               </Box>
 
