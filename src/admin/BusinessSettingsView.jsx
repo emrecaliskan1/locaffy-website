@@ -41,7 +41,8 @@ function BusinessSettingsView() {
   const [settings, setSettings] = useState({
     openingTime: '09:00',
     closingTime: '23:00',
-    workingDays: []
+    workingDays: [],
+    isReservationAvailable: false
   });
 
   useEffect(() => {
@@ -73,7 +74,8 @@ function BusinessSettingsView() {
       setSettings({
         openingTime: data.openingTime || '09:00',
         closingTime: data.closingTime || '23:00',
-        workingDays: data.workingDays || ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA']
+        workingDays: data.workingDays || ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA'],
+        isReservationAvailable: data.isReservationAvailable
       });
     } catch (error) {
       setErrorMessage(error.message || 'Ayarlar yüklenirken bir hata oluştu');
@@ -224,6 +226,79 @@ function BusinessSettingsView() {
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                   İşletmenizin çalıştığı günleri seçin. En az bir gün seçilmelidir.
                 </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+              <ScheduleIcon sx={{ mr: 1, color: 'primary.main' }} />
+              Rezervasyon Ayarları
+            </Typography>
+            <Divider sx={{ mb: 3 }} />
+
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 3, border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: 'background.paper', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      Rezervasyon Kabul Ediyor musunuz?
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 600 }}>
+                      Aktif edildiğinde müşteriler uygulama üzerinden işletmeniz için rezervasyon oluşturabilir.
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      bgcolor: 'action.hover',
+                      p: 0.5,
+                      borderRadius: 3,
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    <Button
+                      disableElevation
+                      variant={!settings.isReservationAvailable ? "contained" : "text"}
+                      color={!settings.isReservationAvailable ? "error" : "inherit"}
+                      onClick={() => handleInputChange('isReservationAvailable', false)}
+                      sx={{
+                        borderRadius: 2.5,
+                        px: 3,
+                        minWidth: 100,
+                        transition: 'all 0.3s ease',
+                        bgcolor: !settings.isReservationAvailable ? 'error.main' : 'transparent',
+                        color: !settings.isReservationAvailable ? 'white' : 'text.secondary',
+                        '&:hover': {
+                          bgcolor: !settings.isReservationAvailable ? 'error.dark' : 'rgba(0,0,0,0.05)'
+                        }
+                      }}
+                    >
+                      HAYIR
+                    </Button>
+                    <Button
+                      disableElevation
+                      variant={settings.isReservationAvailable ? "contained" : "text"}
+                      color={settings.isReservationAvailable ? "success" : "inherit"}
+                      onClick={() => handleInputChange('isReservationAvailable', true)}
+                      sx={{
+                        borderRadius: 2.5,
+                        px: 3,
+                        minWidth: 100,
+                        transition: 'all 0.3s ease',
+                        bgcolor: settings.isReservationAvailable ? 'success.main' : 'transparent',
+                        color: settings.isReservationAvailable ? 'white' : 'text.secondary',
+                        '&:hover': {
+                          bgcolor: settings.isReservationAvailable ? 'success.dark' : 'rgba(0,0,0,0.05)'
+                        }
+                      }}
+                    >
+                      EVET
+                    </Button>
+                  </Box>
+                </Box>
               </Grid>
             </Grid>
           </Box>

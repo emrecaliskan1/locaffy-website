@@ -101,7 +101,7 @@ function ReviewsView() {
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedReview, setSelectedReview] = useState(null);
 
-    const [uniquePlaces, setUniquePlaces] = useState([]); 
+    const [uniquePlaces, setUniquePlaces] = useState([]);
 
     useEffect(() => {
         loadReviews();
@@ -292,17 +292,17 @@ function ReviewsView() {
             {/* İstatistikler */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ 
-                        height: '180px', 
-                        display: 'flex', 
+                    <Card sx={{
+                        height: '180px',
+                        display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
                         minWidth: '250px'
                     }}>
-                        <CardContent sx={{ 
-                            flex: 1, 
-                            display: 'flex', 
-                            flexDirection: 'column', 
+                        <CardContent sx={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
                             justifyContent: 'space-between',
                             padding: '16px !important'
                         }}>
@@ -310,7 +310,7 @@ function ReviewsView() {
                                 <Box sx={{ mr: 2, color: 'primary.main', fontSize: '1.5rem' }}>
                                     <CommentIcon />
                                 </Box>
-                                <Typography variant="h6" component="div" sx={{ 
+                                <Typography variant="h6" component="div" sx={{
                                     fontWeight: 'bold',
                                     fontSize: '1rem',
                                     lineHeight: 1.2
@@ -318,8 +318,8 @@ function ReviewsView() {
                                     Toplam Yorum
                                 </Typography>
                             </Box>
-                            <Typography variant="h3" component="div" sx={{ 
-                                fontWeight: 'bold', 
+                            <Typography variant="h3" component="div" sx={{
+                                fontWeight: 'bold',
                                 mb: 1,
                                 fontSize: '2rem',
                                 textAlign: 'center'
@@ -337,17 +337,17 @@ function ReviewsView() {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ 
-                        height: '180px', 
-                        display: 'flex', 
+                    <Card sx={{
+                        height: '180px',
+                        display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
                         minWidth: '250px'
                     }}>
-                        <CardContent sx={{ 
-                            flex: 1, 
-                            display: 'flex', 
-                            flexDirection: 'column', 
+                        <CardContent sx={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
                             justifyContent: 'space-between',
                             padding: '16px !important'
                         }}>
@@ -355,7 +355,7 @@ function ReviewsView() {
                                 <Box sx={{ mr: 2, color: 'warning.main', fontSize: '1.5rem' }}>
                                     <StarIcon />
                                 </Box>
-                                <Typography variant="h6" component="div" sx={{ 
+                                <Typography variant="h6" component="div" sx={{
                                     fontWeight: 'bold',
                                     fontSize: '1rem',
                                     lineHeight: 1.2
@@ -363,8 +363,8 @@ function ReviewsView() {
                                     Ortalama Puan
                                 </Typography>
                             </Box>
-                            <Typography variant="h3" component="div" sx={{ 
-                                fontWeight: 'bold', 
+                            <Typography variant="h3" component="div" sx={{
+                                fontWeight: 'bold',
                                 mb: 1,
                                 fontSize: '2rem',
                                 textAlign: 'center'
@@ -384,17 +384,17 @@ function ReviewsView() {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ 
-                        height: '180px', 
-                        display: 'flex', 
+                    <Card sx={{
+                        height: '180px',
+                        display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
                         minWidth: '250px'
                     }}>
-                        <CardContent sx={{ 
-                            flex: 1, 
-                            display: 'flex', 
-                            flexDirection: 'column', 
+                        <CardContent sx={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
                             justifyContent: 'space-between',
                             padding: '16px !important'
                         }}>
@@ -402,7 +402,7 @@ function ReviewsView() {
                                 <Box sx={{ mr: 2, color: 'success.main', fontSize: '1.5rem' }}>
                                     <ThumbUpIcon />
                                 </Box>
-                                <Typography variant="h6" component="div" sx={{ 
+                                <Typography variant="h6" component="div" sx={{
                                     fontWeight: 'bold',
                                     fontSize: '1rem',
                                     lineHeight: 1.2
@@ -410,8 +410,8 @@ function ReviewsView() {
                                     5 Yıldız
                                 </Typography>
                             </Box>
-                            <Typography variant="h3" component="div" sx={{ 
-                                fontWeight: 'bold', 
+                            <Typography variant="h3" component="div" sx={{
+                                fontWeight: 'bold',
                                 mb: 1,
                                 fontSize: '2rem',
                                 textAlign: 'center'
@@ -429,17 +429,17 @@ function ReviewsView() {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card sx={{ 
-                        height: '180px', 
-                        display: 'flex', 
+                    <Card sx={{
+                        height: '180px',
+                        display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
                         minWidth: '250px'
                     }}>
-                        <CardContent sx={{ 
-                            flex: 1, 
-                            display: 'flex', 
-                            flexDirection: 'column', 
+                        <CardContent sx={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
                             justifyContent: 'space-between',
                             padding: '16px !important'
                         }}>
@@ -447,7 +447,7 @@ function ReviewsView() {
                                 <Box sx={{ mr: 2, color: 'error.main', fontSize: '1.5rem' }}>
                                     <ThumbDownIcon />
                                 </Box>
-                                <Typography variant="h6" component="div" sx={{ 
+                                <Typography variant="h6" component="div" sx={{
                                     fontWeight: 'bold',
                                     fontSize: '1rem',
                                     lineHeight: 1.2
@@ -455,8 +455,8 @@ function ReviewsView() {
                                     1-2 Yıldız
                                 </Typography>
                             </Box>
-                            <Typography variant="h3" component="div" sx={{ 
-                                fontWeight: 'bold', 
+                            <Typography variant="h3" component="div" sx={{
+                                fontWeight: 'bold',
                                 mb: 1,
                                 fontSize: '2rem',
                                 textAlign: 'center'
@@ -619,7 +619,7 @@ function ReviewsView() {
                                         <TableCell>{review.id}</TableCell>
                                         <TableCell>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <Avatar 
+                                                <Avatar
                                                     src={review.userProfileImageUrl}
                                                     sx={{ width: 32, height: 32, bgcolor: '#667eea' }}
                                                 >
@@ -687,14 +687,6 @@ function ReviewsView() {
                                             >
                                                 <VisibilityIcon />
                                             </IconButton>
-                                            <IconButton
-                                                size="small"
-                                                color="error"
-                                                onClick={() => handleDeleteClick(review)}
-                                                title="Sil"
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -735,9 +727,9 @@ function ReviewsView() {
                 <DialogTitle sx={{ pb: 2 }}>
                     Yorumu Sil
                 </DialogTitle>
-                
+
                 <Divider />
-                
+
                 <DialogContent sx={{ px: 3, py: 2 }}>
                     <Box sx={{ mt: 1 }}>
                         <Typography variant="body1" sx={{ mb: 3 }}>
@@ -759,9 +751,9 @@ function ReviewsView() {
                         <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                             Silinecek Yorum:
                         </Typography>
-                        <Typography 
-                            variant="body2" 
-                            sx={{ 
+                        <Typography
+                            variant="body2"
+                            sx={{
                                 whiteSpace: 'pre-wrap',
                                 p: 2,
                                 backgroundColor: 'grey.100',
@@ -772,17 +764,17 @@ function ReviewsView() {
                         </Typography>
                     </Box>
                 </DialogContent>
-                
+
                 <DialogActions sx={{ px: 3, pb: 3 }}>
-                    <Button 
+                    <Button
                         onClick={() => setDeleteDialogOpen(false)}
                         variant="outlined"
                     >
                         İptal
                     </Button>
-                    <Button 
-                        onClick={handleDeleteConfirm} 
-                        color="error" 
+                    <Button
+                        onClick={handleDeleteConfirm}
+                        color="error"
                         variant="contained"
                     >
                         Sil
@@ -806,9 +798,9 @@ function ReviewsView() {
                 <DialogTitle sx={{ pb: 2 }}>
                     Yorum Detayları
                 </DialogTitle>
-                
+
                 <Divider />
-                
+
                 <DialogContent sx={{ px: 3, py: 2 }}>
                     {selectedReview && (
                         <Box sx={{ mt: 1 }}>
@@ -816,16 +808,16 @@ function ReviewsView() {
                                 <Typography variant="body2" color="text.secondary">
                                     <strong>Yorum ID:</strong> {selectedReview.id}
                                 </Typography>
-                                <Typography 
-                                    variant="body2" 
+                                <Typography
+                                    variant="body2"
                                     color="text.secondary"
                                     sx={{ cursor: 'pointer' }}
                                     onClick={() => handlePlaceClick(selectedReview.placeId)}
                                 >
                                     <strong>Mekan:</strong> {selectedReview.placeName || `Mekan #${selectedReview.placeId}`}
                                 </Typography>
-                                <Typography 
-                                    variant="body2" 
+                                <Typography
+                                    variant="body2"
                                     color="text.secondary"
                                     sx={{ cursor: 'pointer' }}
                                     onClick={() => handleUserClick(selectedReview.userId)}
@@ -847,14 +839,14 @@ function ReviewsView() {
                                     />
                                 </Box>
                             </Box>
-                            
+
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
                                     Yorum:
                                 </Typography>
-                                <Typography 
-                                    variant="body2" 
-                                    sx={{ 
+                                <Typography
+                                    variant="body2"
+                                    sx={{
                                         whiteSpace: 'pre-wrap',
                                         p: 2,
                                         backgroundColor: 'grey.100',
@@ -876,7 +868,7 @@ function ReviewsView() {
                         </Box>
                     )}
                 </DialogContent>
-                
+
                 <DialogActions sx={{ px: 3, pb: 3 }}>
                     <Button onClick={() => setDetailDialogOpen(false)} variant="outlined">
                         Kapat
