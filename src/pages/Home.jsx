@@ -60,13 +60,8 @@ const scaleIn = {
 
 const Home = () => {
   const handleDownload = () => {
-    // APK dosyasını indirme linki - public klasörüne locaffy.apk dosyasını koyun
-    const link = document.createElement('a');
-    link.href = '/locaffy.apk';
-    link.download = 'Locaffy.apk';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // S3'teki APK dosyasına yönlendir
+    window.open('https://locaffy-apk.s3.us-east-1.amazonaws.com/locaffyapp.apk', '_blank');
   };
 
   return (
@@ -85,8 +80,8 @@ const Home = () => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5, rotateX: -15 }}
                   animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-                  transition={{ 
-                    duration: 1, 
+                  transition={{
+                    duration: 1,
                     ease: [0.6, -0.05, 0.01, 0.99],
                     scale: {
                       type: "spring",
@@ -94,7 +89,7 @@ const Home = () => {
                       stiffness: 100
                     }
                   }}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.03,
                     transition: { duration: 0.3 }
                   }}
@@ -337,7 +332,7 @@ const Home = () => {
             </motion.div>
             <Swiper
               modules={[Pagination, Navigation]}
-              pagination={{ 
+              pagination={{
                 clickable: true,
                 dynamicBullets: true
               }}
@@ -349,7 +344,7 @@ const Home = () => {
                 768: { slidesPerView: 3, spaceBetween: 25 },
                 1024: { slidesPerView: 4, spaceBetween: 30 }
               }}
-              style={{ 
+              style={{
                 paddingTop: '20px',
                 paddingBottom: '50px',
                 paddingLeft: '50px',
@@ -400,10 +395,10 @@ const Home = () => {
                       }
                     }}
                   >
-                    <Box 
+                    <Box
                       className="feature-icon"
-                      sx={{ 
-                        fontSize: { xs: '2.5rem', md: '3rem' }, 
+                      sx={{
+                        fontSize: { xs: '2.5rem', md: '3rem' },
                         mb: 1.5,
                         transition: 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
                       }}

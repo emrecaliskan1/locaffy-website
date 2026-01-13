@@ -48,19 +48,19 @@ function Register() {
       setError('Lütfen tüm alanları doldurun');
       return;
     }
-    
+
     if (formData.password !== formData.passwordConfirm) {
       setError('Şifreler eşleşmiyor');
       return;
     }
-    
+
     if (formData.password.length < 6) {
       setError('Şifre en az 6 karakter olmalıdır');
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       await authService.register(formData);
       setSuccess(true);
@@ -79,21 +79,8 @@ function Register() {
   };
 
   const handleDownloadApp = () => {
-    // Mobil cihaz kontrolü
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    
-    // Android
-    if (/android/i.test(userAgent)) {
-      window.location.href = 'https://play.google.com/store/apps'; // Play Store linki eklenecek
-    }
-    // iOS
-    else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-      window.location.href = 'https://apps.apple.com/'; // App Store linki eklenecek
-    }
-    // Desktop
-    else {
-      window.open('https://play.google.com/store/apps', '_blank'); // Play Store linki eklenecek
-    }
+    // S3'teki APK dosyasına yönlendir
+    window.open('https://locaffy-apk.s3.us-east-1.amazonaws.com/locaffyapp.apk', '_blank');
   };
 
   // Başarılı kayıt ekranı
@@ -318,7 +305,7 @@ function Register() {
                   }}
                 />
               </motion.div>
-              
+
               <Typography
                 variant="h4"
                 component="h1"
